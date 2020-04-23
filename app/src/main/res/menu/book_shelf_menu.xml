@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_refresh"
+        android:icon="@mipmap/ic_refresh_white_48dp"
+        android:orderInCategory="100"
+        android:title="刷新书架"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_clear"
+        android:icon="@mipmap/ic_delete_white_48dp"
+        android:orderInCategory="100"
+        android:title="清空书架"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/action_search"
+        android:icon="@mipmap/ic_search_white_48dp"
+        android:orderInCategory="100"
+        android:title="搜索书籍"
+        app:showAsAction="ifRoom" />
+</menu>

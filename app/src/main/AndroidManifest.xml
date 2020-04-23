@@ -1,0 +1,298 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.sjl.bookmark">
+
+
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.BATTERY_STATS" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+
+    <!--webview权限-->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.READ_SETTINGS" />
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
+    <uses-permission android:name="android.permission.GET_TASKS" />
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+
+    <!--覆盖第三方库的minSdkVersion -->
+    <uses-sdk tools:overrideLibrary="cn.sharesdk,cn.sharesdk.onekeyshare,com.ctetin.expandabletextviewlibrary" />
+
+    <application
+        android:name="com.sjl.bookmark.app.MyApplication"
+        android:allowBackup="true"
+        android:icon="${APP_ICON}"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:networkSecurityConfig="@xml/network_security_config"
+        android:theme="@style/AppTheme">
+        <activity
+            android:name=".ui.activity.SplashActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.Launcher">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <meta-data
+            android:name="CHANNEL"
+            android:value="${CHANNEL_VALUE}" />
+
+
+        <!--全面屏适配-->
+        <meta-data
+            android:name="android.max_aspect"
+            android:value="2.4" />
+
+        <!--适配华为（huawei）刘海屏-->
+        <meta-data
+            android:name="android.notch_support"
+            android:value="true" />
+        <!--适配小米（xiaomi）刘海屏-->
+        <meta-data
+            android:name="notch.config"
+            android:value="portrait|landscape" />
+       <!-- <meta-data
+            android:name="design_width_in_dp"
+            android:value="360"/>
+        <meta-data
+            android:name="design_height_in_dp"
+            android:value="640"/>
+-->
+
+        <!--Android 7.0需要使用FileProvider生成content:// Uri来替代file:// Uri-->
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="${PACKAGE_NAME}.fileProvider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+        <activity
+            android:name="com.sjl.bookmark.ui.activity.MainActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <!--账号密码管理模块-->
+        <activity
+            android:name=".ui.activity.AccountIndexActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/CommonNoActionBar" />
+        <activity
+            android:name=".ui.activity.AccountEditActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/CommonNoActionBar" />
+        <!--手势密码模块-->
+        <activity
+            android:name=".ui.activity.CheckLockActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/CommonNoActionBar" />
+        <activity
+            android:name=".ui.activity.CreateLockActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/CommonNoActionBar" />
+
+        <!--Google书签模块-->
+        <activity
+            android:name="com.sjl.bookmark.ui.activity.BookmarkActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/CommonNoActionBar" />
+
+        <!-- 硬件加速对X5视频播放非常重要，建议开启 -->
+        <activity
+            android:name=".ui.activity.BrowserActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:hardwareAccelerated="true"
+            android:screenOrientation="portrait"
+            android:theme="@style/CommonNoActionBar"
+            android:windowSoftInputMode="adjustResize"></activity>
+        <activity
+            android:name=".ui.activity.PhotoBrowserActivity"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Animation.Dialog">
+
+        </activity>
+
+        <activity
+            android:name=".ui.activity.BookmarkSearchActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:screenOrientation="portrait"
+            android:theme="@style/CommonNoActionBar"
+            android:windowSoftInputMode="adjustResize" />
+        <!--二维码扫描模块-->
+        <activity
+            android:name=".ui.activity.MyCardActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/CommonNoActionBar" />
+        <!--设置模块-->
+        <activity
+            android:name=".ui.activity.SettingActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/CommonNoActionBar" />
+        <activity
+            android:name=".ui.activity.ChangeSkinActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/CommonNoActionBar" />
+        <activity
+            android:name=".ui.activity.BackupAndSyncActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/CommonNoActionBar" />
+
+        <activity
+            android:name=".ui.activity.AboutActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/CommonNoActionBar" />
+        <!--wifi密码查询模块-->
+        <activity
+            android:name=".ui.activity.WifiQueryActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/CommonNoActionBar" />
+        <activity
+            android:name="com.yalantis.ucrop.UCropActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/CommonNoActionBar" />
+        <!--wanandroid-->
+        <activity
+            android:name=".ui.activity.ArticleTypeActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/CommonNoActionBar" />
+        <activity
+            android:name=".ui.activity.ArticleSearchActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/CommonNoActionBar" />
+        <!--收藏模块-->
+        <activity
+            android:name=".ui.activity.MyCollectionActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/CommonNoActionBar" />
+        <activity
+            android:name=".ui.activity.MyCollectionSearchActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/CommonNoActionBar" />
+        <activity
+            android:name=".ui.activity.MyNoteActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/CommonNoActionBar" />
+        <!--我的快递模块-->
+        <activity
+            android:name=".ui.activity.ExpressActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/CommonNoActionBar" />
+        <activity
+            android:name=".ui.activity.ExpressSearchActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/CommonNoActionBar" />
+        <activity
+            android:name=".ui.activity.ExpressCompanyActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/CommonNoActionBar" />
+        <activity
+            android:name=".ui.activity.ExpressDetailActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/CommonNoActionBar" />
+        <activity
+            android:name=".ui.activity.ExpressHistoryActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/CommonNoActionBar" />
+        <!--个人中心-->
+        <activity
+            android:name=".ui.activity.PersonCenterActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/CommonNoActionBar" />
+        <activity
+            android:name=".ui.activity.PersonalityActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/CommonNoActionBar" />
+
+        <!--小说阅读-->
+        <activity
+            android:name=".ui.activity.BookShelfActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <activity
+            android:name=".ui.activity.BookSearchActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/CommonNoActionBar" />
+        <activity
+            android:name=".ui.activity.BookReadActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:theme="@style/CommonNoActionBar" />
+
+
+        <activity
+            android:name=".ui.activity.BookMoreSettingActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/CommonNoActionBar" />
+        <activity
+            android:name=".ui.activity.BookDetailActivity"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"
+            android:theme="@style/CommonNoActionBar" />
+        <activity
+            android:name=".ui.activity.BookMoreCommentActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/CommonNoActionBar" />
+        <activity
+            android:name=".ui.activity.FileSystemActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/CommonNoActionBar" />
+
+        <!--知乎日报-->
+        <activity
+            android:name=".ui.activity.NewsListActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/DayTheme" />
+        <activity
+            android:name=".ui.activity.NewsDetailActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:hardwareAccelerated="true"
+            android:screenOrientation="portrait"
+            android:theme="@style/CommonNoActionBar_status_bar"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".ui.activity.NewsCommentActivity"
+            android:hardwareAccelerated="true"
+            android:screenOrientation="portrait"
+            android:theme="@style/CommonNoActionBar" />
+
+        <activity
+            android:name=".ui.activity.DocBrowserActivity"
+            android:hardwareAccelerated="true"
+            android:screenOrientation="portrait"
+            android:theme="@style/CommonNoActionBar" />
+
+        <service
+            android:name=".service.X5CoreService"
+            android:enabled="true" />
+        <service android:name=".service.DownloadIntentService" />
+
+       <!-- <receiver
+            android:name=".receiver.LocaleChangeReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter android:priority="1000">
+                <action android:name="android.intent.action.LOCALE_CHANGED" />
+            </intent-filter>
+        </receiver>
+-->
+
+    </application>
+
+</manifest>

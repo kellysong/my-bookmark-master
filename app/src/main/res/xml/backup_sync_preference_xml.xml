@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <com.sjl.core.widget.materialpreference.PreferenceCategory android:title="@string/setting_sync">
+        <com.sjl.core.widget.materialpreference.Preference
+            android:key="立即同步"
+            android:title="@string/setting_sync_now"/>
+    </com.sjl.core.widget.materialpreference.PreferenceCategory>
+
+    <com.sjl.core.widget.materialpreference.PreferenceCategory android:title="@string/setting_backup_recover">
+        <com.sjl.core.widget.materialpreference.SwitchPreference
+            android:key="自动备份"
+            android:summary="@string/setting_auto_backup_summary"
+            android:title="@string/setting_auto_backup" />
+        <com.sjl.core.widget.materialpreference.PreferenceDivider />
+
+        <com.sjl.core.widget.materialpreference.Preference
+            android:key="本地备份"
+            android:title="@string/setting_local_backup"/>
+        <com.sjl.core.widget.materialpreference.PreferenceDivider />
+        <com.sjl.core.widget.materialpreference.Preference
+            android:key="本地恢复"
+            android:title="@string/setting_local_recover"
+            />
+    </com.sjl.core.widget.materialpreference.PreferenceCategory>
+
+
+</PreferenceScreen>

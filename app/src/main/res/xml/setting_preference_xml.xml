@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <com.sjl.core.widget.materialpreference.PreferenceCategory android:title="@string/setting_basic">
+        <com.sjl.core.widget.materialpreference.SwitchPreference
+            android:key="账号的密码可见"
+            android:summary="@string/setting_ap_visible"
+            android:title="@string/setting_ap" />
+
+        <com.sjl.core.widget.materialpreference.PreferenceDivider />
+
+        <com.sjl.core.widget.materialpreference.SwitchPreference
+            android:key="打开手势密码"
+            android:summary="@string/setting_gesture_pwd"
+            android:title="@string/setting_open_gesture" />
+
+        <com.sjl.core.widget.materialpreference.PreferenceDivider />
+
+        <com.sjl.core.widget.materialpreference.Preference
+            android:key="修改手势密码"
+            android:title="@string/setting_update_gesture_pwd" />
+        <com.sjl.core.widget.materialpreference.PreferenceDivider />
+
+        <com.sjl.core.widget.materialpreference.Preference
+            android:key="更换语言"
+            android:title="@string/setting_change_language" />
+        <com.sjl.core.widget.materialpreference.PreferenceDivider />
+
+        <com.sjl.core.widget.materialpreference.Preference
+            android:key="更换主题"
+            android:title="@string/setting_change_subject" />
+        <com.sjl.core.widget.materialpreference.PreferenceDivider />
+
+        <com.sjl.core.widget.materialpreference.Preference
+            android:key="更新书签"
+            android:title="@string/setting_update_bookmark" />
+
+        <com.sjl.core.widget.materialpreference.PreferenceDivider />
+
+        <com.sjl.core.widget.materialpreference.Preference
+            android:key="备份与同步收藏"
+            android:title="@string/setting_backup_sync_collection" />
+
+        <com.sjl.core.widget.materialpreference.PreferenceDivider />
+
+        <com.sjl.core.widget.materialpreference.Preference
+            android:key="清除浏览记录"
+            android:title="@string/setting_clear_browse_history"
+            android:summary="@string/setting_clear_summary"
+            />
+    </com.sjl.core.widget.materialpreference.PreferenceCategory>
+
+    <com.sjl.core.widget.materialpreference.PreferenceCategory android:title="@string/setting_product_information">
+        <com.sjl.core.widget.materialpreference.Preference
+            android:key="版权信息"
+            android:title="@string/setting_copyright_information" />
+
+        <com.sjl.core.widget.materialpreference.PreferenceDivider />
+
+        <com.sjl.core.widget.materialpreference.Preference
+            android:key="检查更新"
+            android:title="@string/setting_check_update" />
+
+        <com.sjl.core.widget.materialpreference.PreferenceDivider />
+
+        <com.sjl.core.widget.materialpreference.Preference
+            android:key="分享应用"
+            android:title="@string/setting_share_application" />
+
+        <com.sjl.core.widget.materialpreference.PreferenceDivider />
+
+        <com.sjl.core.widget.materialpreference.Preference
+            android:key="关于"
+            android:title="@string/setting_about"
+            android:summary=""/>
+
+    </com.sjl.core.widget.materialpreference.PreferenceCategory>
+
+
+</PreferenceScreen>

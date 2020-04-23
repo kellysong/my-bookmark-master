@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+		<title>版权信息</title>
+		<link rel="stylesheet" href="css/tables.css">
+
+	</head>
+
+	<body>
+		<table id="copyright" class="pure-table" style="width: 100%;">
+			<thead>
+				<tr>
+					<th>名称</th>
+					<th>许可证</th>
+					<th>是否经过修改</th>
+				</tr>
+			</thead>
+			<tbody   v-for="(item, index) in items" :key="index" >
+				<tr  :class="index%2==0 ? '':'pure-table-odd'" >
+					<td>
+						<a v-bind:href="item.name.href">{{item.name.libName}}</a>
+					</td>
+					<td>
+						<a v-bind:href="item.licence.href">{{item.licence.name}}</a>
+					</td>
+					<td>{{item.modified}}</td>
+				</tr>
+			</tbody>
+		</table>
+		<script src="js/vue.min.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			
+			var news = new Vue({
+				el: '#copyright',
+				data: {
+					items: [
+						{"name":{"libName":"Retrofit","href":"https://github.com/square/retrofit"},"licence":{"name":"Apache v2.0","href":"http://www.apache.org/licenses/LICENSE-2.0"},"modified":"否"},
+						{"name":{"libName":"okhttp","href":"https://github.com/square/okhttp"},"licence":{"name":"Apache v2.0","href":"http://www.apache.org/licenses/LICENSE-2.0"},"modified":"否"},
+						{"name":{"libName":"Butter Knife","href":"https://github.com/JakeWharton/butterknife"},"licence":{"name":"Apache v2.0","href":"http://www.apache.org/licenses/LICENSE-2.0"},"modified":"否"},
+						{"name":{"libName":"Glide","href":"https://github.com/bumptech/glide"},"licence":{"name":"Apache v2.0","href":"http://www.apache.org/licenses/LICENSE-2.0"},"modified":"否"},
+						{"name":{"libName":"EventBus","href":"https://github.com/greenrobot/EventBus"},"licence":{"name":"Apache v2.0","href":"http://www.apache.org/licenses/LICENSE-2.0"},"modified":"否"},
+						{"name":{"libName":"RxAndroid","href":"https://github.com/ReactiveX/RxAndroid"},"licence":{"name":"Apache v2.0","href":"http://www.apache.org/licenses/LICENSE-2.0"},"modified":"否"},
+						{"name":{"libName":"greenDAO","href":"https://github.com/greenrobot/greenDAO"},"licence":{"name":"Apache v2.0","href":"http://www.apache.org/licenses/LICENSE-2.0"},"modified":"否"},
+						{"name":{"libName":"logger","href":"https://github.com/orhanobut/logger"},"licence":{"name":"Apache v2.0","href":"http://www.apache.org/licenses/LICENSE-2.0"},"modified":"否"},
+						{"name":{"libName":"RxBinding","href":"https://github.com/JakeWharton/RxBinding"},"licence":{"name":"Apache v2.0","href":"http://www.apache.org/licenses/LICENSE-2.0"},"modified":"否"},
+						{"name":{"libName":"AutoDispose","href":"https://github.com/uber/AutoDispose"},"licence":{"name":"Apache v2.0","href":"http://www.apache.org/licenses/LICENSE-2.0"},"modified":"否"},
+						{"name":{"libName":"gson","href":"https://github.com/google/gson"},"licence":{"name":"Apache v2.0","href":"http://www.apache.org/licenses/LICENSE-2.0"},"modified":"否"},
+						{"name":{"libName":"zxing","href":"https://github.com/zxing/zxing"},"licence":{"name":"Apache v2.0","href":"http://www.apache.org/licenses/LICENSE-2.0"},"modified":"否"},
+						{"name":{"libName":"BaseRecyclerViewAdapterHelper","href":"https://github.com/CymChad/BaseRecyclerViewAdapterHelper"},"licence":{"name":"Apache v2.0","href":"http://www.apache.org/licenses/LICENSE-2.0"},"modified":"否"},
+						{"name":{"libName":"PhotoView","href":"https://github.com/chrisbanes/PhotoView"},"licence":{"name":"Apache v2.0","href":"http://www.apache.org/licenses/LICENSE-2.0"},"modified":"否"},
+						{"name":{"libName":"CircleImageView","href":"https://github.com/hdodenhof/CircleImageView"},"licence":{"name":"Apache v2.0","href":"http://www.apache.org/licenses/LICENSE-2.0"},"modified":"否"},
+						{"name":{"libName":"uCrop","href":"https://github.com/Yalantis/uCrop"},"licence":{"name":"Apache v2.0","href":"http://www.apache.org/licenses/LICENSE-2.0"},"modified":"否"},
+						{"name":{"libName":"banner","href":"https://github.com/youth5201314/banner"},"licence":{"name":"Apache v2.0","href":"http://www.apache.org/licenses/LICENSE-2.0"},"modified":"否"},
+						{"name":{"libName":"MagicIndicator","href":"https://github.com/hackware1993/MagicIndicator"},"licence":{"name":"MIT License","href":"https://mit-license.org/"},"modified":"否"}	,
+						{"name":{"libName":"DanmakuFlameMaster","href":"https://github.com/Bilibili/DanmakuFlameMaster"},"licence":{"name":"Apache v2.0","href":"http://www.apache.org/licenses/LICENSE-2.0"},"modified":"否"}
+
+					] //列表信息数据
+				}
+			});
+		</script>
+	</body>
+
+</html>

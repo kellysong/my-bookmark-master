@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+    android:color="#A6A6A6"><!-- 点击出现的水波纹的颜色 -->
+    <!--此处item就是没有点击时候的背景,不能使用透明色，否则无效，item不加就是无界水波纹-->
+    <!--<item>-->
+        <!--<shape xmlns:android="http://schemas.android.com/apk/res/android">-->
+            <!--<solid android:color="@color/nb.read.menu.bg" />-->
+        <!--</shape>-->
+    <!--</item>-->
+
+</ripple>

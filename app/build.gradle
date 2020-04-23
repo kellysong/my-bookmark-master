@@ -1,0 +1,325 @@
+apply plugin: 'com.android.application'
+apply plugin: 'org.greenrobot.greendao' // apply plugin
+apply plugin: 'com.mob.sdk'
+apply plugin: 'kotlin-android'//引入kotlin
+apply plugin: 'kotlin-android-extensions'//简化fid
+
+def releaseApkName = "bookmark_release.apk"
+/**
+ * 对发布成功的apk进行备份
+ */
+final def TARGET_APP_RELEASE_DIR = 'D:/workspace_android/study-project/app_release/apk/'
+
+MobSDK {
+    appKey "2818f1a75f12c"
+    appSecret "80dcb4b2c4161fd00b3776bc0d180d40"
+    ShareSDK {
+//        version '3.2.1.2' //不支持了20190826，依赖下载出错
+        version '3.6.6'
+
+        gui false//不添加OnekeyShare，自定义
+        devInfo {
+            SinaWeibo {//新浪微博
+                appKey "568898243"
+                appSecret "38a4f8204cc784f81f9f0daaf31e02e3"
+                callbackUri "http://www.sharesdk.cn"
+                shareByAppClient false
+            }
+            Wechat {//Wechat（微信好友）
+                appId "wx4868b35061f87885"
+                appSecret "64020361b8ec4c99936c0e3999a9f249"
+                bypassApproval false
+            }
+            WechatMoments {//Wechat（微信朋友圈）
+                appId "wx4868b35061f87885"
+                appSecret "64020361b8ec4c99936c0e3999a9f249"
+                bypassApproval false
+            }
+            QQ {//QQ（QQ好友）
+                appId "100371282"
+                appKey "aed9b0303e3ed1e27bae87c33761161d"
+                shareByAppClient true
+            }
+            Alipay {//Alipay（支付宝好友）
+                appId "2015072400185895"
+            }
+        }
+    }
+}
+
+android {
+    compileSdkVersion rootProject.ext.android["compileSdkVersion"]
+    buildToolsVersion rootProject.ext.android["buildToolsVersion"]
+
+    defaultConfig {
+//        applicationId rootProject.ext.android["applicationId"]
+        minSdkVersion rootProject.ext.android["minSdkVersion"]
+        targetSdkVersion rootProject.ext.android["targetSdkVersion"]
+        versionCode rootProject.ext.android["versionCode"]
+        versionName rootProject.ext.android["versionName"]
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        ndk {
+            abiFilters "armeabi", "armeabi-v7a", "x86"
+            // 指定要ndk需要兼容的架构(这样其他依赖包里arm-v8之类的so会被过滤掉),意思是指定ndk需要兼容的架构，把除了v7a以外的兼容包都过滤掉，只剩下一个v7a的文件夹。用了这个方法之后，确实解决了问题。这就是解决方法
+        }
+        // 控制日志Log 输出打印
+        buildConfigField("boolean", "enableLog", "true")
+
+        multiDexEnabled true //规避 64K 限制
+        //必须要保证所有的flavor 都属于同一个维度
+        flavorDimensions "default"
+    }
+
+    signingConfigs {
+        release {
+            keyAlias 'songjiali'
+            keyPassword 'songjiali'
+            storeFile file('keystore/mykeystore.jks')
+            storePassword 'songjiali'
+        }
+    }
+
+    buildTypes {
+        debug {
+          /*  //不混淆
+            minifyEnabled true
+            // 移除无用的resource文件
+            shrinkResources true
+            //Zipalign优化
+            zipAlignEnabled true*/
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+        }
+
+        release {
+            //暂时不混淆，还没配置好混淆规则
+            minifyEnabled true
+            // 移除无用的resource文件
+            shrinkResources true
+            //Zipalign优化
+            zipAlignEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+
+            // 控制日志Log 输出打印
+            buildConfigField("boolean", "enableLog", "false")
+
+            applicationVariants.all { variant ->
+                variant.outputs.all { output ->
+                    def outputFile = output.outputFile
+                    if (outputFile != null && outputFile.name.endsWith('.apk')) {
+                        if ("release".equalsIgnoreCase(variant.buildType.name)) {
+                            def buildTypeName = "release"
+                            // 输出apk名称_版本_日期.apk
+                            def version = "V${versionName}"
+                            def apkName = "${variant.productFlavors[0].name}"
+
+                            def fileName = "${apkName}_${version}_${buildTypeName}_${buildTime()}.apk"
+                            if("bookmark".equalsIgnoreCase(apkName)){
+                                releaseApkName = fileName
+                                println("releaseApkName========================="+releaseApkName)
+                            }
+
+                            //output.outputFile = new File(outputFile.parent, fileName)
+                            outputFileName = fileName
+                        }
+
+                    }
+                }
+            }
+        }
+    }
+
+    dexOptions {
+        javaMaxHeapSize "4g"
+    }
+
+    //防止打release包错误
+    lintOptions {
+        checkReleaseBuilds false
+        abortOnError false
+    }
+
+
+    // 渠道配置
+    productFlavors {
+        bookmark {
+            // 每个环境应用id不同
+            applicationId "com.sjl.bookmark"
+            // 动态添加 string.xml 字段；
+            // 注意，这里是添加，在 string.xml 不能有这个字段，会重名！！！
+            resValue "string", "app_name", "Google书签"
+            // 动态修改 常量 字段
+            buildConfigField "int", "appType", '0'
+
+            // 修改 AndroidManifest.xml 里渠道变量
+            manifestPlaceholders = [
+                    CHANNEL_VALUE: "bookmark",
+                    APP_ICON: "@mipmap/ic_launcher",
+                    PACKAGE_NAME: "${applicationId}"//应用包名${PACKAGE_NAME}
+            ]
+        }
+        bookmark_test {
+            applicationId "com.sjl.bookmark.test"
+            resValue "string", "app_name", "Google书签test"
+            buildConfigField "int", "appType", '0'
+
+            manifestPlaceholders = [
+                    CHANNEL_VALUE: "bookmark_test",
+                    APP_ICON: "@mipmap/ic_launcher",
+                    PACKAGE_NAME: "${applicationId}"//应用包名${PACKAGE_NAME}
+            ]
+
+        }
+        novel_reader {
+            applicationId "com.sjl.bookmark.reader"
+            resValue "string", "app_name", "小说阅读"
+            buildConfigField "int", "appType", '1'
+
+            manifestPlaceholders = [
+                    CHANNEL_VALUE: "novel_reader",
+                    APP_ICON: "@mipmap/ic_book",
+                    PACKAGE_NAME: "${applicationId}"//应用包名${PACKAGE_NAME}
+            ]
+        }
+    }
+
+    afterEvaluate {
+        println("=====================afterEvaluate========================="+project.hasProperty("assembleBookmark"))
+//        def propertiesMap= project.getProperties()
+//        propertiesMap.each{entry ->
+//            println("键："+entry.key + "值："+entry.value)
+//        }
+        if (project.hasProperty("assembleBookmark") || project.hasProperty("assembleRelease") ) {
+            println("=====================assembleRelease.doLast.begin.=========================")
+            def dir = new File(TARGET_APP_RELEASE_DIR)
+            if (!dir.exists()) {
+                dir.mkdirs()
+            }
+
+            def f = new File(TARGET_APP_RELEASE_DIR + releaseApkName)
+            if (f.exists()) {
+                f.delete()
+            }
+
+            copy {
+                from('build/outputs/apk/bookmark/release/'+releaseApkName)
+                into(TARGET_APP_RELEASE_DIR)
+                include '*.apk'
+                exclude '**/*-unaligned.apk'
+            }
+
+            println("=====================assembleRelease.doLast success.=========================")
+        }
+    }
+}
+
+def buildTime() {
+    return new Date().format("yyyy-MM-dd", TimeZone.getTimeZone("UTC"))
+}
+
+greendao {
+    //数据库版本号，升级时进行修改,递增加1即可
+    schemaVersion 6
+    daoPackage 'com.sjl.bookmark.dao'
+    targetGenDir 'src/main/java'
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'com.android.support.test:runner:1.0.1'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+    implementation 'com.android.support:multidex:1.0.3'
+
+    //个人类库，以project的引入是为了方便修改，其它示例工程全部以maven方式引入
+    /*基础库*/
+    implementation project(':my-common-lib:base-core')
+    implementation project(':my-common-lib:base-adapter')
+
+    /*硬件相关*/
+    implementation project (':my-hardware-lib:nfcard')
+    implementation project (':my-hardware-lib:zxing')
+
+    /*今日头条屏幕适配*/
+ /*   implementation 'me.jessyan:autosize:1.1.2'*/
+    //以下是第三方库
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.4.0'
+
+
+    /*对View点击事件的Rx形式监听*/
+    implementation 'com.jakewharton.rxbinding2:rxbinding:2.1.1'
+
+
+    /*数据库orm*/
+    implementation 'org.greenrobot:greendao:3.2.2'
+    implementation 'org.greenrobot:greendao-generator:3.2.2'
+    implementation 'com.github.yuweiguocn:GreenDaoUpgradeHelper:v2.1.0'
+
+    //下面框架是用来提高开发效率
+
+    /*activity滑动关闭库*/
+    implementation 'me.imid.swipebacklayout.lib:library:1.1.0'
+
+    /*控件点击起波纹库*/
+    implementation 'com.balysv:material-ripple:1.0.2'
+
+    /*material文本编辑框*/
+    implementation 'com.rengwuxian.materialedittext:library:2.1.4'
+
+    /*下拉框库*/
+    implementation 'com.github.arcadefire:nice-spinner:1.3.1'
+
+    /*标签视图,利用该库，我们可以给视图添加上一个标签*/
+    implementation 'com.github.linger1216:labelview:v1.1.2'
+
+    /*图片裁剪框架*/
+    implementation 'com.github.yalantis:ucrop:2.2.1'
+
+    /*图片轮播框架*/
+    implementation 'com.youth.banner:banner:1.4.10'
+
+    /*jsoup网页解析工具*/
+    implementation 'org.jsoup:jsoup:1.11.2'
+
+    /*腾讯x5内核*/
+    implementation files('libs/tbs_sdk_thirdapp_v3.1.0.1034_43100_sharewithdownload_obfs_20170301_182143.jar')
+
+    // AndroidTagGroup
+    implementation 'me.gujun.android.taggroup:library:1.4@aar'
+
+    // OpenCC to convert Simp. Chinese to Trad. Chinese
+    implementation 'com.zqc.opencc.android.lib:lib-opencc-android:0.8.0@aar'
+
+    //    compile 'com.scwang.smartrefresh:SmartRefreshLayout:1.1.0-alpha-16'
+
+    //实现类似微博内容，@用户，链接高亮，@用户和链接可点击跳转，可展开和收回的TextView
+    implementation 'com.github.MZCretin:ExpandableTextView:v1.5.2'
+
+    //强大的指示器MagicIndicator https://github.com/hackware1993/MagicIndicator
+    implementation 'com.github.hackware1993:MagicIndicator:1.5.0'
+
+    /*图片预览框架*/
+    implementation project(':photoview')
+    /*加载框*/
+//    implementation project(':spots-dialog-lib')
+
+    /*指示器https://github.com/LinweiJ/ViewPagerIndicator*/
+    implementation 'com.github.LinweiJ:ViewPagerIndicator:0.1.0'
+
+    /*弹幕*/
+    implementation 'com.github.ctiao:DanmakuFlameMaster:0.9.25'
+    implementation 'com.github.ctiao:ndkbitmap-armv7a:0.9.21'
+    //引入kotlin
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+
+}
+
+repositories {
+    //lib-opencc-android需要
+    maven {
+        url 'https://dl.bintray.com/qichuan/maven/'
+    }
+}
+

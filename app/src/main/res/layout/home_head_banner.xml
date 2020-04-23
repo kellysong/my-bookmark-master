@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <!--   <com.youth.banner.Banner
+           android:id="@+id/banner_ads"
+           android:layout_width="match_parent"
+           android:layout_height="200dp" />-->
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="200dp">
+
+        <com.sjl.bookmark.widget.BannerViewPage
+            android:id="@+id/viewpager"
+            android:layout_width="wrap_content"
+            android:layout_height="200dp"
+            android:layout_gravity="center">
+
+        </com.sjl.bookmark.widget.BannerViewPage>
+
+        <com.lwj.widget.viewpagerindicator.ViewPagerIndicator
+            android:id="@+id/indicator_line"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="5dp"
+            app:vpi_default_color="#cdcdcd"
+            app:vpi_selected_color="#FF239AF5"
+            app:vpi_distance="20dp"
+            app:vpi_distanceType="BY_DISTANCE"
+            app:vpi_indicatorType="LINE"
+            app:vpi_length="14dp"
+            app:vpi_radius="3dp"
+             />
+    </RelativeLayout>
+
+</LinearLayout>

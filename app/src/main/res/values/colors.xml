@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#03A9F4</color>
+    <color name="colorPrimaryDark">#0288D1</color>
+    <color name="colorAccent">#03A9F4</color>
+    <color name="textColorPrimary">@color/white</color>
+    <color name="primary_light">#B3E5FC</color>
+
+    <color name="colorPrimaryText">#212121</color>
+    <color name="secondary_text">#757575</color>
+
+
+
+    <color name="black2">#1D1D1D</color>
+    <color name="grey">#8C8C8C</color>
+    <color name="blueStatus">#1680E2</color>
+
+
+    <!--搜索布局颜色-->
+    <color name="default_line_color">#e6e6e6</color>
+    <color name="list_item_focus">#0a000000</color>
+    <color name="white_alpha_percent_45">#73ffffff</color>
+
+    <color name="light_grey">#ffbebebe</color>
+    <color name="text_color">#7C7F89</color>
+
+    <!-- 点击出现的水波纹的颜色 -->
+    <color name="text_Grey">#cfd8dc</color>
+
+    <!-- 置顶背景色 -->
+    <color name="top_bg">#ededed</color>
+
+    <color name="item_background">#FAFAFA</color>
+    <color name="container_background">#EBEBEB</color>
+    <color name="color_b7b8bd">#b7b8bd</color>
+    <!--设置-->
+    <color name="background_color">#FFFAFAFA</color>
+
+    <!--我的快递-->
+    <color name="grey2">#9E9E9E</color>
+    <color name="gray_200">#eeeeee</color>
+    <color name="grey_300">#E0E0E0</color>
+    <color name="gray_600">#757575</color>
+    <color name="gray_700">#616161</color>
+    <color name="gray_800">#424242</color>
+    <color name="gray_900">#212121</color>
+
+    <color name="orange_700">#F57C00</color>
+    <color name="deep_orange">#FF5722</color>
+    <color name="blue">#2196F3</color>
+
+    <!--个人中心-->
+    <color name="normalText">#555555</color>
+    <color name="lineColor">#dddddd</color>
+    <color name="gray">#aaa</color>
+
+    <!--小说阅读-->
+    <color name="halfColorPrimary">#aa2C2C2C</color>
+    <color name="read_textColor">#3B3A38</color>
+    <color name="common_gray">#EEEEEE</color>
+    <!--通用分割线细-->
+    <color name="nb.divider.narrow">#E3E3E3</color>
+    <!--通用分割线粗-->
+    <color name="nb.divider.wide">@color/light_white</color>
+
+    <!--通用一级标题的颜色-->
+    <color name="nb.text.common_h1">#212121</color>
+    <!--通用二级标题的颜色-->
+    <color name="nb.text.common_h2">#727272</color>
+    <!--通用三级标题的颜色-->
+    <color name="nb.text.common_h3">#B2B2B2</color>
+    <!--button-->
+    <color name="nb.widget.button.normal">@color/white</color>
+    <color name="nb.widget.button.selected">#E3E3E3</color>
+
+    <color name="nb.read.menu.bg">#191919</color>
+    <color name="nb.read.menu.text">#CBCBCB</color>
+    <color name="nb.read.bar.translucent">#88000000</color>
+
+    <!--list-->
+    <color name="light_white">#EEEEEE</color>
+    <color name="light_coffee">#A58D5E</color>
+    <color name="light_blue">#039BE5</color>
+
+    <color name="nb.divider.common">#727272</color>
+    <color name="nb.divider.dash">@color/light_white</color>
+
+    <!--read-->
+    <color name="nb.read.bg_1">#CEC29C</color>
+    <color name="nb.read.bg_2">#CCEBCC</color>
+    <color name="nb.read.bg_3">#AAAAAA</color>
+    <color name="nb.read.bg_4">#D1CEC5</color>
+    <color name="nb.read.bg_5">#001C27</color>
+    <color name="nb.read.bg_6">#DDCEC29C</color>
+    <color name="nb.read.font_1">#2C2C2C</color>
+    <color name="nb.read.font_2">#2F332D</color>
+    <color name="nb.read.font_3">#92918C</color>
+    <color name="nb.read.font_4">#383429</color>
+    <color name="nb.read.font_5">#627176</color>
+    <color name="nb.read.bg.night">#000000</color>
+    <color name="nb.read.font_night">#99ffffff</color>
+    <color name="light_red">#EC4A48</color>
+    <color name="light_translucent">#23000000</color>
+
+    <color name="update_theme_color">#FFFFAC5D</color>
+    <color name="text_main">#4282f4</color>
+    <color name="text_accent">#f86734</color>
+
+
+</resources>

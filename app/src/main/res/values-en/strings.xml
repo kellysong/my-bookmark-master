@@ -1,0 +1,113 @@
+<resources>
+    <string name="app_name">Google Bookmark</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <!--通用-->
+    <string name="loading">Loading…</string>
+    <string name="no_load_more">No more data</string>
+    <string name="text_add">Add</string>
+    <string name="text_detail">Detail</string>
+    <string name="title_note">Note</string>
+
+    <!--wifi密码查看-->
+    <string name="iten_name_hint">Name：</string>
+    <string name="item_pasword_hint">Password：</string>
+    <string name="copy_success">Password copy success</string>
+    <string name="not_root_hint">Please get root permission...</string>
+    <string name="not_root_hint_txt">Please make sure that this program has obtained Root authority. If there is no Root authority, please download the third-party tool for Root, and KingRoot is recommended!</string>
+    <string name="empty_password">Empty password</string>
+
+    <!--手势密码-->
+    <string name="finger_press">Loosen your fingers when you\'re done</string>
+    <string name="finger_up_first_error">Connect at least 4 points, please try again</string>
+    <string name="finger_up_first_success">Please draw an unlock pattern at this time</string>
+    <string name="finger_up_second_error">Inconsistent with last input, please try again</string>
+    <string name="finger_up_second_success">Draw  success</string>
+    <string name="check_error">Password error. Please try again</string>
+    <!-- 密码锁-->
+    <string name="lockscreen_access_pattern_start">"Draw an unlock pattern"</string>
+    <string name="lockscreen_access_pattern_cleared">"Pattern Ereased"</string>
+    <string name="lockscreen_access_pattern_cell_added">"The cell has been added"</string>
+    <string name="lockscreen_access_pattern_detected">"Pattern Saved"</string>
+
+    <!--关于-->
+    <string name="about_msg">This application is based on MVP pattern, using a variety of mainstream frameworks, has great learning significance, and functional and practical.
+       \nThe main open source libraries used：RxJava2、Retrofit2、Butterknife、Greendao、Glide,etc。
+    </string>
+    <string name="str_copyright">Copyright \u00a9  2018-%1$s Kelly. All Rights Reserved</string>
+    <string name="text_author">Author：</string>
+
+    <!--中英对照-->
+    <!--主页底部tab-->
+    <string name="bottom_tab_home">Home</string>
+    <string name="bottom_tab_category">Category</string>
+    <string name="bottom_tab_tool">Tool</string>
+    <!--侧滑抽屉-->
+    <string name="my_card">My Card</string>
+    <string name="my_collection">My Collection</string>
+    <string name="google_bookmark">Google Bookmark</string>
+    <string name="other">Other</string>
+    <string name="subject_change">Subject Change</string>
+    <string name="scan">Scan</string>
+    <string name="settings">Settings</string>
+    <!--工具-->
+    <string name="tool_account_manager">Account Manager</string>
+    <string name="tool_wifi_query">Wifi Query</string>
+    <string name="tool_balance_query">Balance Query</string>
+    <string name="tool_shenzhen_subway">ShenZhen Subway</string>
+    <string name="tool_my_express">My Express</string>
+    <string name="tool_cartoon">Cartoon</string>
+    <string name="tool_novel_read">Novel Read</string>
+    <string name="tool_zhihu_daily">ZhiHu Daily</string>
+
+    <!--设置模块-->
+    <string name="setting_basic">Basic</string>
+    <string name="setting_ap_visible">The password of the account is visible</string>
+    <string name="setting_ap">Visible Account Password</string>
+    <string name="setting_open_gesture">Open Gesture Password</string>
+    <string name="setting_gesture_pwd">Setting Gesture Password</string>
+    <string name="setting_update_gesture_pwd">Update Gesture Password</string>
+    <string name="setting_change_language">Change Language</string>
+    <string name="setting_change_subject">Change Subject</string>
+    <string name="setting_update_bookmark">Update Bookmark</string>
+    <string name="setting_backup_sync_collection">Backup&amp;Sync Collection</string>
+    <string name="setting_clear_browse_history">Clear Browse History</string>
+    <string name="setting_clear_summary">Clear all article browsing history</string>
+    <string name="setting_product_information">Product Information</string>
+    <string name="setting_copyright_information">Copyright Information</string>
+    <string name="setting_check_update">Check Update</string>
+    <string name="setting_share_application">Share Application</string>
+    <string name="setting_about">About</string>
+    <string name="setting_sync">Sync Setting</string>
+    <string name="setting_backup_recover">Backup&amp;Recover</string>
+    <string name="setting_sync_now">Sync Now</string>
+    <string name="setting_auto_backup">Auto Backup</string>
+    <string name="setting_auto_backup_summary">Smart local backup after entering the application</string>
+    <string name="setting_local_backup">Local Backup</string>
+    <string name="setting_local_recover">Local Recover</string>
+    <!--页面标题-->
+    <string name="title_about">@string/setting_about</string>
+    <string name="title_setting">Setting</string>
+    <string name="title_setting_gesture_pwd">@string/setting_gesture_pwd</string>
+    <string name="title_change_subject">@string/setting_change_subject</string>
+    <string name="title_backup_sync">Backup&amp;Sync</string>
+    <string name="title_express_query">Express Query</string>
+    <string name="title_history_record">History Record</string>
+    <string name="title_choose_express_company">Choose Express Company</string>
+    <string name="title_book_import">Book Import</string>
+    <string name="title_read_setting">Read Setting</string>
+    <string name="title_book_comment">Book Comment</string>
+    <string name="title_book_detail">Book Detail</string>
+    <string name="title_signature">Signature</string>
+    <string name="title_search_result">Search Result</string>
+
+    <!--下拉菜单-->
+    <string name="menu_share">Share Within Page</string>
+    <string name="menu_favorite">Add tp Favorites</string>
+    <string name="menu_copy_link">Copy URL</string>
+    <string name="menu_open_with_browse">Open with Browser</string>
+    <string name="menu_refresh">Refresh</string>
+
+
+</resources>

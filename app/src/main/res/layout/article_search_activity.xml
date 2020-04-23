@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <!--搜索公共头部-->
+    <include layout="@layout/head_search_view" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="5px">
+
+        <!--空布局-->
+        <include layout="@layout/empty_view" />
+
+        <ScrollView
+            android:id="@+id/sv_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <!--热门搜索-->
+                <LinearLayout
+                    android:id="@+id/ll_hot_key"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15px"
+                    android:layout_marginRight="15px"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="热门搜索"
+                        android:textSize="@dimen/micro"
+                        android:textStyle="bold" />
+
+                    <com.sjl.core.widget.FlowLayout
+                        android:id="@+id/layout_hot_key"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="30px" />
+                </LinearLayout>
+
+                <!--历史搜索-->
+                <LinearLayout
+                    android:id="@+id/search_history_ll"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15px"
+                    android:layout_marginRight="15px"
+                    android:layout_below="@id/ll_hot_key"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:id="@+id/contentTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="历史搜索"
+                        android:layout_marginBottom="5dp"
+                        android:textSize="@dimen/micro"
+                        android:textStyle="bold" />
+
+                    <com.sjl.core.widget.listview.NoScrollListView
+                        android:id="@+id/search_history_lv"
+                        style="@style/common_list"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:divider="@color/default_line_color"
+                        android:dividerHeight="0.5dp"
+                        android:listSelector="@drawable/list_item_selector">
+
+                    </com.sjl.core.widget.listview.NoScrollListView>
+
+                    <Button
+                        android:id="@+id/clear_history_btn"
+                        android:layout_width="210dp"
+                        android:layout_height="38dp"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginBottom="8dp"
+                        android:background="@drawable/round_btn_selector"
+                        android:text="清除历史搜索记录"
+                        android:textSize="@dimen/small" />
+                </LinearLayout>
+            </LinearLayout>
+        </ScrollView>
+
+
+        <!--搜索结果显示区域-->
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone" />
+    </RelativeLayout>
+
+
+</LinearLayout>

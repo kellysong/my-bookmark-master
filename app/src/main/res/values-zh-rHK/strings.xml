@@ -1,0 +1,196 @@
+<resources>
+    <!--
+        <string name="app_name">Google書籤</string>
+    -->
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <!--通用-->
+    <string name="loading">加載中…</string>
+    <string name="no_load_more">沒有更多數據了</string>
+    <string name="text_add">添加</string>
+    <string name="text_detail">詳情</string>
+
+    <!--wifi密碼查看-->
+    <string name="iten_name_hint">名稱：</string>
+    <string name="item_pasword_hint">密碼：</string>
+    <string name="copy_success">密碼複製成功</string>
+    <string name="not_root_hint">請先獲取Root權限...</string>
+    <string name="not_root_hint_txt">請確保本程序已獲取Root權限，若沒有Root權限，請下載第三方工具進行Root,推薦使用KingRoot!</string>
+    <string name="empty_password">無密碼</string>
+
+    <!--手勢密碼-->
+    <string name="finger_press">完成後鬆開手指</string>
+    <string name="finger_up_first_error">至少連接4個點，請重試</string>
+    <string name="finger_up_first_success">請在次繪製解鎖圖案</string>
+    <string name="finger_up_second_error">與上次輸入不一致，請重試</string>
+    <string name="finger_up_second_success">繪製成功</string>
+    <string name="check_error">密碼錯誤，請重試</string>
+    <!-- 密碼鎖-->
+    <string name="lockscreen_access_pattern_start">"Draw an unlock pattern"</string>
+    <string name="lockscreen_access_pattern_cleared">"Pattern Ereased"</string>
+    <string name="lockscreen_access_pattern_cell_added">"已添加單元格"</string>
+    <string name="lockscreen_access_pattern_detected">"Pattern Saved"</string>
+
+
+    <string name="share_title">分享</string>
+    <string name="share_article_url">%1$s分享【%2$s】：%3$s</string>
+    <string name="share_type_url">%1$s分享【%2$s】專題：http://www.wanandroid.com/article/list/0?cid=%3$d</string>
+
+    <string name="copy_link_to_clipboard">已複製到剪貼板</string>
+    <string name="copy_link">複製鏈接</string>
+    <string name="version">1.6</string>
+    <!--關於-->
+    <string name="about_msg">此應用是基於MVP模式實現的，使用了多種主流框架，具有很大的學習意義，且功能實用。
+    n主要用到的開源庫：RxJava2、Retrofit2、Butterknife、Greendao、Glide等。
+    </string>
+    <string name="str_copyright">Copyright u00a9  2018-%1$s Kelly. All Rights Reserved</string>
+    <string name="text_author">作者：</string>
+
+    <!--我的快遞-->
+    <string name="uncheck">在途中</string>
+    <string name="ischeck">已簽收</string>
+    <string name="input_post_id">請輸入或掃描運單號</string>
+    <string name="no_history">暫時沒有記錄</string>
+    <string name="tips">溫馨提示</string>
+    <string name="sure">確定</string>
+    <string name="cancel">取消</string>
+    <string name="sure_delete_history">您要刪除該條記錄嗎？</string>
+    <!--個人中心-->
+    <string name="personality">這傢伙很懶,什麼都沒有留下…</string>
+
+
+    <!--小說閱讀-->
+    <!--BookShelf-->
+    <string name="nb.bookshelf.book_not_exist">文件不存在或者內容為空,是否刪除?</string>
+    <!--search-->
+    <string name="nb.search.book.brief">%1$d人在追 | %2$s讀者留存 | %3$s著</string>
+
+    <!--常用-->
+    <string name="nb.common.tip">提示</string>
+    <string name="nb.common.sure">確定</string>
+    <string name="nb.common.cancel">取消</string>
+    <!--mode-->
+    <string name="nb.mode.night">夜間</string>
+    <string name="nb.mode.morning">日間</string>
+
+    <!--read-->
+    <string name="nb.read.comment">書評</string>
+    <string name="nb.read.brief">簡介</string>
+    <string name="nb.read.setting">設置</string>
+    <string name="nb.read.download">緩存</string>'
+    <string name="nb.read.category">目錄</string>
+    <string name="nb.read.no_chapter">第 %1$d 章(%2$d)</string>
+
+    <!--OpenCC-->
+    <string-array name="conversion_type_array">
+        <item>不轉換</item>
+        <item>台灣正體到簡體(大陸常用詞彙)</item>
+        <item>簡體到香港繁體</item>
+        <item>簡體到繁體</item>
+        <item>簡體到台灣正體</item>
+        <item>簡體到繁體(台灣常用詞彙)</item>
+        <item>繁體到香港繁體</item>
+        <item>繁體到簡體</item>
+        <item>繁體到台灣正體</item>
+        <item>台灣正體到簡體</item>
+        <item>香港繁體到簡體</item>
+    </string-array>
+
+    <!--book_detail -->
+    <string name="nb.book.type">[%1$s]</string>
+    <string name="nb.book.recommend">%1$d 人推薦</string>
+    <!-- 是XSL中的-->
+    <string name="nb.book.message">%1$d人在追 |  %2$s%%讀者留存</string>
+    <string name="nb.book.word">| %1$d 萬字</string>
+
+    <string name="nb.book_detail.hot_comment">熱門書評</string>
+    <string name="nb.book_detail.community">%1$s的社區</string>
+    <string name="nb.book_detail.posts_count">共有%1$d個帖子</string>
+    <string name="nb.book_detail.recommend_book_list">喜歡這本書的也喜歡</string>
+    <string name="nb.book_detail.chase_update">追更</string>
+    <string name="nb.book_detail.give_up">放棄</string>
+    <string name="nb.book_detail.start_read">開始閱讀</string>
+
+    <string name="nb.fragment.book_list.message">共%1$d本書 |  %2$d人收藏</string>
+    <string name="nb.user.lv"> lv.%1$d</string>
+
+
+    <!--file system-->
+    <string name="nb.file.sub_count">%1$d 項</string>
+    <string name="nb.file.path">存儲卡:%1$s</string>
+    <string name="nb.file.add_shelf">加入書架</string>
+    <string name="nb.file.add_shelves">加入書架(%1$d)</string>
+    <string name="nb.file.add_succeed">成功添加%1$d本書</string>
+
+
+    <!--中英對照-->
+    <!--主頁底部tab-->
+    <string name="bottom_tab_home">首頁</string>
+    <string name="bottom_tab_category">分類</string>
+    <string name="bottom_tab_tool">工具</string>
+    <!--側滑抽屜-->
+    <string name="my_card">我的名片</string>
+    <string name="my_collection">我的收藏</string>
+    <string name="google_bookmark">Google書籤</string>
+    <string name="other">其它</string>
+    <string name="subject_change">主題更換</string>
+    <string name="scan">掃一掃</string>
+    <string name="settings">設置</string>
+    <!--工具-->
+    <string name="tool_account_manager">賬號密碼管理</string>
+    <string name="tool_wifi_query">wifi密碼查看</string>
+    <string name="tool_balance_query">普卡餘額查詢</string>
+    <string name="tool_shenzhen_subway">深圳地鐵站點</string>
+    <string name="tool_my_express">我的快遞</string>
+    <string name="tool_cartoon">漫畫看看</string>
+    <string name="tool_novel_read">小說閱讀</string>
+    <string name="tool_zhihu_daily">知乎日報</string>
+    <!--設置模塊-->
+    <string name="setting_basic">基本設置</string>
+    <string name="setting_ap_visible">打開即可顯示賬號的密碼</string>
+    <string name="setting_ap">賬號的密碼可見</string>
+    <string name="setting_open_gesture">打開手勢密碼</string>
+    <string name="setting_gesture_pwd">設置手勢密碼</string>
+    <string name="setting_update_gesture_pwd">修改手勢密碼</string>
+    <string name="setting_change_language">更換語言</string>
+    <string name="setting_change_subject">更換主題</string>
+    <string name="setting_update_bookmark">更新書籤</string>
+    <string name="setting_backup_sync_collection">備份與同步收藏</string>
+    <string name="setting_clear_browse_history">清除瀏覽記錄</string>
+    <string name="setting_clear_summary">清除所有文章瀏覽記錄</string>
+    <string name="setting_product_information">產品信息</string>
+    <string name="setting_copyright_information">版權信息</string>
+    <string name="setting_check_update">檢查更新</string>
+    <string name="setting_share_application">分享應用</string>
+    <string name="setting_about">關於</string>
+    <string name="setting_sync">同步設置</string>
+    <string name="setting_backup_recover">備份與恢復</string>
+    <string name="setting_sync_now">立即同步</string>
+    <string name="setting_auto_backup">自動備份</string>
+    <string name="setting_auto_backup_summary">進入應用後智能本地備份</string>
+    <string name="setting_local_backup">本地備份</string>
+    <string name="setting_local_recover">本地恢復</string>
+    <!--頁面標題-->
+    <string name="title_about">標題</string>
+    <string name="title_setting">設置</string>
+    <string name="title_setting_gesture_pwd">設置手勢密碼</string>
+    <string name="title_change_subject">更換主題</string>
+    <string name="title_backup_sync">備份與同步</string>
+    <string name="title_note">筆記</string>
+    <string name="title_express_query">快遞查詢</string>
+    <string name="title_history_record">歷史記錄</string>
+    <string name="title_choose_express_company">選中快遞公司</string>
+    <string name="title_book_import">書籍導入</string>
+    <string name="title_read_setting">閱讀設置</string>
+    <string name="title_book_comment">書評</string>
+    <string name="title_book_detail">書籍詳情</string>
+    <string name="title_signature">個性簽名</string>
+    <string name="title_search_result">搜索結果</string>
+    <string name="menu_share">分享</string>
+    <string name="menu_favorite">收藏</string>
+    <string name="menu_copy_link">複製鏈接</string>
+    <string name="menu_open_with_browse">在瀏覽器打開</string>
+    <string name="menu_refresh">刷新</string>
+
+</resources>

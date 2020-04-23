@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center">
+
+    <!--由于图片是正方形的故设置fit_xy，否则显示不全-->
+    <com.youth.banner.Banner
+        android:id="@+id/banner_ads"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:background="@color/gray_600"
+        app:image_scale_type="center_crop"
+        />
+</LinearLayout>

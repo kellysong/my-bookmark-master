@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="none">
+        <item
+            android:id="@+id/nav_business_card"
+            android:icon="@mipmap/menu_business_card"
+            android:title="@string/my_card" />
+        <item
+            android:id="@+id/nav_my_collection"
+            android:icon="@mipmap/menu_my_collection"
+            android:title="@string/my_collection" />
+        <item
+            android:id="@+id/nav_bookmark"
+            android:icon="@mipmap/menu_bookmark"
+            android:title="@string/google_bookmark" />
+
+    </group>
+
+    <item android:title="@string/other">
+        <menu>
+            <item
+                android:id="@+id/nav_skin"
+                android:icon="@mipmap/menu_skin"
+                android:title="@string/subject_change" />
+            <item
+                android:id="@+id/nav_scan"
+                android:icon="@mipmap/menu_scan"
+                android:title="@string/scan" />
+            <item
+                android:id="@+id/nav_settings"
+                android:icon="@mipmap/menu_settings"
+                android:title="@string/settings" />
+        </menu>
+    </item>
+
+</menu>

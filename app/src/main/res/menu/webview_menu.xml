@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/nav_share"
+        android:title="@string/menu_share"/>
+
+    <item
+        android:id="@+id/nav_collect"
+        android:title="@string/menu_favorite"/>
+    <item
+        android:id="@+id/nav_copy_href"
+        android:title="@string/menu_copy_link"/>
+    <item
+        android:id="@+id/nav_open_on_browser"
+        android:title="@string/menu_open_with_browse"/>
+    <item
+        android:id="@+id/nav_refresh"
+        android:title="@string/menu_refresh"/>
+
+</menu>

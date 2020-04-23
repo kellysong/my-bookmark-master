@@ -1,0 +1,18 @@
+<resources>
+
+    <style name="CommonNoActionBar" parent="AppTheme">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <!--是否有遮盖-->
+        <item name="android:windowContentOverlay">@null</item>
+        <!--
+        滑动关闭时透明在targetsdkversion>=26的时候，在Android8.0手机上应该都有异常，但实际上targetsdkversion=26的时候是OK的，只有升级到27及以上才会崩，
+-->
+<!--
+        <item name="android:windowIsTranslucent">true</item>
+-->
+    </style>
+
+
+
+</resources>

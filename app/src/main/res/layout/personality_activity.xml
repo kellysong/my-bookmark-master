@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:toolbar="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ll_content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <include layout="@layout/toolbar_default"></include>
+
+
+    <EditText
+        android:id="@+id/et_personality"
+        android:layout_width="match_parent"
+        android:layout_height="110dp"
+        android:layout_margin="8dp"
+        android:background="@android:color/white"
+        android:gravity="start"
+        android:hint="留下您的签名..."
+        android:maxLength="120"
+        android:padding="3dp"
+        android:textColorHint="@color/lineColor"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/tv_msg"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="14sp"
+        android:gravity="right"
+        android:padding="5dp"
+        android:text="还可以输入120字"
+        android:textColor="@color/gray" />
+
+    <Button
+        android:id="@+id/btn_commit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/btn_primary_color_bg"
+        android:text="提交"
+        android:textColor="@android:color/white" />
+</LinearLayout>

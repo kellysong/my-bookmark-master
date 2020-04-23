@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    tools:context=".ui.activity.CreateLockActivity">
+
+    <include layout="@layout/toolbar_default"></include>
+
+    <com.sjl.core.widget.imageview.CircleImageView
+        android:id="@+id/iv_head_img"
+        android:layout_width="72dp"
+        android:layout_height="72dp"
+        android:layout_marginTop="@dimen/nav_header_vertical_spacing"
+        android:src="@mipmap/ic_launcher"
+        app:border_color="@android:color/transparent"
+        app:border_width="1dp" />
+
+    <TextView
+        android:id="@+id/iv_warn_msg"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:gravity="center"
+        android:text=""
+        android:textColor="@android:color/holo_red_light"
+        android:textSize="14sp" />
+
+    <com.sjl.bookmark.widget.LockPatternView
+        android:id="@+id/lockPatternView"
+        android:layout_width="280dp"
+        android:layout_height="280dp"
+        android:layout_marginTop="30dp" />
+
+
+</LinearLayout>
