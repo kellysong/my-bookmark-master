@@ -8,7 +8,7 @@ def releaseApkName = "bookmark_release.apk"
 /**
  * 对发布成功的apk进行备份
  */
-final def TARGET_APP_RELEASE_DIR = 'D:/workspace_android/study-project/app_release/apk/'
+final def TARGET_APP_RELEASE_DIR = 'D:/workspace_android/app_release/bookmark/'
 
 MobSDK {
     appKey "2818f1a75f12c"

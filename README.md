@@ -19,7 +19,12 @@
 
 # apk下载
 
+[更新日志](Google书签app更新说明.md)
+
 # 效果图
+
+
+
 
 # License
 
