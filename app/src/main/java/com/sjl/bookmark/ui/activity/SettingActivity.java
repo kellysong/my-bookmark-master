@@ -1,13 +1,12 @@
 package com.sjl.bookmark.ui.activity;
 
-import android.support.v7.widget.Toolbar;
-
 import com.sjl.bookmark.R;
 import com.sjl.bookmark.kotlin.language.I18nUtils;
 import com.sjl.bookmark.ui.base.extend.BaseSwipeBackActivity;
 import com.sjl.bookmark.ui.fragment.SettingFragment;
 import com.sjl.core.net.RxLifecycleUtils;
 
+import androidx.appcompat.widget.Toolbar;
 import butterknife.BindView;
 
 /**

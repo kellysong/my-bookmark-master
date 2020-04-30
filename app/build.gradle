@@ -57,7 +57,7 @@ android {
         targetSdkVersion rootProject.ext.android["targetSdkVersion"]
         versionCode rootProject.ext.android["versionCode"]
         versionName rootProject.ext.android["versionName"]
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         ndk {
             abiFilters "armeabi", "armeabi-v7a", "x86"
@@ -82,7 +82,7 @@ android {
 
     buildTypes {
         debug {
-          /*  //不混淆
+          /* //不混淆
             minifyEnabled true
             // 移除无用的resource文件
             shrinkResources true
@@ -213,6 +213,11 @@ android {
             println("=====================assembleRelease.doLast success.=========================")
         }
     }
+    //必须加,不加启动报错,由于部分依赖库需要java8
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
 def buildTime() {
@@ -229,9 +234,9 @@ greendao {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.1'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
-    implementation 'com.android.support:multidex:1.0.3'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0'
+    implementation 'androidx.multidex:multidex:2.0.0'
 
     //个人类库，以project的引入是为了方便修改，其它示例工程全部以maven方式引入
     /*基础库*/
@@ -245,7 +250,7 @@ dependencies {
     /*今日头条屏幕适配*/
  /*   implementation 'me.jessyan:autosize:1.1.2'*/
     //以下是第三方库
-    annotationProcessor 'com.jakewharton:butterknife-compiler:8.4.0'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.1'
 
 
     /*对View点击事件的Rx形式监听*/

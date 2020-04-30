@@ -5,10 +5,10 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.preference.Preference;
-import android.support.design.widget.Snackbar;
 import android.text.TextUtils;
 import android.widget.Toast;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.sjl.bookmark.R;
 import com.sjl.bookmark.app.AppConstant;
 import com.sjl.bookmark.app.MyApplication;
@@ -16,8 +16,8 @@ import com.sjl.bookmark.ui.activity.ChangeSkinActivity;
 import com.sjl.bookmark.ui.contract.SettingContract;
 import com.sjl.bookmark.ui.presenter.SettingPresenter;
 import com.sjl.core.mvp.BasePreferenceFragment;
-import com.sjl.core.util.log.LogUtils;
 import com.sjl.core.util.PreferencesHelper;
+import com.sjl.core.util.log.LogUtils;
 import com.sjl.core.widget.materialpreference.SwitchPreference;
 
 /**

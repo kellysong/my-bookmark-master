@@ -1,6 +1,5 @@
 package com.sjl.bookmark.ui.adapter;
 
-import android.support.annotation.Nullable;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -10,10 +9,12 @@ import com.chad.library.adapter.base.BaseViewHolder;
 import com.ctetin.expandabletextviewlibrary.ExpandableTextView;
 import com.sjl.bookmark.R;
 import com.sjl.bookmark.entity.zhihu.NewsCommentDto;
-import com.sjl.core.util.datetime.TimeUtils;
 import com.sjl.core.net.GlideCircleTransform;
+import com.sjl.core.util.datetime.TimeUtils;
 
 import java.util.List;
+
+import androidx.annotation.Nullable;
 
 /**
  * 日报评论适配器
@@ -39,7 +40,7 @@ public class NewsCommentAdapter extends BaseQuickAdapter<NewsCommentDto.Comment,
                 .load(item.getAvatar())
                 .placeholder(R.mipmap.ic_default_portrait)
                 .error(R.mipmap.ic_load_error)
-                .transform(new GlideCircleTransform(mContext))
+                .transform(new GlideCircleTransform())
                 .into((ImageView) helper.getView(R.id.user_avatar));
         //用户
         TextView userName = helper.getView(R.id.user_name);

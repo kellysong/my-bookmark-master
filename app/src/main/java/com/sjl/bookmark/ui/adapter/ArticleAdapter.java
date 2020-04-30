@@ -1,7 +1,5 @@
 package com.sjl.bookmark.ui.adapter;
 
-import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
 import android.text.Html;
 import android.text.TextUtils;
 
@@ -13,6 +11,9 @@ import com.sjl.bookmark.entity.Article;
 
 import java.util.List;
 import java.util.Map;
+
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 
 /**
  * 玩安卓首页和分类列表适配器

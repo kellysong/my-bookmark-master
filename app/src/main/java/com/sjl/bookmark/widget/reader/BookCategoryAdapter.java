@@ -2,7 +2,7 @@ package com.sjl.bookmark.widget.reader;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.support.v4.content.ContextCompat;
+import androidx.core.content.ContextCompat;
 import android.widget.TextView;
 
 import com.sjl.bookmark.R;

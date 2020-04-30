@@ -4,9 +4,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Parcelable;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.Selection;
 import android.text.Spannable;
@@ -35,14 +32,17 @@ import com.sjl.bookmark.ui.adapter.ArticleAdapter;
 import com.sjl.bookmark.ui.contract.ArticleSearchContract;
 import com.sjl.bookmark.ui.presenter.ArticleSearchPresenter;
 import com.sjl.core.mvp.BaseActivity;
-import com.sjl.core.util.log.LogUtils;
 import com.sjl.core.util.SnackbarUtils;
 import com.sjl.core.util.ViewUtils;
+import com.sjl.core.util.log.LogUtils;
 import com.sjl.core.widget.FlowLayout;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.appcompat.app.AlertDialog;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 
 /**

@@ -2,7 +2,7 @@ package com.sjl.bookmark.dao.db;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.sjl.bookmark.dao.DaoMaster;
 import com.sjl.bookmark.dao.DaoSession;

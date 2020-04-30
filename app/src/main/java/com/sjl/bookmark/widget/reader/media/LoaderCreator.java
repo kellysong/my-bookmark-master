@@ -2,7 +2,7 @@ package com.sjl.bookmark.widget.reader.media;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.content.CursorLoader;
+import androidx.loader.content.CursorLoader;
 
 /**
  *

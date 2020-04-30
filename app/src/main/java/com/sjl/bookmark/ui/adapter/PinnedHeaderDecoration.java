@@ -4,7 +4,7 @@ import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.Region;
 import android.os.Build;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;

@@ -1,7 +1,7 @@
 package com.sjl.bookmark.widget;
 
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * RecyclerView跳转到指定位置的三种方式

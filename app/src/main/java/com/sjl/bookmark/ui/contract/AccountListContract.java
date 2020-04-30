@@ -1,7 +1,7 @@
 package com.sjl.bookmark.ui.contract;
 
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.sjl.bookmark.entity.table.Account;
 import com.sjl.core.entity.EventBusDto;

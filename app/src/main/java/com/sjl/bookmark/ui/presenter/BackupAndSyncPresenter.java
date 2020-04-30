@@ -92,8 +92,8 @@ public class BackupAndSyncPresenter extends BackupAndSyncContract.Presenter {
                 .subscribe(new Consumer<ResponseDto<Object>>() {
                     @Override
                     public void accept(ResponseDto<Object> dataResponse) throws Exception {
-                        LogUtils.i("同步收藏响应结果码：" + dataResponse.getResultCode());
-                        if (dataResponse.getResultCode() == 0) {
+                        LogUtils.i("同步收藏响应结果码：" + dataResponse.getCode());
+                        if (dataResponse.getCode() == 0) {
                             mView.hideLoading("同步收藏成功");
                         } else {
                             mView.hideLoading("已同步至最新，无须同步");

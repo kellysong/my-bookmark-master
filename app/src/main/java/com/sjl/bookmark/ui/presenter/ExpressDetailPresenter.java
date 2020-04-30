@@ -1,7 +1,7 @@
 package com.sjl.bookmark.ui.presenter;
 
 import android.content.Intent;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.sjl.bookmark.api.KuaiDi100ApiService;
 import com.sjl.bookmark.app.AppConstant;

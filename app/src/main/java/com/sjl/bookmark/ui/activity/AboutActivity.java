@@ -3,7 +3,6 @@ package com.sjl.bookmark.ui.activity;
 import android.content.Intent;
 import android.graphics.Paint;
 import android.net.Uri;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.TextView;
 
@@ -19,6 +18,7 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.Calendar;
 
+import androidx.appcompat.widget.Toolbar;
 import butterknife.BindView;
 import butterknife.OnClick;
 

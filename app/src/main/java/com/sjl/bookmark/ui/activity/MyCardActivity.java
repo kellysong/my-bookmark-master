@@ -4,26 +4,25 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
-import android.support.v4.content.FileProvider;
-import android.support.v7.widget.CardView;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 
-import com.google.zxing.WriterException;
 import com.renny.zxing.utils.QRCodeFactory;
 import com.sjl.bookmark.BuildConfig;
 import com.sjl.bookmark.R;
 import com.sjl.bookmark.app.AppConstant;
 import com.sjl.bookmark.kotlin.language.I18nUtils;
 import com.sjl.core.mvp.BaseActivity;
-import com.sjl.core.util.log.LogUtils;
 import com.sjl.core.util.SnackbarUtils;
 import com.sjl.core.util.ViewUtils;
+import com.sjl.core.util.log.LogUtils;
 
 import java.io.File;
 
+import androidx.appcompat.widget.Toolbar;
+import androidx.cardview.widget.CardView;
+import androidx.core.content.FileProvider;
 import butterknife.BindView;
 
 /**
@@ -76,7 +75,7 @@ public class MyCardActivity extends BaseActivity implements View.OnClickListener
 
             Bitmap qrCode = QRCodeFactory.createQRCode(sb.toString(), widthAndHeight);
             imageView.setImageBitmap(qrCode);
-        } catch (WriterException e) {
+        } catch (Exception e) {
             LogUtils.e("生成二维码图片（不带图片）异常", e);
         }
 

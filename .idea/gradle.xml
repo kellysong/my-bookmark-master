@@ -10,16 +10,16 @@
         <option name="gradleHome" value="$USER_HOME$/.gradle/wrapper/dists/gradle-4.1-all/bzyivzo6n839fup2jbap0tjew/gradle-4.1" />
         <option name="modules">
           <set>
+            <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/app" />
+            <option value="$PROJECT_DIR$/photoview" />
+            <option value="$PROJECT_DIR$/spots-dialog-lib" />
             <option value="$PROJECT_DIR$/../../my-lib/my-common-lib" />
             <option value="$PROJECT_DIR$/../../my-lib/my-common-lib/base-adapter" />
             <option value="$PROJECT_DIR$/../../my-lib/my-common-lib/base-core" />
             <option value="$PROJECT_DIR$/../../my-lib/my-hardware-lib" />
             <option value="$PROJECT_DIR$/../../my-lib/my-hardware-lib/nfcard" />
             <option value="$PROJECT_DIR$/../../my-lib/my-hardware-lib/zxing" />
-            <option value="$PROJECT_DIR$" />
-            <option value="$PROJECT_DIR$/app" />
-            <option value="$PROJECT_DIR$/photoview" />
-            <option value="$PROJECT_DIR$/spots-dialog-lib" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

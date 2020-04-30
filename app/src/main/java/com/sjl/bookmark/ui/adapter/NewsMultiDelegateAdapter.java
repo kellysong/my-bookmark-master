@@ -2,8 +2,8 @@ package com.sjl.bookmark.ui.adapter;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import android.util.TypedValue;
 import android.view.View;
 

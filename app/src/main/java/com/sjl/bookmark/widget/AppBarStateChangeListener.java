@@ -1,6 +1,6 @@
 package com.sjl.bookmark.widget;
 
-import android.support.design.widget.AppBarLayout;
+import com.google.android.material.appbar.AppBarLayout;
 
 /**
  * CollapsingToolbarLayout的展开与折叠

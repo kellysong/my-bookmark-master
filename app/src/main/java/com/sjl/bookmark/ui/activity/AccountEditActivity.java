@@ -2,8 +2,8 @@ package com.sjl.bookmark.ui.activity;
 
 import android.content.DialogInterface;
 import android.graphics.Color;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;

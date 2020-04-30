@@ -1,12 +1,12 @@
 package com.sjl.bookmark.ui.base.extend;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.view.View;
 
 import com.sjl.bookmark.R;
 import com.sjl.core.mvp.BaseActivity;
 
+import androidx.annotation.Nullable;
 import cn.feng.skin.manager.loader.SkinManager;
 import cn.feng.skin.manager.statusbar.StatusBarUtil;
 import me.imid.swipebacklayout.lib.SwipeBackLayout;
@@ -32,6 +32,7 @@ public abstract class BaseSwipeBackActivity extends BaseActivity implements Swip
         mHelper = new SwipeBackActivityHelper(this);
         mHelper.onActivityCreate();
     }
+
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {

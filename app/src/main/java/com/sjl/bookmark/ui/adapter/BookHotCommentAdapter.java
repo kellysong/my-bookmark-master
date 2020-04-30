@@ -40,7 +40,7 @@ public class BookHotCommentAdapter extends CommonAdapter<HotCommentDto.HotCommen
                 .load(HttpConstant.ZHUISHU_IMG_BASE_URL + hotCommentDto.getAuthor().getAvatar())
                 .placeholder(R.mipmap.ic_default_portrait)
                 .error(R.mipmap.ic_load_error)
-                .transform(new GlideCircleTransform(getContext()))
+                .transform(new GlideCircleTransform())
                 .into(mIvPortrait);
         //作者
         holder.setText(R.id.hot_comment_tv_author, hotCommentDto.getAuthor().getNickname());

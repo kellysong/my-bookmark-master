@@ -11,7 +11,7 @@
 
     <include layout="@layout/toolbar_default" />
 
-    <android.support.design.widget.TabLayout
+    <com.google.android.material.tabs.TabLayout
         android:id="@+id/tab_tl_indicator"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -23,13 +23,13 @@
         app:tabTextColor="@color/primary_light"
         skin:enable="true" />
 
-    <android.support.v4.view.ViewPager
+    <androidx.viewpager.widget.ViewPager
         android:id="@+id/tab_vp"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1">
 
-    </android.support.v4.view.ViewPager>
+    </androidx.viewpager.widget.ViewPager>
 
     <!--文件点击按钮-->
     <RelativeLayout

@@ -3,7 +3,6 @@ package com.sjl.bookmark.app;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
-import android.support.multidex.MultiDex;
 
 import com.mob.MobSDK;
 import com.sjl.bookmark.BuildConfig;
@@ -14,6 +13,8 @@ import com.sjl.core.app.CrashHandler;
 import com.sjl.core.net.RetrofitHelper;
 import com.sjl.core.net.RetrofitLogAdapter;
 import com.sjl.core.net.RetrofitParams;
+
+import androidx.multidex.MultiDex;
 
 
 public class MyApplication extends BaseApplication {

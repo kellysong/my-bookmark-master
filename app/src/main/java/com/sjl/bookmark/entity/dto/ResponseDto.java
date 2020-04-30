@@ -11,33 +11,32 @@ import java.lang.reflect.Type;
  * @author song
  */
 public class ResponseDto<T>  {
-    private int resultCode;// 结果码
-    private String resultMsg;// 结果描述信息
-    private T resultObject; // 结果对象
+    private int code;// 结果码
+    private String msg;// 结果描述信息
+    private T data; // 结果对象
 
-
-    public int getResultCode() {
-        return resultCode;
+    public int getCode() {
+        return code;
     }
 
-    public void setResultCode(int resultCode) {
-        this.resultCode = resultCode;
+    public void setCode(int code) {
+        this.code = code;
     }
 
-    public String getResultMsg() {
-        return resultMsg;
+    public String getMsg() {
+        return msg;
     }
 
-    public void setResultMsg(String resultMsg) {
-        this.resultMsg = resultMsg;
+    public void setMsg(String msg) {
+        this.msg = msg;
     }
 
-    public T getResultObject() {
-        return resultObject;
+    public T getData() {
+        return data;
     }
 
-    public void setResultObject(T resultObject) {
-        this.resultObject = resultObject;
+    public void setData(T data) {
+        this.data = data;
     }
 
     /**
@@ -85,9 +84,9 @@ public class ResponseDto<T>  {
     @Override
     public String toString() {
         return "ResponseDto{" +
-                "resultCode=" + resultCode +
-                ", resultMsg='" + resultMsg + '\'' +
-                ", resultObject=" + resultObject +
+                "code=" + code +
+                ", msg='" + msg + '\'' +
+                ", data=" + data +
                 '}';
     }
 }

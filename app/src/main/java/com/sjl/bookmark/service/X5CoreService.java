@@ -7,7 +7,7 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import com.sjl.core.util.log.LogUtils;
 import com.tencent.smtt.sdk.QbSdk;

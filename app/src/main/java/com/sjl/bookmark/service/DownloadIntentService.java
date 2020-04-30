@@ -13,9 +13,9 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
-import android.support.annotation.Nullable;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.content.FileProvider;
+import androidx.annotation.Nullable;
+import androidx.core.app.NotificationCompat;
+import androidx.core.content.FileProvider;
 import android.widget.RemoteViews;
 
 import com.sjl.bookmark.BuildConfig;

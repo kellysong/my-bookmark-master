@@ -7,10 +7,10 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.MediaStore;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v4.content.FileProvider;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.Toolbar;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import androidx.core.content.FileProvider;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
@@ -123,7 +123,7 @@ public class PersonCenterActivity extends BaseSwipeBackActivity {
                 Glide.with(this)
                         .load(userInfo.getAvatar())
                         .placeholder(R.mipmap.default_avatar)
-                        .transform(new GlideCircleTransform(this))
+                        .transform(new GlideCircleTransform())
                         .diskCacheStrategy(DiskCacheStrategy.NONE)//磁盘缓存
                         .skipMemoryCache(true)//跳过内存缓存，否则会显示上次内存中的图片
                         .into(ivAvatar);
@@ -405,7 +405,7 @@ public class PersonCenterActivity extends BaseSwipeBackActivity {
                      */
                     Glide.with(this)
                             .load(resultUri)
-                            .transform(new GlideCircleTransform(this))
+                            .transform(new GlideCircleTransform())
                             .diskCacheStrategy(DiskCacheStrategy.NONE)//磁盘缓存
                             .skipMemoryCache(true)//跳过内存缓存，否则会显示上次内存中的图片
                             .into(ivAvatar);

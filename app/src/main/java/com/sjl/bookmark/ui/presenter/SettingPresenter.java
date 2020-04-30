@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
-import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.widget.Toast;
 
@@ -46,6 +45,7 @@ import com.sjl.core.widget.update.UpdateDialogListener;
 import java.io.File;
 import java.util.List;
 
+import androidx.appcompat.app.AlertDialog;
 import cn.sharesdk.onekeyshare.ShareSDKUtils;
 import io.reactivex.Observable;
 import io.reactivex.Observer;
@@ -232,18 +232,18 @@ public class SettingPresenter extends SettingContract.Presenter {
                     @Override
                     public void accept(ResponseDto<UpdateInfoDto> dataResponse) throws Exception {
                         LogWriter.e("检查更新响应："+dataResponse);
-                        if (dataResponse.getResultCode() == 0) {
-                            UpdateInfoDto updateInfoDto = dataResponse.getResultObject();
+                        if (dataResponse.getCode() == 0) {
+                            UpdateInfoDto updateInfoDto = dataResponse.getData();
                             if (updateInfoDto.isHasUpdate()) {//有新版本
                                 mView.hideLoading(true, "");
                                 showDialog(updateInfoDto);
                             } else {
                                 mView.hideLoading(true, "已经更新到最新版本");
                             }
-                        } else if (dataResponse.getResultCode() == -1) {
+                        } else if (dataResponse.getCode() == -1) {
                             mView.hideLoading(true, "已经更新到最新版本");
                         } else {
-                            mView.hideLoading(false, dataResponse.getResultMsg());
+                            mView.hideLoading(false, dataResponse.getMsg());
                         }
                     }
                 }, new Consumer<Throwable>() {

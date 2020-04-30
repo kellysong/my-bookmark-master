@@ -4,13 +4,14 @@
 
     xmlns:skin="http://schemas.android.com/android/skin">
 
-    <android.support.design.widget.AppBarLayout
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fitsSystemWindows="true"
         android:theme="@style/AppTheme.AppBarOverlay">
 
-        <android.support.v7.widget.Toolbar
+<!--                    app:layout_scrollFlags="scroll|enterAlways"
+-->
+        <androidx.appcompat.widget.Toolbar
             android:id="@+id/common_toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
@@ -23,7 +24,7 @@
             app:titleTextColor="@android:color/white"
             skin:enable="true" />
 
-    </android.support.design.widget.AppBarLayout>
-    -->
+    </com.google.android.material.appbar.AppBarLayout>
+
 
 </merge>

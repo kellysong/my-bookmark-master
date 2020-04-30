@@ -1,6 +1,6 @@
 package com.sjl.bookmark.entity.table;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;

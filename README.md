@@ -6,7 +6,7 @@
 2. 同种类似功能不同实现方法
 3. 常用方法封装和第三方库改造
 4. 各种类似功能的实际应用
-5. ###**能给你的项目开发带来灵感**
+5. ### **能给你的项目开发带来灵感**
 
 #功能说明
 - 实现Google浏览器收藏书签解析；
@@ -18,11 +18,26 @@
 - 其它功能：文章备份和同步、主题更换、语言更换、手势密码设置等
 
 # apk下载
+[安装包](bookmark_V3.7.0_release_2020-04-30.apk)
 
 [更新日志](Google书签app更新说明.md)
 
 # 效果图
 
+
+<img src="screenshot/img_1.png" width = "40%" /><img src="screenshot/img_2.png" width = "40%" />
+<img src="screenshot/img_3.png" width = "40%" /><img src="screenshot/img_4.png" width = "40%" />
+<img src="screenshot/img_5.png" width = "40%" /><img src="screenshot/img_6.png" width = "40%" />
+<img src="screenshot/img_7.png" width = "40%" /><img src="screenshot/img_8.png" width = "40%" />
+<img src="screenshot/img_9.png" width = "40%" /><img src="screenshot/img_10.png" width = "40%" />
+<img src="screenshot/img_11.png" width = "40%" /><img src="screenshot/img_12.png" width = "40%" />
+<img src="screenshot/img_13.png" width = "40%" /><img src="screenshot/img_14.png" width = "40%" />
+<img src="screenshot/img_15.png" width = "40%" /><img src="screenshot/img_16.png" width = "40%" />
+<img src="screenshot/img_17.png" width = "40%" /><img src="screenshot/img_18.png" width = "40%" />
+<img src="screenshot/img_19.png" width = "40%" /><img src="screenshot/img_20.png" width = "40%" />
+<img src="screenshot/img_21.png" width = "40%" /><img src="screenshot/img_22.png" width = "40%" />
+<img src="screenshot/img_23.png" width = "40%" /><img src="screenshot/img_24.png" width = "40%" />
+<img src="screenshot/img_25.png" width = "40%" />
 
 
 

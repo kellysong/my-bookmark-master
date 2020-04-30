@@ -15,7 +15,7 @@
         android:text="搜索收藏内容"/>
 
     <!--搜索结果显示区域-->
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_search_collection_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

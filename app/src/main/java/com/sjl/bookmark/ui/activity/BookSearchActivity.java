@@ -1,8 +1,5 @@
 package com.sjl.bookmark.ui.activity;
 
-import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
@@ -25,6 +22,9 @@ import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
 import java.util.List;
 
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 import me.gujun.android.taggroup.TagGroup;
 
@@ -286,10 +286,15 @@ public class BookSearchActivity extends BaseActivity<BookSearchPresenter> implem
         if (mHotTagList == null){
             return;
         }
+
         int last = mTagStart + TAG_LIMIT;
         if (mHotTagList.size() <= last) {
             mTagStart = 0;
-            last = TAG_LIMIT;
+            if (mHotTagList.size() < TAG_LIMIT){
+                last = mTagStart + mHotTagList.size();
+            }else {
+                last = mTagStart + TAG_LIMIT;
+            }
             showShortToast("没有更多数据了");
         }
         List<String> tags = mHotTagList.subList(mTagStart, last);

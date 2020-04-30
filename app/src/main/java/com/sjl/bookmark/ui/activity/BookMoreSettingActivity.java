@@ -1,7 +1,7 @@
 package com.sjl.bookmark.ui.activity;
 
-import android.support.v7.widget.SwitchCompat;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.widget.SwitchCompat;
+import androidx.appcompat.widget.Toolbar;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.AdapterView;

@@ -1,6 +1,6 @@
 package com.sjl.bookmark.dao.impl;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.sjl.bookmark.app.MyApplication;
 

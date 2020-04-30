@@ -4,10 +4,10 @@ import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -16,13 +16,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.bitmap.GlideBitmapDrawable;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.github.chrisbanes.photoview.PhotoView;
 import com.sjl.bookmark.R;
 import com.sjl.core.util.file.FileUtils;
+
+import androidx.annotation.Nullable;
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager.widget.ViewPager;
 
 /**
  * webview图片浏览
@@ -77,26 +81,29 @@ public class PhotoBrowserActivity extends Activity implements View.OnClickListen
                 if (imageUrls[position] != null && !"".equals(imageUrls[position])) {
                     final PhotoView view = new PhotoView(PhotoBrowserActivity.this);
                     view.setScaleType(ImageView.ScaleType.FIT_CENTER);
-                    Glide.with(PhotoBrowserActivity.this).load(imageUrls[position]).override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL).fitCenter().crossFade().listener(new RequestListener<String, GlideDrawable>() {
-                        @Override
-                        public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
-                            if (position == curPosition) {
-                                hideLoadingAnimation();
-                            }
-                            showErrorLoading();
-                            return false;
-                        }
+                    Glide.with(PhotoBrowserActivity.this)
+                            .load(imageUrls[position])
+                            .override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
+                            .fitCenter()
+                            .listener(new RequestListener<Drawable>() {
+                                @Override
+                                public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                                    if (position == curPosition) {
+                                        hideLoadingAnimation();
+                                    }
+                                    showErrorLoading();
+                                    return false;
+                                }
 
-                        @Override
-                        public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                            occupyOnePosition(position);
-                            if (position == curPosition) {
-                                hideLoadingAnimation();
-                            }
-                            return false;
-                        }
-                    }).into(view);
-
+                                @Override
+                                public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                                    occupyOnePosition(position);
+                                    if (position == curPosition) {
+                                        hideLoadingAnimation();
+                                    }
+                                    return false;
+                                }
+                            }).into(view);
                     container.addView(view);
                     return view;
                 }
@@ -236,7 +243,7 @@ public class PhotoBrowserActivity extends Activity implements View.OnClickListen
 //        PhotoView photoViewTemp = (PhotoView) containerTemp.getChildAt(0);
         PhotoView photoViewTemp = (PhotoView) curPage;
         if (photoViewTemp != null) {
-            GlideBitmapDrawable glideBitmapDrawable = (GlideBitmapDrawable) photoViewTemp.getDrawable();
+            BitmapDrawable glideBitmapDrawable = (BitmapDrawable ) photoViewTemp.getDrawable();
             if (glideBitmapDrawable == null) {
                 return;
             }

@@ -2,7 +2,6 @@ package com.sjl.bookmark.ui.presenter;
 
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
-import android.support.v7.app.AlertDialog;
 import android.widget.Toast;
 
 import com.sjl.bookmark.api.MyBookmarkService;
@@ -20,6 +19,7 @@ import com.sjl.core.util.log.LogUtils;
 
 import java.util.List;
 
+import androidx.appcompat.app.AlertDialog;
 import io.reactivex.functions.Consumer;
 
 /**
@@ -133,19 +133,19 @@ public class MyCollectionPresenter extends MyCollectionContract.Presenter {
                 .subscribe(new Consumer<ResponseDto<List<Collection>>>() {
                     @Override
                     public void accept(ResponseDto<List<Collection>> dataResponse) throws Exception {
-                        if (dataResponse.getResultCode() == 0) {
-                            List<Collection> collectionList = dataResponse.getResultObject();
+                        if (dataResponse.getCode() == 0) {
+                            List<Collection> collectionList = dataResponse.getData();
                             mCollectService.batchSaveCollection(collectionList);
                             LogUtils.i("收藏恢复成功，共恢复" + collectionList.size() + "条");
                             loadMyCollection();//刷新列表数据
                             progressDialog.cancel();
                             Toast.makeText(mContext, "本次恢复收藏书签" + collectionList.size() + "条", Toast.LENGTH_LONG).show();
-                        } else if (dataResponse.getResultCode() == ErrorCode.ERROR_NO_DATA) {
+                        } else if (dataResponse.getCode() == ErrorCode.ERROR_NO_DATA) {
                             progressDialog.cancel();
                             Toast.makeText(mContext, "当前没数据可以恢复", Toast.LENGTH_LONG).show();
                         } else {
                             progressDialog.cancel();
-                            Toast.makeText(mContext, "收藏恢复失败," + dataResponse.getResultMsg(), Toast.LENGTH_LONG).show();
+                            Toast.makeText(mContext, "收藏恢复失败," + dataResponse.getMsg(), Toast.LENGTH_LONG).show();
                         }
                     }
                 }, new Consumer<Throwable>() {

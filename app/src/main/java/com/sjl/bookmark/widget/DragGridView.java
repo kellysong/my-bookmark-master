@@ -11,7 +11,7 @@ import android.graphics.Canvas;
 import android.graphics.PixelFormat;
 import android.os.Handler;
 import android.os.Vibrator;
-import android.support.v4.widget.SwipeRefreshLayout;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.view.Gravity;

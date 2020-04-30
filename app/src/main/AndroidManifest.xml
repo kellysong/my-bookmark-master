@@ -74,7 +74,7 @@
 
         <!--Android 7.0需要使用FileProvider生成content:// Uri来替代file:// Uri-->
         <provider
-            android:name="android.support.v4.content.FileProvider"
+            android:name="androidx.core.content.FileProvider"
             android:authorities="${PACKAGE_NAME}.fileProvider"
             android:exported="false"
             android:grantUriPermissions="true">

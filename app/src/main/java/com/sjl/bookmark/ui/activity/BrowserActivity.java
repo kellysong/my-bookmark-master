@@ -11,8 +11,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.PersistableBundle;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -29,8 +27,8 @@ import com.sjl.bookmark.dao.util.CollectUtils;
 import com.sjl.bookmark.ui.base.extend.BaseSwipeBackActivity;
 import com.sjl.bookmark.widget.WebViewJavaScriptFunction;
 import com.sjl.bookmark.widget.X5WebView;
-import com.sjl.core.util.log.LogUtils;
 import com.sjl.core.util.SnackbarUtils;
+import com.sjl.core.util.log.LogUtils;
 import com.tencent.smtt.sdk.CookieSyncManager;
 import com.tencent.smtt.sdk.DownloadListener;
 import com.tencent.smtt.sdk.ValueCallback;
@@ -39,6 +37,9 @@ import com.tencent.smtt.sdk.WebView;
 import com.tencent.smtt.sdk.WebViewClient;
 
 import java.util.ArrayList;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
 
 /**
  * 集成腾讯x5内核webview add by Kelly on 20170209

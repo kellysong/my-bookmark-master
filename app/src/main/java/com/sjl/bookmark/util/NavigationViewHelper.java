@@ -1,11 +1,12 @@
 package com.sjl.bookmark.util;
 
-import android.support.design.internal.BottomNavigationItemView;
-import android.support.design.internal.BottomNavigationMenuView;
-import android.support.design.internal.NavigationMenuView;
-import android.support.design.widget.BottomNavigationView;
-import android.support.design.widget.NavigationView;
 import android.util.Log;
+
+import com.google.android.material.bottomnavigation.BottomNavigationItemView;
+import com.google.android.material.bottomnavigation.BottomNavigationMenuView;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.internal.NavigationMenuView;
+import com.google.android.material.navigation.NavigationView;
 
 import java.lang.reflect.Field;
 

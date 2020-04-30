@@ -1,8 +1,6 @@
 package com.sjl.bookmark.ui.fragment;
 
 import android.os.Bundle;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.sinpo.xnfc.NFCardActivity;
@@ -23,6 +21,8 @@ import com.zhy.adapter.recyclerview.base.ViewHolder;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 import cn.feng.skin.manager.loader.SkinManager;
 
@@ -54,7 +54,8 @@ public class ToolFragment extends BaseFragment {
         moduleMenus.add(new ModuleMenu(I18nUtils.getString(R.string.tool_account_manager), R.mipmap.menu_password, AccountIndexActivity.class));
         moduleMenus.add(new ModuleMenu(I18nUtils.getString(R.string.tool_wifi_query), R.mipmap.menu_wifi, WifiQueryActivity.class));
         moduleMenus.add(new ModuleMenu(I18nUtils.getString(R.string.tool_balance_query), R.mipmap.menu_card, NFCardActivity.class));
-        moduleMenus.add(new ModuleMenu(I18nUtils.getString(R.string.tool_shenzhen_subway), R.mipmap.menu_subway, "http://www.szmc.net/page/html5.html"));
+        //http://www.szmc.net/page/html5.html
+        moduleMenus.add(new ModuleMenu(I18nUtils.getString(R.string.tool_shenzhen_subway), R.mipmap.menu_subway, "http://jtapi.bendibao.com/ditie/inc/sz/xianluda.gif"));
         moduleMenus.add(new ModuleMenu(I18nUtils.getString(R.string.tool_my_express), R.mipmap.menu_express_query, ExpressActivity.class));
         moduleMenus.add(new ModuleMenu(I18nUtils.getString(R.string.tool_cartoon), R.mipmap.menu_caricature, "https://m.ac.qq.com/search/index"));
         moduleMenus.add(new ModuleMenu(I18nUtils.getString(R.string.tool_novel_read), R.mipmap.menu_book, BookShelfActivity.class));
