@@ -48,6 +48,12 @@ public class ToolFragment extends BaseFragment {
 
     @Override
     protected void initData() {
+
+    }
+
+
+    @Override
+    protected void onFirstUserVisible() {
         GridLayoutManager layoutManager = new GridLayoutManager(mActivity, 3);
         rvContent.setLayoutManager(layoutManager);
         moduleMenus = new ArrayList<>();
@@ -98,12 +104,6 @@ public class ToolFragment extends BaseFragment {
                 });
             }
         });
-    }
-
-
-    @Override
-    protected void onFirstUserVisible() {
-
     }
 
     @Override

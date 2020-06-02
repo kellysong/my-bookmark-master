@@ -2,9 +2,6 @@ package com.sjl.bookmark.ui.fragment;
 
 import android.content.Intent;
 import android.os.Parcelable;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
@@ -21,6 +18,9 @@ import com.sjl.core.mvp.BaseFragment;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import butterknife.BindView;
 
 /**
@@ -45,7 +45,8 @@ public class CategoryFragment extends BaseFragment<CategoryPresenter> implements
 
     @Override
     protected void onFirstUserVisible() {
-
+        /**请求数据*/
+        mPresenter.loadCategoryData();
     }
 
     @Override
@@ -85,8 +86,7 @@ public class CategoryFragment extends BaseFragment<CategoryPresenter> implements
         mCategoryAdapter.setOnItemClickListener(this);
         mSwipeRefreshLayout.setOnRefreshListener(this);
 
-        /**请求数据*/
-        mPresenter.loadCategoryData();
+
     }
 
     @Override

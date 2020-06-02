@@ -42,7 +42,9 @@ import com.sjl.bookmark.widget.WaveView;
 import com.sjl.core.entity.EventBusDto;
 import com.sjl.core.mvp.BaseActivity;
 import com.sjl.core.mvp.BaseFragment;
+import com.sjl.core.mvp.BasePresenter;
 import com.sjl.core.net.RxBus;
+import com.sjl.core.net.RxSchedulers;
 import com.sjl.core.util.AppUtils;
 import com.sjl.core.util.PreferencesHelper;
 import com.sjl.core.util.SerializeUtils;
@@ -72,6 +74,8 @@ import androidx.viewpager.widget.ViewPager;
 import cn.feng.skin.manager.loader.SkinManager;
 import cn.feng.skin.manager.statusbar.StatusBarUtil;
 import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -79,7 +83,7 @@ import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
-public class MainActivity extends BaseActivity
+public class MainActivity extends BaseActivity<BasePresenter>
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private Toolbar mToolbar;
@@ -345,11 +349,12 @@ public class MainActivity extends BaseActivity
 
     @Override
     protected void initData() {
+        mLastFgIndex = 0;
+        switchFragmentNew(mLastFgIndex);
+
         loadBookmark();
         initHeadImg();
         registerUpdateHeadImg();
-        mLastFgIndex = 0;
-        switchFragmentNew(mLastFgIndex);
         //限时大促
 //        runnable.run();
         autoBackupCollection();
@@ -436,39 +441,56 @@ public class MainActivity extends BaseActivity
     };
 
     private void initHeadImg() {
-        if (circleImageView == null) {
-            return;
-        }
-        File temp = new File(AppConstant.USER_HEAD_PATH + File.separator + "head_crop.jpg");
-        if (!temp.exists()) {
-            LogUtils.i("头像不存在");
-            return;
-        }
-        try {
-            FileInputStream fis = new FileInputStream(temp);
-            Bitmap bitmap = BitmapFactory.decodeStream(fis);///把流转化为Bitmap图片
-            circleImageView.setImageBitmap(bitmap);
-            UserInfo userInfo = SerializeUtils.deserialize("userInfo", UserInfo.class);
-            if (userInfo != null) {
-                tvNickname.setText(userInfo.getName());
-                tvPersonality.setText(userInfo.getPersonality());
+
+        Observable.create(new ObservableOnSubscribe<Object>() {
+            @Override
+            public void subscribe(ObservableEmitter<Object> emitter) throws Exception {
+                File temp = new File(AppConstant.USER_HEAD_PATH + File.separator + "head_crop.jpg");
+                if (!temp.exists()) {
+                    LogUtils.i("头像不存在");
+                    return;
+                }
+                FileInputStream fis = new FileInputStream(temp);
+                Bitmap bitmap = BitmapFactory.decodeStream(fis);///把流转化为Bitmap图片
+                emitter.onNext(bitmap);
+                UserInfo userInfo = SerializeUtils.deserialize("userInfo", UserInfo.class);
+                if (userInfo != null) {
+                    emitter.onNext(userInfo);
+                }
+
             }
-            mToolBarIcon.setImageBitmap(bitmap);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-
+        }).compose(RxSchedulers.applySchedulers())
+                .as(bindLifecycle())
+                .subscribe(new Consumer<Object>() {
+                    @Override
+                    public void accept(Object o) throws Exception {
+                        if (o instanceof Bitmap) {
+                            Bitmap bitmap = (Bitmap) o;
+                            circleImageView.setImageBitmap(bitmap);
+                            mToolBarIcon.setImageBitmap(bitmap);
+                        }
+                        if (o instanceof UserInfo) {
+                            UserInfo userInfo = (UserInfo) o;
+                            tvNickname.setText(userInfo.getName());
+                            tvPersonality.setText(userInfo.getPersonality());
+                        }
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        LogUtils.e("初始化头像失败",throwable);
+                    }
+                });
     }
 
     /**
      * 监听头像更新
      */
     public void registerUpdateHeadImg() {
-        Disposable subscribe = RxBus.getInstance()
+       RxBus.getInstance()
                 .toObservable(AppConstant.RxBusFlag.FLAG_2, EventBusDto.class)
-                .observeOn(AndroidSchedulers.mainThread())
+                .compose(RxSchedulers.applySchedulers())
+                .as(bindLifecycle())
                 .subscribe(new Consumer<EventBusDto>() {
                     @Override
                     public void accept(EventBusDto s) throws Exception {
@@ -484,7 +506,6 @@ public class MainActivity extends BaseActivity
 
                     }
                 });
-        addDisposable(subscribe);
     }
 
 

@@ -51,6 +51,7 @@ public class HttpConstant {
      */
     public static final int PAGE_SIZE = 20;
 
+    public static final int PAGE_SIZE_15 = 15;
 
     public static final String BANNER_KEY = "banner";
     public static final String ARTICLE_KEY = "article";

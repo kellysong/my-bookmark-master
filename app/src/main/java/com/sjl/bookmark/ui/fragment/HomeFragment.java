@@ -1,12 +1,7 @@
 package com.sjl.bookmark.ui.fragment;
 
-import androidx.lifecycle.Lifecycle;
 import android.content.Intent;
 import android.os.Parcelable;
-import androidx.viewpager.widget.ViewPager;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 
@@ -36,6 +31,11 @@ import com.zhy.adapter.viewpager.BasePagerAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.lifecycle.Lifecycle;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.viewpager.widget.ViewPager;
 import butterknife.BindView;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
@@ -225,6 +225,7 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements HomeCon
     }
 
     protected void setLoadDataResult(BaseQuickAdapter articleAdapter, SwipeRefreshLayout refreshLayout, List list, int loadType) {
+        LogUtils.i("list:"+list.size());
         switch (loadType) {
             case HttpConstant.LoadType.TYPE_REFRESH_SUCCESS:
                 articleAdapter.setNewData(list);
@@ -244,7 +245,7 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements HomeCon
             default:
                 break;
         }
-        if (list == null || list.isEmpty() || list.size() < HttpConstant.PAGE_SIZE) {
+        if (list == null || list.isEmpty() || list.size() < HttpConstant.PAGE_SIZE_15) {//后台有时候返回19条，用20有问题
             LogUtils.i("没有文章数据了");
             articleAdapter.loadMoreEnd(false); //数据全部加载完毕
         } else {

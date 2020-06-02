@@ -213,7 +213,7 @@ android {
             println("=====================assembleRelease.doLast success.=========================")
         }
     }
-    //必须加,不加启动报错,由于部分依赖库需要java8
+    //必须加,不加启动报错,由于AutoDispose依赖库需要java8
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
