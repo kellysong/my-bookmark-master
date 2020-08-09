@@ -1,12 +1,10 @@
 package com.sjl.bookmark.ui.presenter;
 
 import android.content.Context;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import android.view.View;
 
 import com.jakewharton.rxbinding2.view.RxView;
 import com.lid.lib.LabelTextView;
-import com.lid.lib.LabelView;
 import com.sjl.bookmark.R;
 import com.sjl.bookmark.app.AppConstant;
 import com.sjl.bookmark.app.MyApplication;
@@ -14,17 +12,18 @@ import com.sjl.bookmark.dao.impl.AccountService;
 import com.sjl.bookmark.entity.table.Account;
 import com.sjl.bookmark.ui.activity.AccountEditActivity;
 import com.sjl.bookmark.ui.contract.AccountListContract;
-import com.sjl.core.util.security.DESUtils;
-import com.sjl.core.util.datetime.TimeUtils;
 import com.sjl.core.entity.EventBusDto;
-import com.sjl.core.util.log.LogUtils;
 import com.sjl.core.util.PreferencesHelper;
+import com.sjl.core.util.datetime.TimeUtils;
+import com.sjl.core.util.log.LogUtils;
+import com.sjl.core.util.security.DESUtils;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import androidx.recyclerview.widget.LinearLayoutManager;
 import io.reactivex.functions.Consumer;
 
 /**
@@ -105,7 +104,6 @@ public class AccountListPresenter extends AccountListContract.Presenter {
             }
 
             holder.setText(R.id.tv_date, TimeUtils.getRangeByDate(account.getDate()));
-            LabelView label = new LabelView(mContext);
             //"安全", "娱乐", "社会", "开发", "其它"
             String labelMsg = "";
             switch (account.getAccountType()) {

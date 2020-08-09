@@ -4,7 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#eee"
-    android:fitsSystemWindows="true"
     android:orientation="vertical">
 
     <include layout="@layout/toolbar_default"></include>
@@ -20,6 +19,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            app:cardBackgroundColor="@color/white"
             android:padding="5dp">
 
             <ImageView

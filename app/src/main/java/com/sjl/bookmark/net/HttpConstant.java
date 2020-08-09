@@ -13,7 +13,7 @@ public class HttpConstant {
     /**
      * 我的书签服务base url
      */
-    public static final String MY_BOOKMARK_BASE_URL = "http://192.168.0.76:8080/";
+    public static final String MY_BOOKMARK_BASE_URL = "http://192.168.0.176:8080/";
 
     /**
      * WanAndroid

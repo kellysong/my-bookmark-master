@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/novel_bg"
     android:orientation="vertical">
 
     <include layout="@layout/toolbar_default" />
@@ -48,7 +48,7 @@
                         android:layout_toRightOf="@+id/book_detail_iv_cover"
                         android:ellipsize="end"
                         android:singleLine="true"
-                        android:textColor="@color/black"
+                        android:textColor="@color/novel_title"
                         android:textSize="16sp"
                         tools:text="武侠世界自由行 |" />
 
@@ -175,7 +175,7 @@
                             android:layout_marginTop="5dp"
                             android:ellipsize="end"
                             android:singleLine="true"
-                            android:textColor="@color/black"
+                            android:textColor="@color/novel_title"
                             android:textSize="15sp"
                             tools:text="82" />
 
@@ -204,7 +204,7 @@
                             android:layout_marginTop="5dp"
                             android:ellipsize="end"
                             android:singleLine="true"
-                            android:textColor="@color/black"
+                            android:textColor="@color/novel_title"
                             android:textSize="15sp"
                             tools:text="20.29%" />
 
@@ -233,7 +233,7 @@
                             android:layout_marginTop="5dp"
                             android:ellipsize="end"
                             android:singleLine="true"
-                            android:textColor="@color/black"
+                            android:textColor="@color/novel_title"
                             android:textSize="15sp"
                             tools:text="4614" />
 
@@ -263,7 +263,7 @@
                     android:ellipsize="end"
                     android:maxLines="4"
                     android:padding="15dp"
-                    android:textColor="@color/black"
+                    android:textColor="@color/novel_title"
                     android:textSize="15sp" />
 
                 <View
@@ -280,7 +280,7 @@
                         android:layout_height="wrap_content"
                         android:padding="15dp"
                         android:text="@string/nb.book_detail.hot_comment"
-                        android:textColor="@color/black"
+                        android:textColor="@color/novel_title"
                         android:textSize="15sp" />
 
                     <TextView
@@ -312,7 +312,7 @@
                     android:layout_height="wrap_content"
                     android:padding="15dp"
                     android:text="@string/nb.book_detail.recommend_book_list"
-                    android:textColor="@color/black"
+                    android:textColor="@color/novel_title"
                     android:textSize="15sp" />
                 <!--推荐书单-->
                 <androidx.recyclerview.widget.RecyclerView

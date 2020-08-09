@@ -248,7 +248,7 @@ dependencies {
     implementation project (':my-hardware-lib:zxing')
 
     /*今日头条屏幕适配*/
- /*   implementation 'me.jessyan:autosize:1.1.2'*/
+    implementation 'me.jessyan:autosize:1.1.2'
     //以下是第三方库
     annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.1'
 

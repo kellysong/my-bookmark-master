@@ -25,6 +25,6 @@
         android:layout_gravity="center_vertical"
         android:layout_marginLeft="10dp"
         android:text="申通快递"
-        android:textColor="@color/black"
+        android:textColor="@color/cl_express_text"
         android:textSize="@dimen/big_small" />
 </LinearLayout>

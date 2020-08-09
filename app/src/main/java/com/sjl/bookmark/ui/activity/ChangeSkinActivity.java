@@ -1,10 +1,6 @@
 package com.sjl.bookmark.ui.activity;
 
 import android.os.Handler;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.appcompat.widget.Toolbar;
 import android.view.View;
 import android.widget.Toast;
 
@@ -12,12 +8,13 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.sjl.bookmark.R;
 import com.sjl.bookmark.app.AppConstant;
 import com.sjl.bookmark.entity.ThemeSkin;
+import com.sjl.bookmark.kotlin.darkmode.DarkModeUtils;
 import com.sjl.bookmark.kotlin.language.I18nUtils;
 import com.sjl.bookmark.ui.adapter.ThemeSkinAdapter;
 import com.sjl.core.mvp.BaseActivity;
-import com.sjl.core.util.log.LogUtils;
 import com.sjl.core.util.PreferencesHelper;
 import com.sjl.core.util.file.FileUtils;
+import com.sjl.core.util.log.LogUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,6 +22,10 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import butterknife.BindView;
 import cn.feng.skin.manager.listener.ILoaderListener;
 import cn.feng.skin.manager.loader.SkinManager;
@@ -88,6 +89,11 @@ public class ChangeSkinActivity extends BaseActivity {
         mThemeSkinAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+                boolean nightMode = DarkModeUtils.INSTANCE.isNightMode(mContext);
+                if (nightMode) {
+                    showToast("当前处于深色模式，请先设置为正常模式");
+                    return;
+                }
                 int skin = PreferencesHelper.getInstance(mContext).getInteger(AppConstant.SETTING.CURRENT_SELECT_SKIN, 0);
                 if (skin == position) {
                     return;
@@ -110,6 +116,9 @@ public class ChangeSkinActivity extends BaseActivity {
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
+                        if (isDestroy(ChangeSkinActivity.this)) {
+                            return;
+                        }
                         updateSkin();
                         mSwipeRefreshLayout.setRefreshing(false);
                         int skin = PreferencesHelper.getInstance(mContext).getInteger(AppConstant.SETTING.CURRENT_SELECT_SKIN, 0);

@@ -4,12 +4,10 @@
     android:layout_width="match_parent"
     android:layout_height="80dp"
     android:layout_marginBottom="5dp"
-    android:background="@color/white"
     android:foreground="?android:attr/selectableItemBackground">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
         android:layout_gravity="center"
         android:padding="2dp"
         android:orientation="horizontal">
@@ -34,7 +32,7 @@
                 android:ellipsize="end"
                 android:maxLines="2"
                 android:text="fiddler抓包HTTPS请求 - 振叶寻根 - CSDN博客"
-                android:textColor="#3B3B3B"
+                android:textColor="@color/cl_bookmark_second_title"
                 android:textSize="16sp" />
             <TextView
                 android:id="@+id/tv_domain"

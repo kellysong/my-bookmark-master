@@ -29,7 +29,7 @@
         android:focusable="true"
         android:paddingLeft="12dp"
         android:paddingRight="10dp"
-        android:textColor="#797979"
+        android:textColor="@color/cl_search_text"
          />
 
     <TextView

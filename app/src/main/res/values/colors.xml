@@ -5,15 +5,75 @@
     <color name="colorAccent">#03A9F4</color>
     <color name="textColorPrimary">@color/white</color>
     <color name="primary_light">#B3E5FC</color>
-
     <color name="colorPrimaryText">#212121</color>
     <color name="secondary_text">#757575</color>
 
-
-
-    <color name="black2">#1D1D1D</color>
     <color name="grey">#8C8C8C</color>
     <color name="blueStatus">#1680E2</color>
+
+    <!--    主题更换颜色 start-->
+    <!--    文章-->
+    <color name="cl_chapter_name">@color/colorPrimary</color>
+    <color name="cl_new">@color/colorPrimary</color>
+    <color name="cl_line_title">@color/colorPrimary</color>
+    <color name="cl_article_category">@color/black</color>
+    <color name="secondary_text_light">#323232</color>
+    <!--    条目背景-->
+    <color name="item_bg">@color/white</color>
+    <color name="black2">#1D1D1D</color>
+    <!--    RV背景图-->
+    <color name="container_background">#EBEBEB</color>
+    <!--    设置页背景-->
+    <color name="cl_setting_bg">@color/white</color>
+    <!--    关于条目文本颜色-->
+    <color name="cl_about_text_bg">@color/colorPrimary</color>
+    <color name="item_background">#FAFAFA</color>
+    <!--    底部tab-->
+    <color name="cl_bnv_checked">@color/colorPrimary</color>
+    <color name="cl_bnv_unchecked">@color/gray_600</color>
+    <!--    知乎-->
+    <color name="cl_news_comment_text">@color/nb.text.common_h1</color>
+    <color name="cl_mi_bg">@color/white</color>
+    <!--    Google书签-->
+    <color name="cl_bookmark_title">@color/black</color>
+    <color name="cl_bookmark_title_bg">@color/white</color>
+    <color name="cl_bookmark_second_title">#3B3B3B</color>
+<!--    搜索框背景-->
+    <color name="cl_search_bg">@color/common_gray</color>
+    <color name="cl_search_text">#797979</color>
+
+    <!--个人中心-->
+    <color name="cl_person_item_key">@color/normalText</color>
+    <color name="cl_person_item_value">@color/gray</color>
+    <color name="cl_person_item_text">@color/lineColor</color>
+
+    <!-- 置顶背景色 -->
+    <color name="cl_top_bg">#ededed</color>
+    <!--    账号管理编辑框-->
+    <color name="cl_et_text">@color/white</color>
+    <color name="cl_et_text_color">@color/gray</color>
+    <color name="cl_ns_arrowTint">@color/black</color>
+    <color name="cl_ns_forbid_bg">#eeeeee</color>
+
+<!--  快递查询建议列表  -->
+    <color name="cl_express_item_bg">@color/white_alpha_percent_45</color>
+    <color name="cl_express_text">@color/black</color>
+
+<!--    小说-->
+    <color name="file_list_item_bg">@color/nb.widget.button.normal</color>
+    <color name="novel_title">@color/black</color>
+    <color name="novel_bg">@color/white</color>
+    <color name="novel_comment_content">@color/nb.text.common_h1</color>
+
+
+
+
+    <color name="cl_tab_bg">@color/colorPrimary</color>
+
+
+    <!--    主题更换颜色 end-->
+
+
 
 
     <!--搜索布局颜色-->
@@ -27,11 +87,8 @@
     <!-- 点击出现的水波纹的颜色 -->
     <color name="text_Grey">#cfd8dc</color>
 
-    <!-- 置顶背景色 -->
-    <color name="top_bg">#ededed</color>
 
-    <color name="item_background">#FAFAFA</color>
-    <color name="container_background">#EBEBEB</color>
+
     <color name="color_b7b8bd">#b7b8bd</color>
     <!--设置-->
     <color name="background_color">#FFFAFAFA</color>
@@ -51,6 +108,7 @@
 
     <!--个人中心-->
     <color name="normalText">#555555</color>
+
     <color name="lineColor">#dddddd</color>
     <color name="gray">#aaa</color>
 
@@ -105,6 +163,5 @@
     <color name="update_theme_color">#FFFFAC5D</color>
     <color name="text_main">#4282f4</color>
     <color name="text_accent">#f86734</color>
-
 
 </resources>

@@ -1,9 +1,6 @@
 package com.sjl.bookmark.ui.activity;
 
 import android.content.DialogInterface;
-import android.graphics.Color;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -32,10 +29,10 @@ import com.sjl.bookmark.ui.contract.AccountEditContract;
 import com.sjl.bookmark.ui.fragment.AccountListFragment;
 import com.sjl.bookmark.ui.presenter.AccountEditPresenter;
 import com.sjl.core.mvp.BaseActivity;
-import com.sjl.core.util.log.LogUtils;
 import com.sjl.core.util.ValidatorUtils;
 import com.sjl.core.util.ViewUtils;
 import com.sjl.core.util.datetime.TimeUtils;
+import com.sjl.core.util.log.LogUtils;
 import com.sjl.core.util.security.DESUtils;
 
 import org.angmarch.views.NiceSpinner;
@@ -43,6 +40,8 @@ import org.angmarch.views.NiceSpinner;
 import java.util.Date;
 import java.util.List;
 
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.Toolbar;
 import butterknife.BindView;
 
 
@@ -227,7 +226,7 @@ public class AccountEditActivity extends BaseActivity<AccountEditPresenter> impl
     public void initCreateModel(int position) {
         mAccountStatePosition = position;
         LogUtils.i("mAccountStatePosition="+mAccountStatePosition);
-        mAccountState.setBackgroundColor(Color.parseColor("#eeeeee"));
+        mAccountState.setBackgroundColor(getResources().getColor(R.color.cl_ns_forbid_bg));
         mAccountState.setSelectedIndex(mAccountStatePosition);
         mAccountState.setEnabled(false);
         addTextChangedListener();

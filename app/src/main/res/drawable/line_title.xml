@@ -6,7 +6,7 @@
         android:width="3dp"
         android:height="15dp"></size>
 
-    <solid android:color="@color/colorPrimary" />
+    <solid android:color="@color/cl_line_title" />
     <corners android:radius="10dp" />
 
 </shape>

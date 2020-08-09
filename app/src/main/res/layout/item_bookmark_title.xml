@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="38dp"
     android:gravity="center_vertical"
-    android:background="@color/white">
+    android:background="@color/cl_bookmark_title_bg">
 
     <TextView
         android:id="@+id/tv_bookmark_title"
@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="5dp"
         android:gravity="center_vertical"
-        android:textColor="@color/black"
+        android:textColor="@color/cl_bookmark_title"
         android:text="888" />
 
 

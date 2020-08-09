@@ -16,12 +16,12 @@
         android:layout_width="match_parent"
         android:layout_height="110dp"
         android:layout_margin="8dp"
-        android:background="@android:color/white"
+        android:background="@color/item_background"
         android:gravity="start"
         android:hint="留下您的签名..."
         android:maxLength="120"
         android:padding="3dp"
-        android:textColorHint="@color/lineColor"
+        android:textColorHint="@color/cl_person_item_text"
         android:textSize="16sp" />
 
     <TextView

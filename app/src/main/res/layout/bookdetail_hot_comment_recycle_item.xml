@@ -48,7 +48,7 @@
 		android:layout_toRightOf="@id/hot_comment_iv_cover"
 		android:ellipsize="end"
 		android:singleLine="true"
-		android:textColor="@color/black"
+		android:textColor="@color/novel_title"
 		tools:text="越到后面越索然无味" />
 	
 	<com.sjl.core.widget.EasyRatingBar
@@ -71,7 +71,7 @@
 		android:layout_marginTop="5dp"
 		android:layout_toRightOf="@id/hot_comment_iv_cover"
 
-		android:textColor="@color/nb.text.common_h1"
+		android:textColor="@color/novel_comment_content"
 		android:textSize="14sp"
 		tools:text="zzzzzzzzzz"
 		app:ep_max_line="5"

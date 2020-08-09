@@ -16,7 +16,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="45dp"
-        android:background="@color/white"
+        android:background="@color/item_bg"
         android:focusable="true"
         android:focusableInTouchMode="true"
         android:gravity="center_vertical"
@@ -28,7 +28,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="运单号"
-            android:textColor="@color/black"
+            android:textColor="@color/black2"
             android:textSize="@dimen/big_small" />
 
         <EditText
@@ -38,10 +38,11 @@
             android:layout_marginLeft="@dimen/activity_horizontal_margin"
             android:layout_marginRight="@dimen/activity_horizontal_margin"
             android:layout_weight="1"
-            android:background="@android:color/transparent"
+            android:background="@color/cl_search_bg"
             android:hint="@string/input_post_id"
             android:inputType="textEmailAddress"
             android:singleLine="true"
+            android:textColor="@color/cl_search_text"
             android:textCursorDrawable="@null"
             android:textSize="15sp" />
 

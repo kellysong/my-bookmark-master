@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <com.sjl.core.widget.materialpreference.PreferenceCategory android:title="@string/setting_basic">
+    <com.sjl.core.widget.materialpreference.PreferenceCategory
+        android:title="@string/setting_basic">
+
+        <com.sjl.core.widget.materialpreference.Preference
+            android:key="深色模式"
+            android:title="@string/dark_mode" />
+
+        <com.sjl.core.widget.materialpreference.PreferenceDivider />
+
         <com.sjl.core.widget.materialpreference.SwitchPreference
             android:key="账号的密码可见"
             android:summary="@string/setting_ap_visible"

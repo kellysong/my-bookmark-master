@@ -36,19 +36,19 @@
             android:background="@drawable/shape_common_gray_corner"
             android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:padding="8dp">
+            >
 
             <EditText
                 android:id="@+id/search_et_input"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:background="@color/common_gray"
+                android:background="@color/cl_search_bg"
                 android:hint="请输入书名 | 作者名"
                 android:imeOptions="actionSearch"
                 android:maxLines="1"
                 android:singleLine="true"
-                android:textColor="#797979"
+                android:textColor="@color/cl_search_text"
                 android:textSize="14sp" />
 
             <ImageView

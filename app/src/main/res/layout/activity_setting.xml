@@ -11,7 +11,7 @@
 
     <FrameLayout
         android:id="@+id/container"
-        android:background="@android:color/white"
+        android:background="@color/cl_setting_bg"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

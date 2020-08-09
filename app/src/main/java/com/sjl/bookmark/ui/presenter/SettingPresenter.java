@@ -15,6 +15,7 @@ import com.sjl.bookmark.app.MyApplication;
 import com.sjl.bookmark.dao.impl.DaoFactory;
 import com.sjl.bookmark.dao.util.BookmarkParse;
 import com.sjl.bookmark.entity.dto.ResponseDto;
+import com.sjl.bookmark.kotlin.darkmode.DarkModeUtils;
 import com.sjl.bookmark.kotlin.language.I18nUtils;
 import com.sjl.bookmark.kotlin.language.LanguageManager;
 import com.sjl.bookmark.service.DownloadIntentService;
@@ -79,20 +80,23 @@ public class SettingPresenter extends SettingContract.Presenter {
             PreferenceFragment preferenceFragment = (PreferenceFragment) mView;
             SwitchPreference openGesture = (SwitchPreference) preferenceFragment.findPreference("打开手势密码");
             SwitchPreference openShow = (SwitchPreference) preferenceFragment.findPreference("账号的密码可见");
+
             if (openGesture != null) {
                 openGesture.setChecked(isOpenGesture);
             }
             if (openShow != null) {
                 openShow.setChecked(isShowPassword);
-
             }
+
         }
     }
 
     @Override
     public void setClickPreferenceKey(Preference preference, String key) {
         PreferencesHelper preferencesHelper = PreferencesHelper.getInstance(mContext);
-        if (TextUtils.equals(key, "打开手势密码")) {
+        if (TextUtils.equals(key, "深色模式")){
+            changeDarkMode();
+        } else if (TextUtils.equals(key, "打开手势密码")) {
             isOpenGesture = !isOpenGesture;
             preferencesHelper.put(AppConstant.SETTING.OPEN_GESTURE, isOpenGesture);
             if (isOpenGesture) {
@@ -154,6 +158,32 @@ public class SettingPresenter extends SettingContract.Presenter {
             Intent intent = new Intent(mContext, AboutActivity.class);
             mContext.startActivity(intent);
         }
+    }
+
+    /**
+     * 改变深色模式
+     */
+    private void changeDarkMode() {
+        final String items[] = {I18nUtils.getString(R.string.mode_auto),I18nUtils.getString(R.string.mode_normal), I18nUtils.getString(R.string.mode_dark)};
+        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+        final int type =  DarkModeUtils.INSTANCE.getDarkModeType();
+        builder.setSingleChoiceItems(items, type,
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        LogUtils.i("当前选择模式：" + which);
+                        if (which == type){
+                            return;
+                        }
+                        dialog.dismiss();
+                        if (mContext instanceof SettingActivity) {
+                            DarkModeUtils.INSTANCE.setDarkMode(which);
+                           AppUtils.restartApp(mContext);
+                        }
+
+                    }
+                });
+        builder.create().show();
     }
 
 

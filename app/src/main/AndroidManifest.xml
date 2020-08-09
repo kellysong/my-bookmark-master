@@ -64,13 +64,13 @@
         <meta-data
             android:name="notch.config"
             android:value="portrait|landscape" />
-       <!-- <meta-data
+      <meta-data
             android:name="design_width_in_dp"
             android:value="360"/>
         <meta-data
             android:name="design_height_in_dp"
             android:value="640"/>
--->
+
 
         <!--Android 7.0需要使用FileProvider生成content:// Uri来替代file:// Uri-->
         <provider

@@ -29,7 +29,7 @@
             android:ellipsize="end"
             android:singleLine="true"
             android:text="宦官哈哈"
-            android:textColor="@color/black"
+            android:textColor="@color/novel_title"
             android:textSize="16sp" />
 
         <TextView

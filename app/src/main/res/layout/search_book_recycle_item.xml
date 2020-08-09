@@ -28,7 +28,7 @@
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:layout_marginBottom="10dp"
-			android:textColor="@color/black"
+			android:textColor="@color/novel_title"
 			android:textSize="16sp"
 			tools:text="武侠世界自由行"/>
 		

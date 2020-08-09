@@ -23,7 +23,7 @@
             android:drawablePadding="5dp"
             android:padding="6dp"
             android:text="一级目录"
-            android:textColor="@android:color/primary_text_light"
+            android:textColor="@color/cl_article_category"
             android:textSize="@dimen/medium"
             skin:enable="true" />
 
@@ -39,6 +39,6 @@
             android:layout_marginLeft="12dp"
             android:padding="4dp"
             android:text="二级目录"
-            android:textColor="@android:color/secondary_text_light" />
+            android:textColor="@color/secondary_text_light" />
     </LinearLayout>
 </LinearLayout>

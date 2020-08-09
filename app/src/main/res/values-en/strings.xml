@@ -108,6 +108,9 @@
     <string name="menu_copy_link">Copy URL</string>
     <string name="menu_open_with_browse">Open with Browser</string>
     <string name="menu_refresh">Refresh</string>
-
+    <string name="dark_mode">Dark Mode</string>
+    <string name="mode_auto">Auto</string>
+    <string name="mode_normal">Normal Mode</string>
+    <string name="mode_dark">@string/dark_mode</string>
 
 </resources>

@@ -192,5 +192,8 @@
     <string name="menu_copy_link">复制链接</string>
     <string name="menu_open_with_browse">在浏览器打开</string>
     <string name="menu_refresh">刷新</string>
-
+    <string name="dark_mode">深色模式</string>
+    <string name="mode_auto">跟随系统</string>
+    <string name="mode_normal">普通模式</string>
+    <string name="mode_dark">@string/dark_mode</string>
 </resources>

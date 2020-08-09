@@ -192,5 +192,8 @@
     <string name="menu_copy_link">複製鏈接</string>
     <string name="menu_open_with_browse">在瀏覽器打開</string>
     <string name="menu_refresh">刷新</string>
-
+    <string name="dark_mode">暗黑模式</string>
+    <string name="mode_auto">跟隨系統</string>
+    <string name="mode_normal">正常模式</string>
+    <string name="mode_dark">@string/dark_mode</string>
 </resources>

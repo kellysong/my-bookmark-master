@@ -162,14 +162,13 @@ public class BrowserActivity extends BaseSwipeBackActivity {
             }*/
 
             //              不能用下面，会导致csdn博客加载失败
-//            /**
-//             * 防止加载网页时调起系统浏览器
-//             */
-//            @Override
-//            public boolean shouldOverrideUrlLoading(WebView view, String url) {
-//                view.loadUrl(url);
-//                return true;
-//            }
+            /**
+             * 防止加载网页时调起系统浏览器
+             */
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                return false;
+            }
             @Override
             public void onPageFinished(final WebView view, final String url) {
                 super.onPageFinished(view, url);

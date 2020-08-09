@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+<!--    下面要和base values一致-->
+    <color name="colorPrimary">#0F0F0F</color>
+    <color name="colorPrimaryDark">#0F0F0F</color>
+    <color name="colorAccent">#03DAC5</color>
+
+    <!--    文章-->
+    <color name="cl_chapter_name">@color/white</color>
+    <color name="cl_new">@color/white</color>
+    <color name="cl_line_title">@color/white</color>
+    <color name="cl_article_category">@color/white</color>
+    <color name="secondary_text_light">#ffe</color>
+
+    <!--    条目背景-->
+    <color name="item_bg">#2D2D2D</color>
+    <color name="black2">@color/white</color>
+    <!--    RV背景图-->
+    <color name="container_background">@color/colorPrimary</color>
+    <!--    设置页背景-->
+    <color name="cl_setting_bg">@color/colorPrimary</color>
+    <!--    关于条目文本颜色-->
+    <color name="cl_about_text_bg">@color/white</color>
+    <color name="item_background">#333333</color>
+<!--    底部tab-->
+    <color name="cl_bnv_checked">@color/white</color>
+    <color name="cl_bnv_unchecked">@color/gray_600</color>
+<!--    知乎-->
+    <color name="cl_news_comment_text">@color/white</color>
+    <color name="cl_mi_bg">@color/colorPrimary</color>
+    <!--    Google书签-->
+    <color name="cl_bookmark_title">@color/white</color>
+    <color name="cl_bookmark_title_bg">@color/black</color>
+    <color name="cl_bookmark_second_title">@color/white</color>
+
+    <!--    搜索框背景-->
+    <color name="cl_search_bg">@color/item_bg</color>
+    <color name="cl_search_text">@color/white</color>
+    <!--个人中心-->
+    <color name="cl_person_item_key">@color/white</color>
+    <color name="cl_person_item_value">@color/white</color>
+    <color name="cl_person_item_text">@color/white</color>
+    <!-- 置顶背景色 -->
+    <color name="cl_top_bg">#1C1C1C</color>
+    <!--    编辑框-->
+    <color name="cl_et_text">@color/white</color>
+    <color name="cl_et_text_color">#FFFAF0</color>
+    <color name="cl_ns_arrowTint">@color/white</color>
+    <color name="cl_ns_forbid_bg">@color/black</color>
+
+    <!--  快递查询建议列表  -->
+    <color name="cl_express_item_bg">@color/item_bg</color>
+    <color name="cl_express_text">@color/white</color>
+    <!--    小说-->
+    <color name="file_list_item_bg">@color/item_bg</color>
+    <color name="novel_title">@color/white</color>
+    <color name="novel_bg">@color/item_bg</color>
+    <color name="novel_comment_content">@color/white</color>
+
+</resources>

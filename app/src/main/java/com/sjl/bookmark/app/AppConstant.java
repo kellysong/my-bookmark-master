@@ -78,6 +78,13 @@ public class AppConstant {
          * 当前选择的皮肤主题
          */
         public static final String CURRENT_SELECT_SKIN = "current_select_skin";
+
+        /**
+         * 暗黑模式
+         */
+        public static final String DARK_THEME = "dark_theme";
+
+
     }
 
     /**

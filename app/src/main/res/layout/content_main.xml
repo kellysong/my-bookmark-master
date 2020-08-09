@@ -31,6 +31,8 @@
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_gravity="bottom"
+            app:itemTextColor="@color/bnv_text_selector"
+            app:itemIconTint="@color/bnv_text_selector"
             android:background="?android:attr/windowBackground"
             app:menu="@menu/navigation" />
     </LinearLayout>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Dark" />
+
+    <!--知乎日报暗黑主题-->
+    <style name="DayTheme" parent="Theme.AppCompat.NoActionBar">
+        <item name="colorAccent">@color/yellow</item>
+        <item name="colorControlNormal">@color/white</item>
+        <item name="android:textColorPrimary">@color/white</item>
+        <item name="android:colorBackground">@color/gray_900</item>
+
+        <item name="customTextColor">@color/white</item>
+        <item name="normalBackground">@color/gray_700</item>
+        <item name="cardViewBackground">@color/gray_800</item>
+        <item name="textColorHint">@color/white</item>
+        <item name="actionOverflowMenuStyle">@style/NightOverflowMenuStyle</item>
+    </style>
+</resources>

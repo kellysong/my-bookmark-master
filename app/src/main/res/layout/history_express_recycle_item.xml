@@ -36,7 +36,7 @@
             android:ellipsize="end"
             android:singleLine="true"
             android:text="申通快递"
-            android:textColor="@color/black"
+            android:textColor="@color/cl_express_text"
             android:textSize="15sp" />
 
         <TextView

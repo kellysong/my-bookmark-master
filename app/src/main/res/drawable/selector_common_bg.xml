@@ -6,5 +6,5 @@
           android:drawable="@color/nb.widget.button.selected"/>
 
     <item
-        android:drawable="@color/nb.widget.button.normal"/>
+        android:drawable="@color/file_list_item_bg"/>
 </selector>

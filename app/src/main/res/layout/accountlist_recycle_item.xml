@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.balysv.materialripple.MaterialRippleLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mrl_account_content"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -15,7 +16,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
+        android:background="@drawable/item_selector"
         android:orientation="vertical">
 
         <RelativeLayout
@@ -37,12 +38,11 @@
 
             <com.lid.lib.LabelTextView
                 android:id="@+id/tv_state"
-                android:layout_width="wrap_content"
+                android:layout_width="100dp"
                 android:layout_height="match_parent"
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentRight="true"
                 android:gravity="center_vertical"
-                android:text="@string/app_name"
                 android:textSize="13sp"
                 android:textColor="#ffffff"
                 app:label_backgroundColor="#03A9F4"
@@ -66,8 +66,8 @@
                     android:layout_marginLeft="9dp"
                     android:gravity="center_vertical"
                     android:maxLines="1"
-                    android:text="@string/app_name"
-                    android:textColor="@color/black"
+                    tools:text="@string/app_name"
+                    android:textColor="@color/cl_bookmark_title"
                     android:textSize="16sp" />
 
             </LinearLayout>
@@ -87,7 +87,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
                 android:text="账号:"
-                android:textColor="@color/black"
+                android:textColor="@color/cl_bookmark_title"
                 android:textSize="14sp" />
 
             <TextView
@@ -97,7 +97,7 @@
                 android:ellipsize="end"
                 android:gravity="center_vertical"
                 android:maxLines="1"
-                android:text="@string/app_name"
+                tools:text="@string/app_name"
                 android:textSize="15sp" />
         </LinearLayout>
 
@@ -123,7 +123,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
                     android:text="密码:"
-                    android:textColor="@color/black"
+                    android:textColor="@color/cl_bookmark_title"
                     android:textSize="14sp" />
 
                 <TextView
@@ -133,7 +133,7 @@
                     android:ellipsize="end"
                     android:gravity="center_vertical"
                     android:maxLines="1"
-                    android:text="@string/app_name"
+                    tools:text="@string/app_name"
                     android:textSize="15sp" />
 
             </LinearLayout>
@@ -156,7 +156,7 @@
                 android:layout_alignParentRight="true"
                 android:layout_marginRight="0dp"
                 android:gravity="center"
-                android:text="@string/app_name"
+                tools:text="@string/app_name"
                 android:textColor="@color/text_color"
                 android:textSize="13sp" />
         </RelativeLayout>

@@ -4,8 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import androidx.viewpager.widget.ViewPager;
-import androidx.appcompat.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
@@ -36,6 +34,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import androidx.appcompat.widget.Toolbar;
+import androidx.viewpager.widget.ViewPager;
 import butterknife.BindView;
 import cn.feng.skin.manager.loader.SkinManager;
 
@@ -111,7 +111,7 @@ public class NewsCommentActivity extends BaseActivity {
      * 初始化指示器
      */
     private void initMagicIndicator() {
-        magicIndicator.setBackgroundColor(Color.WHITE);
+//        magicIndicator.setBackgroundColor(Color.WHITE);
 
         CommonNavigator commonNavigator = new CommonNavigator(this);
         commonNavigator.setAdjustMode(true);

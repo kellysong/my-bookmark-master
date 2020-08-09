@@ -1,11 +1,14 @@
 package com.sjl.bookmark.app;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+import android.os.Bundle;
 
 import com.mob.MobSDK;
 import com.sjl.bookmark.BuildConfig;
+import com.sjl.bookmark.kotlin.darkmode.DarkModeUtils;
 import com.sjl.bookmark.net.MyBaseUrlAdapter;
 import com.sjl.bookmark.service.X5CoreService;
 import com.sjl.core.app.BaseApplication;
@@ -30,6 +33,42 @@ public class MyApplication extends BaseApplication {
         initRetrofit();
         preInitX5Core();
         MobSDK.init(this);
+        registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {
+            @Override
+            public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
+                DarkModeUtils.INSTANCE.initDarkMode();
+            }
+
+            @Override
+            public void onActivityStarted(Activity activity) {
+
+            }
+
+            @Override
+            public void onActivityResumed(Activity activity) {
+
+            }
+
+            @Override
+            public void onActivityPaused(Activity activity) {
+
+            }
+
+            @Override
+            public void onActivityStopped(Activity activity) {
+
+            }
+
+            @Override
+            public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
+
+            }
+
+            @Override
+            public void onActivityDestroyed(Activity activity) {
+
+            }
+        });
     }
     private void initRetrofit() {
         RetrofitParams retrofitParams = new RetrofitParams.Builder()
@@ -63,6 +102,9 @@ public class MyApplication extends BaseApplication {
             startService(intent);
         }
     }
+
+
+
 
     /**
      * 在onCreate之前执行
