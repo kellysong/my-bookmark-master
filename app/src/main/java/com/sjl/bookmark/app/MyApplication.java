@@ -16,6 +16,7 @@ import com.sjl.core.app.CrashHandler;
 import com.sjl.core.net.RetrofitHelper;
 import com.sjl.core.net.RetrofitLogAdapter;
 import com.sjl.core.net.RetrofitParams;
+import com.squareup.leakcanary.LeakCanary;
 
 import androidx.multidex.MultiDex;
 
@@ -69,6 +70,12 @@ public class MyApplication extends BaseApplication {
 
             }
         });
+        if (LeakCanary.isInAnalyzerProcess(this)) {
+            // This process is dedicated to LeakCanary for heap analysis.
+            // You should not init your app in this process.
+            return;
+        }
+        LeakCanary.install(this);
     }
     private void initRetrofit() {
         RetrofitParams retrofitParams = new RetrofitParams.Builder()

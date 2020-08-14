@@ -59,4 +59,10 @@ public class SettingActivity extends BaseSwipeBackActivity {
         super.onResume();
         RxLifecycleUtils.setLifecycleOwner(this);
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        RxLifecycleUtils.clear();
+    }
 }
