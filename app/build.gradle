@@ -289,7 +289,8 @@ dependencies {
     implementation 'org.jsoup:jsoup:1.11.2'
 
     /*腾讯x5内核*/
-    implementation files('libs/tbs_sdk_thirdapp_v3.1.0.1034_43100_sharewithdownload_obfs_20170301_182143.jar')
+//    implementation files('libs/tbs_sdk_thirdapp_v3.1.0.1034_43100_sharewithdownload_obfs_20170301_182143.jar')
+    implementation files('libs/tbs_sdk_thirdapp_v4.3.0.39_43939_sharewithdownloadwithfile_withoutGame_obfs_20200713_223411.jar')
 
     // AndroidTagGroup
     implementation 'me.gujun.android.taggroup:library:1.4@aar'

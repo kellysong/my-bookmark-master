@@ -3,7 +3,7 @@
     android:id="@+id/rl_content"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white">
+    android:background="@color/item_bg">
 
     <ImageView
         android:id="@+id/iv_icon"
@@ -21,7 +21,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
         android:text="@string/app_name"
-        android:textColor="#0091ea"
+        android:textColor="@color/cl_chapter_name"
         android:textSize="22sp" />
 
 

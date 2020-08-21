@@ -37,6 +37,8 @@ import com.tencent.smtt.sdk.WebView;
 import com.tencent.smtt.sdk.WebViewClient;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
@@ -61,13 +63,13 @@ public class BrowserActivity extends BaseSwipeBackActivity {
      */
     private ValueCallback<Uri> uploadFile;
     private ValueCallback<Uri[]> uploadFiles;
-
+    private static final List<String> URLS_302 = Arrays.asList("jianshu");
     /**
      * setDisplayShowTitleEnabled(boolean showTitle)方法：设置是否显示标题
-
-     setDisplayUseLogoEnabled(boolean useLogo)方法：设置是否显示logo
-
-     setDisplayShowHomeEnabled(boolean showHome)方法：设置是否显示返回
+     * <p>
+     * setDisplayUseLogoEnabled(boolean useLogo)方法：设置是否显示logo
+     * <p>
+     * setDisplayShowHomeEnabled(boolean showHome)方法：设置是否显示返回
      */
     private Toolbar toolbar;
     private String url;
@@ -75,7 +77,7 @@ public class BrowserActivity extends BaseSwipeBackActivity {
 
     private Bundle savedInstanceState;
     private boolean isAnimStart = false;
-    private int currentProgress=0;
+    private int currentProgress = 0;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -117,6 +119,7 @@ public class BrowserActivity extends BaseSwipeBackActivity {
             title = intent.getStringExtra(BrowserActivity.WEBVIEW_TITLE);
             initWebView();
         }
+
     }
 
     @Override
@@ -161,21 +164,30 @@ public class BrowserActivity extends BaseSwipeBackActivity {
                 mProgressBar.setAlpha(1.0f);
             }*/
 
-            //              不能用下面，会导致csdn博客加载失败
-            /**
-             * 防止加载网页时调起系统浏览器
-             */
+
             @Override
-            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+            public boolean shouldOverrideUrlLoading(WebView webView, String url) {
+                if (check302(url)) {
+                    return true;
+                }
                 return false;
             }
+
+            /**
+             * 防止加载网页时调起系统浏览器
+             *//*
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                super.shouldOverrideUrlLoading(view, url);//表示开发者自己不处理，交给系统处理
+                return true;//表示自己处理，不需要系统处理，比如如果是true，重定向就不会跳转
+            }*/
             @Override
             public void onPageFinished(final WebView view, final String url) {
                 super.onPageFinished(view, url);
-                if (!isActivityExist(BrowserActivity.class)){//防止快速打开和关闭webView时发生控件空指针
+                if (!isActivityExist(BrowserActivity.class)) {//防止快速打开和关闭webView时发生控件空指针
                     return;
                 }
-                if (toolbar != null){
+                if (toolbar != null) {
                     toolbar.setTitle(view.getTitle());
                 }
 //                addImageClickListener(view);//待网页加载完全后设置图片点击的监听方法
@@ -195,7 +207,7 @@ public class BrowserActivity extends BaseSwipeBackActivity {
                     mProgressBar.setProgress(newProgress);
                 }*/
 
-                if (null==mProgressBar) return;
+                if (null == mProgressBar) return;
                 currentProgress = mProgressBar.getProgress();
                 if (newProgress >= 100 && !isAnimStart) {
                     // 防止调用多次动画
@@ -207,7 +219,8 @@ public class BrowserActivity extends BaseSwipeBackActivity {
                     if (View.GONE == mProgressBar.getVisibility()) {
                         isAnimStart = false;
                         mProgressBar.setVisibility(View.VISIBLE);
-                        mProgressBar.setAlpha(1.0f);                    }
+                        mProgressBar.setAlpha(1.0f);
+                    }
                     // 开启属性动画让进度条平滑递增
                     startProgressAnimation(newProgress);
                 }
@@ -291,7 +304,6 @@ public class BrowserActivity extends BaseSwipeBackActivity {
                 BrowserActivity.this.enablePageVideoFunc();
             }
         }, "Android");
-
         if (url == null) {
             finish();
             return;
@@ -306,13 +318,21 @@ public class BrowserActivity extends BaseSwipeBackActivity {
             @Override
             public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
                 ArrayList<View> outView = new ArrayList<View>();
-                getWindow().getDecorView().findViewsWithText(outView,"QQ浏览器",View.FIND_VIEWS_WITH_TEXT);
-                int size = outView.size();
-                if(outView!=null&&outView.size()>0){
+                getWindow().getDecorView().findViewsWithText(outView, "QQ浏览器", View.FIND_VIEWS_WITH_TEXT);
+                if (outView != null && outView.size() > 0) {
                     outView.get(0).setVisibility(View.GONE);
                 }
             }
         });
+    }
+
+    private boolean check302(String webUrl) {
+        for (String url : URLS_302) {
+            if (webUrl != null && webUrl.startsWith(url)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -339,7 +359,7 @@ public class BrowserActivity extends BaseSwipeBackActivity {
             public void onAnimationUpdate(ValueAnimator valueAnimator) {
                 float fraction = valueAnimator.getAnimatedFraction();      // 0.0f ~ 1.0f
                 int offset = 100 - progress;
-                if (null!=mProgressBar) {
+                if (null != mProgressBar) {
                     mProgressBar.setProgress((int) (progress + offset * fraction));
                 }
             }
@@ -357,7 +377,6 @@ public class BrowserActivity extends BaseSwipeBackActivity {
         });
         anim.start();
     }
-
 
 
     /**
@@ -480,7 +499,6 @@ public class BrowserActivity extends BaseSwipeBackActivity {
         }
 
     }
-
 
 
     @Override

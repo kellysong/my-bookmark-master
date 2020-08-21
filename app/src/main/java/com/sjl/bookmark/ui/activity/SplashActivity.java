@@ -52,7 +52,9 @@ public class SplashActivity extends BaseActivity {
      * Manifest.permission.REQUEST_INSTALL_PACKAGES
      * 存储权限，相机权限，8.0安装权限
      */
-    private String[] permissions = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA, Manifest.permission.ACCESS_FINE_LOCATION};
+    private String[] permissions = {Manifest.permission.WRITE_EXTERNAL_STORAGE
+            , Manifest.permission.CAMERA
+            , Manifest.permission.ACCESS_FINE_LOCATION};
     /**
      * 权限请求码
      */

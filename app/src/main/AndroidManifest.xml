@@ -23,7 +23,7 @@
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
 
     <!--覆盖第三方库的minSdkVersion -->
-    <uses-sdk tools:overrideLibrary="cn.sharesdk,cn.sharesdk.onekeyshare,com.ctetin.expandabletextviewlibrary" />
+    <uses-sdk tools:overrideLibrary="cn.sharesdk,cn.sharesdk.onekeyshare,com.ctetin.expandabletextviewlibrary,com.mob.mobapm" />
 
     <application
         android:name="com.sjl.bookmark.app.MyApplication"
