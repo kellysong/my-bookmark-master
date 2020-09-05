@@ -8,13 +8,8 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
 import android.provider.Settings;
-import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.appcompat.app.AlertDialog;
-
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.sinpo.xnfc.NFCardActivity;
@@ -27,12 +22,20 @@ import com.sjl.core.mvp.BaseActivity;
 import com.sjl.core.util.PreferencesHelper;
 import com.sjl.core.util.ShortcutUtils;
 import com.sjl.core.util.ToastUtils;
+import com.sjl.core.util.ViewUtils;
 import com.sjl.core.util.log.LogUtils;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashSet;
 import java.util.Set;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import static android.os.Build.VERSION_CODES.M;
 
@@ -79,6 +82,9 @@ public class SplashActivity extends BaseActivity {
     protected int getLayoutId() {
         //        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
 //                WindowManager.LayoutParams.FLAG_FULLSCREEN);// 设置全屏
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+           getWindow().getDecorView().setBackground(null);
+        }
         setStatusBar(0xffAFAFAF);
         LanguageManager.INSTANCE.initAppLanguage(this);//初始化语言
         return R.layout.activity_splash;
@@ -88,7 +94,9 @@ public class SplashActivity extends BaseActivity {
     protected void initView() {
         copyright = findViewById(R.id.tv_copyright);
         ivLogo = findViewById(R.id.iv_icon);
+
     }
+
 
 
     /**
@@ -113,6 +121,10 @@ public class SplashActivity extends BaseActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
+               /* RelativeLayout rl = findViewById(R.id.rl_content);
+                File file = new File(AppConstant.ROOT_PATH+"splash.png");
+                ViewUtils.saveBitmap(rl,rl.getWidth(),rl.getHeight(),file.getAbsolutePath());*/
+
 //                ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
 //                int memorySize = activityManager.getMemoryClass();
 //                LogUtils.i("分配给应用的内存上限：" + memorySize);

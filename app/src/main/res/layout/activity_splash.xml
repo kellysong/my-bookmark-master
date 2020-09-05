@@ -3,7 +3,7 @@
     android:id="@+id/rl_content"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/item_bg">
+    android:background="@drawable/layer_splash">
 
     <ImageView
         android:id="@+id/iv_icon"
@@ -11,6 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="60dp"
+        android:visibility="gone"
         android:src="@mipmap/ic_launcher" />
 
     <TextView
@@ -21,6 +22,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
         android:text="@string/app_name"
+        android:visibility="gone"
         android:textColor="@color/cl_chapter_name"
         android:textSize="22sp" />
 
@@ -33,6 +35,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="40dp"
         android:gravity="center"
+        android:visibility="gone"
         android:text="@string/str_copyright"
         android:textColor="@android:color/darker_gray"
         android:textSize="12sp" />
