@@ -19,8 +19,10 @@ buildscript {
         classpath 'org.greenrobot:greendao-gradle-plugin:3.2.2' // add plugin
         // 注册MobSDK，第三方分享和登录
         classpath "com.mob.sdk:MobSDK:2018.0319.1724"
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"//引入Kotlin
-
+        //引入Kotlin
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        //bugly符号表
+        classpath 'com.tencent.bugly:symtabfileuploader:2.2.1'
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }

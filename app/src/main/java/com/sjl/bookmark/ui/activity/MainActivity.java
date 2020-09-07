@@ -358,6 +358,7 @@ public class MainActivity extends BaseActivity<BasePresenter>
         //限时大促
 //        runnable.run();
         autoBackupCollection();
+//        CrashReport.testJavaCrash();
     }
 
     /**

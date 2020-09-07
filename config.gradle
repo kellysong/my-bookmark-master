@@ -13,6 +13,7 @@ ext {
     def dependVersion = [
             support   : "28.0.0",
             leakcanary: "1.6.1",
+            buglySDK : "3.1.0"
     ]
 
     //下面的暂时没用
@@ -42,5 +43,7 @@ ext {
 
             "SmartRefreshLayout"      : 'com.scwang.smartrefresh:SmartRefreshLayout:1.0.4-5',
             "rxpermissions2"          : 'com.tbruyelle.rxpermissions2:rxpermissions:0.9.5@aar',
+            "bugly"                           : "com.tencent.bugly:crashreport:${dependVersion.buglySDK}",
+            "bugly_nativecrashreport"         : "com.tencent.bugly:nativecrashreport:${dependVersion.buglySDK}"
     ]
 }

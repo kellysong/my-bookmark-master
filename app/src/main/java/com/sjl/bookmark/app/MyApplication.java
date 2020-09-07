@@ -17,6 +17,7 @@ import com.sjl.core.net.RetrofitHelper;
 import com.sjl.core.net.RetrofitLogAdapter;
 import com.sjl.core.net.RetrofitParams;
 import com.squareup.leakcanary.LeakCanary;
+import com.tencent.bugly.crashreport.CrashReport;
 
 import androidx.multidex.MultiDex;
 
@@ -34,6 +35,8 @@ public class MyApplication extends BaseApplication {
         initRetrofit();
         preInitX5Core();
         MobSDK.init(this);
+        CrashReport.initCrashReport(getApplicationContext(), BuildConfig.buglyID, false);
+
         registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {
             @Override
             public void onActivityCreated(Activity activity, Bundle savedInstanceState) {

@@ -3,8 +3,12 @@ apply plugin: 'org.greenrobot.greendao' // apply plugin
 apply plugin: 'com.mob.sdk'
 apply plugin: 'kotlin-android'//引入kotlin
 apply plugin: 'kotlin-android-extensions'//简化fid
+apply plugin: 'bugly'
 
 def releaseApkName = "bookmark_release.apk"
+
+def buglyAppID = "5342dfc505"
+
 /**
  * 对发布成功的apk进行备份
  */
@@ -69,6 +73,8 @@ android {
         multiDexEnabled true //规避 64K 限制
         //必须要保证所有的flavor 都属于同一个维度
         flavorDimensions "default"
+        //
+        buildConfigField("String", "buglyID", "\"${buglyAppID}\"")
     }
 
     signingConfigs {
@@ -231,6 +237,11 @@ greendao {
     targetGenDir 'src/main/java'
 }
 
+bugly {
+    appId = "${buglyAppID}"
+    appKey = "d130bcf1-2e50-465b-a213-e80fcc1f13f1"
+}
+
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     testImplementation 'junit:junit:4.12'
@@ -323,6 +334,9 @@ dependencies {
     //leakcanary
     debugImplementation rootProject.ext.dependencies["leakcanary-android"]
     releaseImplementation rootProject.ext.dependencies["leakcanary-android-no-op"]
+    //bugly
+    implementation rootProject.ext.dependencies["bugly"]
+    implementation rootProject.ext.dependencies["bugly_nativecrashreport"]
 }
 
 repositories {

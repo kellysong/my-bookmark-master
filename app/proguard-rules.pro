@@ -281,6 +281,10 @@ public static java.lang.String TABLENAME;
 -keep class com.tencent.smtt.**{*;}
 -keep class com.tencent.tbs.**{*;}
 
+# bugly 混淆
+-dontwarn com.tencent.bugly.**
+-keep public class com.tencent.bugly.**{*;}
+
 # app定制
 -keep class com.sjl.bookmark.entity.**{*;}
 -keep class com.sjl.bookmark.widget.reader.bean.**{*;}
