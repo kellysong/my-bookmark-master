@@ -13,6 +13,7 @@ import com.sjl.bookmark.net.MyBaseUrlAdapter;
 import com.sjl.bookmark.service.X5CoreService;
 import com.sjl.core.app.BaseApplication;
 import com.sjl.core.app.CrashHandler;
+import com.sjl.core.manager.CachedThreadManager;
 import com.sjl.core.net.RetrofitHelper;
 import com.sjl.core.net.RetrofitLogAdapter;
 import com.sjl.core.net.RetrofitParams;
@@ -20,23 +21,47 @@ import com.squareup.leakcanary.LeakCanary;
 import com.tencent.bugly.crashreport.CrashReport;
 
 import androidx.multidex.MultiDex;
+import io.reactivex.plugins.RxJavaPlugins;
 
-
+/**
+ * @author song
+ */
 public class MyApplication extends BaseApplication {
 
 
     @Override
     public void onCreate() {
         super.onCreate();
+        initSyncTask();
+        initAsyncTask();
+    }
+
+    private void initSyncTask() {
         boolean enableLog = BuildConfig.enableLog;
-        CrashHandler.getInstance().init(this);
         initLogConfig(enableLog);//控制是否开启开启
         initSkinLoader();
         initRetrofit();
-        preInitX5Core();
-        MobSDK.init(this);
-        CrashReport.initCrashReport(getApplicationContext(), BuildConfig.buglyID, false);
+        initDarkMode();
+        initErrorHandler();
+        if (LeakCanary.isInAnalyzerProcess(this)) {
+            // This process is dedicated to LeakCanary for heap analysis.
+            // You should not init your app in this process.
+            return;
+        }
+        LeakCanary.install(this);
+    }
 
+    private void initAsyncTask() {
+        CachedThreadManager.getInstance().execute(new Runnable() {
+            @Override
+            public void run() {
+                MobSDK.init(MyApplication.this);
+                preInitX5Core();
+            }
+        });
+    }
+
+    private void initDarkMode() {
         registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {
             @Override
             public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
@@ -73,13 +98,16 @@ public class MyApplication extends BaseApplication {
 
             }
         });
-        if (LeakCanary.isInAnalyzerProcess(this)) {
-            // This process is dedicated to LeakCanary for heap analysis.
-            // You should not init your app in this process.
-            return;
-        }
-        LeakCanary.install(this);
     }
+
+    private void initErrorHandler() {
+        CrashHandler.getInstance().init(this);
+        CrashReport.initCrashReport(getApplicationContext(), BuildConfig.buglyID, false);
+        RxJavaPlugins.setErrorHandler(throwable -> {
+            CrashReport.postCatchedException(new Exception("RxJava全局异常", throwable));
+        });
+    }
+
     private void initRetrofit() {
         RetrofitParams retrofitParams = new RetrofitParams.Builder()
                 .setBaseUrlAdapter(new MyBaseUrlAdapter()).setRetrofitLogAdapter(new RetrofitLogAdapter() {
