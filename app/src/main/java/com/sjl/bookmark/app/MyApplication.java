@@ -102,7 +102,9 @@ public class MyApplication extends BaseApplication {
 
     private void initErrorHandler() {
         CrashHandler.getInstance().init(this);
-        CrashReport.initCrashReport(getApplicationContext(), BuildConfig.buglyID, false);
+        if (!BuildConfig.enableLog){
+            CrashReport.initCrashReport(getApplicationContext(), BuildConfig.buglyID, false);
+        }
         RxJavaPlugins.setErrorHandler(throwable -> {
             CrashReport.postCatchedException(new Exception("RxJava全局异常", throwable));
         });
