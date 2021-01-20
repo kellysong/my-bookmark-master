@@ -63,7 +63,7 @@ public class BrowserActivity extends BaseSwipeBackActivity {
      */
     private ValueCallback<Uri> uploadFile;
     private ValueCallback<Uri[]> uploadFiles;
-    private static final List<String> URLS_302 = Arrays.asList("jianshu");
+    private static final List<String> URLS_302 = Arrays.asList("jianshu","wtloginmqq");
     /**
      * setDisplayShowTitleEnabled(boolean showTitle)方法：设置是否显示标题
      * <p>

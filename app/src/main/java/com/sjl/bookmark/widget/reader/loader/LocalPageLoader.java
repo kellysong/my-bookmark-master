@@ -8,7 +8,7 @@ import com.sjl.core.util.file.FileUtils;
 import com.sjl.core.util.security.MD5Utils;
 import com.sjl.core.util.datetime.TimeUtils;
 import com.sjl.bookmark.widget.reader.PageView;
-import com.sjl.core.util.file.Charset;
+import com.sjl.core.util.file.CharsetEnum;
 import com.sjl.bookmark.widget.reader.bean.TxtChapter;
 import com.sjl.core.net.RxSchedulers;
 import com.sjl.core.net.RxVoid;
@@ -61,7 +61,7 @@ public class LocalPageLoader extends PageLoader {
     //获取书本的文件
     private File mBookFile;
     //编码类型
-    private Charset mCharset;
+    private CharsetEnum mCharset;
 
     private Disposable mChapterDisp = null;
 
@@ -214,7 +214,7 @@ public class LocalPageLoader extends PageLoader {
                         int end = length;
                         //寻找换行符作为终止点
                         for (int i = chapterOffset + MAX_LENGTH_WITH_NO_CHAPTER; i < length; ++i) {
-                            if (buffer[i] == Charset.BLANK) {
+                            if (buffer[i] == CharsetEnum.BLANK) {
                                 end = i;
                                 break;
                             }
