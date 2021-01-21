@@ -3,6 +3,7 @@ apply plugin: 'org.greenrobot.greendao' // apply plugin
 apply plugin: 'com.mob.sdk'
 apply plugin: 'kotlin-android'//引入kotlin
 apply plugin: 'kotlin-android-extensions'//简化fid
+//apply plugin: "kotlin-kapt"
 apply plugin: 'bugly'
 
 def releaseApkName = "bookmark_release.apk"
@@ -251,12 +252,18 @@ dependencies {
 
     //个人类库，以project的引入是为了方便修改，其它示例工程全部以maven方式引入
     /*基础库*/
-    implementation project(':my-common-lib:base-core')
-    implementation project(':my-common-lib:base-adapter')
+    //implementation project(':my-common-lib:base-core')
+    //implementation project(':my-common-lib:base-adapter')
+	implementation 'com.github.kellysong.my-common:base-adapter:2.1.2'
+	implementation 'com.github.kellysong.my-common:base-core:2.1.2'
+	annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.1'
+	annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
 
     /*硬件相关*/
-    implementation project (':my-hardware-lib:nfcard')
-    implementation project (':my-hardware-lib:zxing')
+   // implementation project (':my-hardware-lib:nfcard')
+   //implementation project (':my-hardware-lib:zxing')
+	implementation 'com.github.kellysong.my-hardware:nfcard:1.1.0'
+	implementation 'com.github.kellysong.my-hardware:zxing:1.1.0'
 
     /*今日头条屏幕适配*/
     implementation 'me.jessyan:autosize:1.1.2'
@@ -329,7 +336,7 @@ dependencies {
     implementation 'com.github.ctiao:DanmakuFlameMaster:0.9.25'
     implementation 'com.github.ctiao:ndkbitmap-armv7a:0.9.21'
     //引入kotlin
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
     //leakcanary
     debugImplementation rootProject.ext.dependencies["leakcanary-android"]

@@ -14,6 +14,7 @@ import com.sjl.core.util.log.LogUtils;
 
 import org.greenrobot.greendao.query.QueryBuilder;
 
+import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -252,7 +253,11 @@ public class CollectBookDaoImpl extends BaseDao<CollectBook> {
      * @param bookId
      */
     public void deleteBookFile(String bookId) {
-        FileUtils.deleteFile(AppConstant.BOOK_CACHE_PATH + bookId);
+        try {
+            FileUtils.deleteFile(AppConstant.BOOK_CACHE_PATH + bookId);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**

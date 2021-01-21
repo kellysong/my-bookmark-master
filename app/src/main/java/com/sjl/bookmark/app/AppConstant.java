@@ -84,7 +84,10 @@ public class AppConstant {
          */
         public static final String DARK_THEME = "dark_theme";
 
-
+        /**
+         * 登录日期
+         */
+        public static final String LOGIN_DATE = "login_date";
     }
 
     /**

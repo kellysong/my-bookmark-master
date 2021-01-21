@@ -25,11 +25,14 @@ import com.google.android.material.navigation.NavigationView;
 import com.orhanobut.logger.Logger;
 import com.renny.zxing.Activity.CaptureActivity;
 import com.sjl.bookmark.R;
+import com.sjl.bookmark.api.WanAndroidApiService;
 import com.sjl.bookmark.app.AppConstant;
 import com.sjl.bookmark.dao.impl.CollectDaoImpl;
 import com.sjl.bookmark.dao.util.BookmarkParse;
 import com.sjl.bookmark.dao.util.BrowseMapper;
+import com.sjl.bookmark.entity.DataResponse;
 import com.sjl.bookmark.entity.UserInfo;
+import com.sjl.bookmark.entity.UserLogin;
 import com.sjl.bookmark.entity.table.Collection;
 import com.sjl.bookmark.kotlin.language.I18nUtils;
 import com.sjl.bookmark.ui.adapter.MainViewPagerAdapter;
@@ -43,7 +46,9 @@ import com.sjl.core.entity.EventBusDto;
 import com.sjl.core.mvp.BaseActivity;
 import com.sjl.core.mvp.BaseFragment;
 import com.sjl.core.mvp.BasePresenter;
+import com.sjl.core.net.RetrofitHelper;
 import com.sjl.core.net.RxBus;
+import com.sjl.core.net.RxObserver;
 import com.sjl.core.net.RxSchedulers;
 import com.sjl.core.util.AppUtils;
 import com.sjl.core.util.PreferencesHelper;
@@ -359,6 +364,41 @@ public class MainActivity extends BaseActivity<BasePresenter>
 //        runnable.run();
         autoBackupCollection();
 //        CrashReport.testJavaCrash();
+
+        autoLoginWanAndroid();
+    }
+
+    /**
+     * 自动登录WanAndroid，获取积分
+     */
+    private void autoLoginWanAndroid() {
+        final PreferencesHelper preferencesHelper = PreferencesHelper.getInstance(mContext);
+        String date = (String) preferencesHelper.get(AppConstant.SETTING.LOGIN_DATE, "");
+        String currentDate = TimeUtils.formatDateToStr(new Date(), TimeUtils.DATE_FORMAT_4);
+        if (currentDate.equals(date)){
+            return;
+        }
+        RetrofitHelper.getInstance().getApiService(WanAndroidApiService.class).login("songjiali","songjiali")
+                .compose(RxSchedulers.applySchedulers()).as(bindLifecycle()).subscribe(new RxObserver<DataResponse<UserLogin>>() {
+            @Override
+            public void _onNext(DataResponse<UserLogin> userLoginDataResponse) {
+                if (userLoginDataResponse.getErrorCode() == 0){
+                    LogUtils.i("登录成功");
+                    preferencesHelper.put(AppConstant.SETTING.LOGIN_DATE,currentDate);
+                }
+
+            }
+
+            @Override
+            public void _onError(String msg) {
+
+            }
+
+            @Override
+            public void _onComplete() {
+
+            }
+        });
     }
 
     /**
