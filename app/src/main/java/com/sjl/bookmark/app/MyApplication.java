@@ -123,6 +123,7 @@ public class MyApplication extends BaseApplication {
                         return false;
                     }
                 })
+//                .setInterceptor(new WanAndroidCookieInterceptor())
                 .build();
         RetrofitHelper.getInstance().init(retrofitParams);
     }

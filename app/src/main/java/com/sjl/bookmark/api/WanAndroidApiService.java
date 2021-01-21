@@ -2,10 +2,11 @@ package com.sjl.bookmark.api;
 
 
 import com.sjl.bookmark.entity.Article;
-import com.sjl.bookmark.entity.TopBanner;
 import com.sjl.bookmark.entity.Category;
 import com.sjl.bookmark.entity.DataResponse;
 import com.sjl.bookmark.entity.HotKey;
+import com.sjl.bookmark.entity.TopBanner;
+import com.sjl.bookmark.entity.UserLogin;
 
 import java.util.List;
 
@@ -88,5 +89,16 @@ public interface WanAndroidApiService {
     @POST("article/query/{page}/json")
     @FormUrlEncoded
     Observable<DataResponse<Article>> getSearchArticles(@Path("page") int page, @Field("k") String k);
+
+    /**
+     * 登录，用于获取签到获取积分
+     * @param username
+     * @param password
+     * @return
+     */
+    @Headers({"Domain-Name:wanandroid"})
+    @FormUrlEncoded
+    @POST("user/login")
+    Observable<DataResponse<UserLogin>> login(@Field("username") String username, @Field("password") String password);
 
 }
