@@ -156,7 +156,7 @@ android {
             applicationId "com.sjl.bookmark"
             // 动态添加 string.xml 字段；
             // 注意，这里是添加，在 string.xml 不能有这个字段，会重名！！！
-            resValue "string", "app_name", "Google书签"
+            resValue "string", "app_name", "口袋书签"
             // 动态修改 常量 字段
             buildConfigField "int", "appType", '0'
 
@@ -169,7 +169,7 @@ android {
         }
         bookmark_test {
             applicationId "com.sjl.bookmark.test"
-            resValue "string", "app_name", "Google书签test"
+            resValue "string", "app_name", "口袋书签test"
             buildConfigField "int", "appType", '0'
 
             manifestPlaceholders = [
