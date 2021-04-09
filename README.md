@@ -18,7 +18,7 @@
 - 其它功能：文章备份和同步、主题更换、语言更换、手势密码设置等
 
 # apk下载
-[安装包](bookmark_V3.8.1-RC2_release_2021-01-21.apk)
+[安装包](pocket_bookmark.apk)
 
 [更新日志](Google书签app更新说明.md)
 
