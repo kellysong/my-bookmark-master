@@ -7,11 +7,12 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
-import androidx.annotation.Nullable;
 
 import com.sjl.core.util.log.LogUtils;
 import com.tencent.smtt.sdk.QbSdk;
 import com.tencent.smtt.sdk.TbsListener;
+
+import androidx.annotation.Nullable;
 
 /**
  * TODO
@@ -85,17 +86,28 @@ public class X5CoreService extends IntentService {
     };
 
     private static final String CHANNEL_ID_STRING = "x5";
-
+    private NotificationManager notificationManager;
     @Override
     public void onCreate() {
         super.onCreate();
-        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         NotificationChannel mChannel;
+        //开启Service报错 兼容，前台服务需要加这个
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             mChannel = new NotificationChannel(CHANNEL_ID_STRING, "x5core", NotificationManager.IMPORTANCE_HIGH);
             notificationManager.createNotificationChannel(mChannel);
             Notification notification = new Notification.Builder(getApplicationContext(), CHANNEL_ID_STRING).build();
             startForeground(1, notification); //这个id不要和应用内的其他通知id一样，不行就写 int.maxValue()        //context.startForeground(SERVICE_ID, builder.getNotification());
+        }
+
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        stopForeground(true);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && notificationManager != null) {
+            notificationManager.cancelAll();
         }
 
     }

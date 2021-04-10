@@ -9,7 +9,6 @@ import android.os.Build;
 import android.os.Handler;
 import android.provider.Settings;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.sinpo.xnfc.NFCardActivity;
@@ -22,12 +21,9 @@ import com.sjl.core.mvp.BaseActivity;
 import com.sjl.core.util.PreferencesHelper;
 import com.sjl.core.util.ShortcutUtils;
 import com.sjl.core.util.ToastUtils;
-import com.sjl.core.util.ViewUtils;
 import com.sjl.core.util.log.LogUtils;
 
-import java.io.File;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -82,19 +78,20 @@ public class SplashActivity extends BaseActivity {
     protected int getLayoutId() {
         //        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
 //                WindowManager.LayoutParams.FLAG_FULLSCREEN);// 设置全屏
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+    /*    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
            getWindow().getDecorView().setBackground(null);
         }
-        setStatusBar(0xffAFAFAF);
+        setStatusBar(0xffAFAFAF);*/
         LanguageManager.INSTANCE.initAppLanguage(this);//初始化语言
-        return R.layout.activity_splash;
+//        return R.layout.activity_splash;
+        return 0;//不需要布局
+
     }
 
     @Override
     protected void initView() {
-        copyright = findViewById(R.id.tv_copyright);
-        ivLogo = findViewById(R.id.iv_icon);
-
+//        copyright = findViewById(R.id.tv_copyright);
+//        ivLogo = findViewById(R.id.iv_icon);
     }
 
 
@@ -105,6 +102,16 @@ public class SplashActivity extends BaseActivity {
     private void openMainActivity() {
         if (BuildConfig.appType == 0) {//默认应用
             openGoogleBookmark();
+           /* new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    //生成截图
+                    RelativeLayout rl = findViewById(R.id.rl_content);
+                    File file = new File(AppConstant.ROOT_PATH + "splash.png");
+                    ViewUtils.saveBitmap(rl, rl.getWidth(), rl.getHeight(), file.getAbsolutePath());
+
+                }
+            },5000);*/
         } else if (BuildConfig.appType == 1) {
             openAPPReader();
         } else {
@@ -121,10 +128,6 @@ public class SplashActivity extends BaseActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-               /* RelativeLayout rl = findViewById(R.id.rl_content);
-                File file = new File(AppConstant.ROOT_PATH+"splash.png");
-                ViewUtils.saveBitmap(rl,rl.getWidth(),rl.getHeight(),file.getAbsolutePath());*/
-
 //                ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
 //                int memorySize = activityManager.getMemoryClass();
 //                LogUtils.i("分配给应用的内存上限：" + memorySize);
@@ -168,17 +171,17 @@ public class SplashActivity extends BaseActivity {
             //创建快捷方式
             ShortcutUtils.addShortcut(SplashActivity.this, R.string.app_name, R.mipmap.ic_shortcut);
             ShortcutUtils.addDyShortcut(SplashActivity.this, NFCardActivity.class, "nfc_id", "余额查询", R.mipmap.icon_nfc);
-            ivLogo.setImageResource(R.mipmap.ic_launcher);
+//            ivLogo.setImageResource(R.mipmap.ic_launcher);
         } else if (BuildConfig.appType == 1) {
-            ivLogo.setImageResource(R.mipmap.ic_book);
+//            ivLogo.setImageResource(R.mipmap.ic_book);
         } else {
             ToastUtils.showShort(this, "找不到合适的应用类型:" + BuildConfig.appType);
             finish();
             return;
         }
-        Calendar date = Calendar.getInstance();
+/*        Calendar date = Calendar.getInstance();
         String year = String.valueOf(date.get(Calendar.YEAR));
-        copyright.setText(getResources().getString(R.string.str_copyright, year));
+        copyright.setText(getResources().getString(R.string.str_copyright, year));*/
         // 版本判断。当手机系统大于 23 时，才有必要去判断权限是否获取
         if (Build.VERSION.SDK_INT >= M) {
             ArrayList<String> toApplyList = new ArrayList<String>();
