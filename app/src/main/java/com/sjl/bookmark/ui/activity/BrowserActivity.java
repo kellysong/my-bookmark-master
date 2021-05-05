@@ -24,9 +24,9 @@ import android.widget.ProgressBar;
 
 import com.sjl.bookmark.R;
 import com.sjl.bookmark.dao.util.CollectUtils;
-import com.sjl.bookmark.ui.base.extend.BaseSwipeBackActivity;
 import com.sjl.bookmark.widget.WebViewJavaScriptFunction;
 import com.sjl.bookmark.widget.X5WebView;
+import com.sjl.core.mvp.BaseActivity;
 import com.sjl.core.util.SnackbarUtils;
 import com.sjl.core.util.log.LogUtils;
 import com.tencent.smtt.sdk.CookieSyncManager;
@@ -46,7 +46,7 @@ import androidx.appcompat.widget.Toolbar;
 /**
  * 集成腾讯x5内核webview add by Kelly on 20170209
  */
-public class BrowserActivity extends BaseSwipeBackActivity {
+public class BrowserActivity extends BaseActivity {
     /**
      * 作为一个浏览器的示例展示出来，采用android+web的模式
      */
@@ -90,10 +90,11 @@ public class BrowserActivity extends BaseSwipeBackActivity {
         return R.layout.activity_browser;
     }
 
-    @Override
+  /*  @Override
     protected void changeStatusBarColor() {
         setColorForSwipeBack();
     }
+*/
 
     @Override
     protected void initView() {
