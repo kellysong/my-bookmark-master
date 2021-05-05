@@ -7,10 +7,6 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.MediaStore;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import androidx.core.content.FileProvider;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
@@ -26,6 +22,7 @@ import com.bm.library.Info;
 import com.bm.library.PhotoView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.sjl.bookmark.BuildConfig;
 import com.sjl.bookmark.R;
 import com.sjl.bookmark.app.AppConstant;
@@ -34,14 +31,17 @@ import com.sjl.bookmark.ui.base.extend.BaseSwipeBackActivity;
 import com.sjl.core.entity.EventBusDto;
 import com.sjl.core.net.GlideCircleTransform;
 import com.sjl.core.net.RxBus;
-import com.sjl.core.util.log.LogUtils;
 import com.sjl.core.util.SerializeUtils;
 import com.sjl.core.util.UriUtils;
 import com.sjl.core.util.ViewUtils;
+import com.sjl.core.util.log.LogUtils;
 import com.yalantis.ucrop.UCrop;
 
 import java.io.File;
 
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.FileProvider;
 import butterknife.BindView;
 import butterknife.OnClick;
 
@@ -135,7 +135,7 @@ public class PersonCenterActivity extends BaseSwipeBackActivity {
             oldPersonality = userInfo.getPersonality();
             tvNickname.setText(oldName);
             tvSex.setText(oldSex);
-            tvPhone.setText("13537772914");//以后注册显示
+            tvPhone.setText("135****2914");//以后注册显示
             if (!TextUtils.isEmpty(oldPersonality)) {
                 tvPersonality.setText(oldPersonality);
             } else {

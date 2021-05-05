@@ -487,13 +487,11 @@ public class MainActivity extends BaseActivity<BasePresenter>
             @Override
             public void subscribe(ObservableEmitter<Object> emitter) throws Exception {
                 File temp = new File(AppConstant.USER_HEAD_PATH + File.separator + "head_crop.jpg");
-                if (!temp.exists()) {
-                    LogUtils.i("头像不存在");
-                    return;
+                if (temp.exists()) {
+                    FileInputStream fis = new FileInputStream(temp);
+                    Bitmap bitmap = BitmapFactory.decodeStream(fis);///把流转化为Bitmap图片
+                    emitter.onNext(bitmap);
                 }
-                FileInputStream fis = new FileInputStream(temp);
-                Bitmap bitmap = BitmapFactory.decodeStream(fis);///把流转化为Bitmap图片
-                emitter.onNext(bitmap);
                 UserInfo userInfo = SerializeUtils.deserialize("userInfo", UserInfo.class);
                 if (userInfo != null) {
                     emitter.onNext(userInfo);

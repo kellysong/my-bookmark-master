@@ -15,8 +15,10 @@
     <!--启动页适配(APP启动黑白屏问题)-->
     <style name="AppTheme.Launcher" parent="AppTheme.NoActionBar">
         <!--禁用窗口的预览动画-->
-        <item name="android:windowDisablePreview">true</item>
-        <item name="android:windowBackground">@null</item>
+<!--        <item name="android:windowDisablePreview">true</item>-->
+<!--        <item name="android:windowBackground">@null</item>-->
+        <item name="android:windowBackground">@drawable/layer_splash</item>
+
     </style>
     <!--主页适配-->
     <style name="AppTheme.NoActionBar">
