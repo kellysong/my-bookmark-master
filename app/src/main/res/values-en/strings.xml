@@ -112,5 +112,7 @@
     <string name="mode_auto">Auto</string>
     <string name="mode_normal">Normal Mode</string>
     <string name="mode_dark">@string/dark_mode</string>
+    <string name="tool_barrage">Barrage</string>
+    <string name="tool_speed_detection">Speed Detection</string>
 
 </resources>

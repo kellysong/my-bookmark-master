@@ -8,10 +8,12 @@ import com.sjl.bookmark.R;
 import com.sjl.bookmark.entity.ModuleMenu;
 import com.sjl.bookmark.kotlin.language.I18nUtils;
 import com.sjl.bookmark.ui.activity.AccountIndexActivity;
+import com.sjl.bookmark.ui.activity.BarrageShowActivity;
 import com.sjl.bookmark.ui.activity.BookShelfActivity;
 import com.sjl.bookmark.ui.activity.BrowserActivity;
 import com.sjl.bookmark.ui.activity.ExpressActivity;
 import com.sjl.bookmark.ui.activity.NewsListActivity;
+import com.sjl.bookmark.ui.activity.SpeedDetectionActivity;
 import com.sjl.bookmark.ui.activity.WifiQueryActivity;
 import com.sjl.core.entity.EventBusDto;
 import com.sjl.core.mvp.BaseFragment;
@@ -66,6 +68,8 @@ public class ToolFragment extends BaseFragment {
         moduleMenus.add(new ModuleMenu(I18nUtils.getString(R.string.tool_cartoon), R.mipmap.menu_caricature, "https://m.ac.qq.com/search/index"));
         moduleMenus.add(new ModuleMenu(I18nUtils.getString(R.string.tool_novel_read), R.mipmap.menu_book, BookShelfActivity.class));
         moduleMenus.add(new ModuleMenu(I18nUtils.getString(R.string.tool_zhihu_daily), R.mipmap.menu_news, NewsListActivity.class));
+        moduleMenus.add(new ModuleMenu(I18nUtils.getString(R.string.tool_barrage), R.mipmap.menu_barrage, BarrageShowActivity.class));
+        moduleMenus.add(new ModuleMenu(I18nUtils.getString(R.string.tool_speed_detection), R.mipmap.menu_speed, SpeedDetectionActivity.class));
 
         rvContent.setAdapter(new CommonAdapter<ModuleMenu>(mActivity, R.layout.tool_recycle_item, moduleMenus) {
 

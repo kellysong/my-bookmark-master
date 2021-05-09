@@ -344,6 +344,9 @@ dependencies {
     //bugly
     implementation rootProject.ext.dependencies["bugly"]
     implementation rootProject.ext.dependencies["bugly_nativecrashreport"]
+
+    implementation project(':location')
+
 }
 
 repositories {

@@ -9,3 +9,4 @@ include ':app', ':spots-dialog-lib', ':photoview'
 //project (':my-hardware-lib').projectDir = new File('D:/workspace_android/my-lib/my-hardware-lib/')
 //include ':my-hardware-lib:nfcard'
 //include ':my-hardware-lib:zxing'
+include ':location'
