@@ -1,10 +1,9 @@
 package com.sjl.bookmark.ui.fragment;
 
 import android.os.Bundle;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.sjl.bookmark.R;
+import com.sjl.bookmark.app.MyApplication;
 import com.sjl.bookmark.entity.zhihu.NewsCommentDto;
 import com.sjl.bookmark.ui.adapter.NewsCommentAdapter;
 import com.sjl.bookmark.ui.adapter.RecyclerViewDivider;
@@ -17,6 +16,8 @@ import com.sjl.core.mvp.BaseFragment;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 import master.flame.danmaku.controller.IDanmakuView;
 
@@ -67,7 +68,7 @@ public class NewsCommentFragment extends BaseFragment<NewsCommentPresenter> impl
         mCommentRecyclerView.addItemDecoration(new RecyclerViewDivider(mActivity, LinearLayoutManager.VERTICAL));
         mCommentRecyclerView.setLayoutManager(new LinearLayoutManager(mActivity));
         if (position == 0) {
-            danmuControl = new DanMuControl(mActivity, mDanmakuView);
+            danmuControl = new DanMuControl(MyApplication.getContext(), mDanmakuView);
             mPresenter.loadShortComment(newsId);
         } else {
             mPresenter.loadLongComment(newsId);

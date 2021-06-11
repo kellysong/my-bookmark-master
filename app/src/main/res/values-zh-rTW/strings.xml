@@ -194,4 +194,6 @@
     <string name="mode_auto">跟隨系統</string>
     <string name="mode_normal">正常模式</string>
     <string name="mode_dark">@string/dark_mode</string>
+    <string name="tool_barrage">彈幕</string>
+    <string name="tool_speed_detection">測速</string>
 </resources>

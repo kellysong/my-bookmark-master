@@ -29,10 +29,10 @@
         android:name="com.sjl.bookmark.app.MyApplication"
         android:allowBackup="true"
         android:icon="${APP_ICON}"
-        android:roundIcon="@mipmap/ic_launcher_round"
         android:label="@string/app_name"
-        android:supportsRtl="true"
         android:networkSecurityConfig="@xml/network_security_config"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
             android:name=".ui.activity.SplashActivity"
@@ -64,12 +64,12 @@
         <meta-data
             android:name="notch.config"
             android:value="portrait|landscape" />
-      <meta-data
+        <meta-data
             android:name="design_width_in_dp"
-            android:value="360"/>
+            android:value="360" />
         <meta-data
             android:name="design_height_in_dp"
-            android:value="640"/>
+            android:value="640" />
 
 
         <!--Android 7.0需要使用FileProvider生成content:// Uri来替代file:// Uri-->
@@ -277,21 +277,30 @@
             android:hardwareAccelerated="true"
             android:screenOrientation="portrait"
             android:theme="@style/CommonNoActionBar" />
+        <activity
+            android:name=".ui.activity.BarrageShowActivity"
+            android:configChanges="keyboardHidden"
+            android:screenOrientation="landscape"
+            android:theme="@style/CommonNoActionBar" />
+        <activity
+            android:name=".ui.activity.SpeedDetectionActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/CommonNoActionBar" />
 
         <service
             android:name=".service.X5CoreService"
             android:enabled="true" />
         <service android:name=".service.DownloadIntentService" />
 
-       <!-- <receiver
-            android:name=".receiver.LocaleChangeReceiver"
-            android:enabled="true"
-            android:exported="true">
-            <intent-filter android:priority="1000">
-                <action android:name="android.intent.action.LOCALE_CHANGED" />
-            </intent-filter>
-        </receiver>
--->
+        <!-- <receiver
+             android:name=".receiver.LocaleChangeReceiver"
+             android:enabled="true"
+             android:exported="true">
+             <intent-filter android:priority="1000">
+                 <action android:name="android.intent.action.LOCALE_CHANGED" />
+             </intent-filter>
+         </receiver>
+ -->
 
     </application>
 
