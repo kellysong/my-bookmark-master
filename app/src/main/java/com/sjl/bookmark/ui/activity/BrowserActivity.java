@@ -24,6 +24,7 @@ import android.widget.ProgressBar;
 
 import com.sjl.bookmark.R;
 import com.sjl.bookmark.dao.util.CollectUtils;
+import com.sjl.bookmark.util.WebViewPool;
 import com.sjl.bookmark.widget.WebViewJavaScriptFunction;
 import com.sjl.bookmark.widget.X5WebView;
 import com.sjl.core.mvp.BaseActivity;
@@ -109,8 +110,9 @@ public class BrowserActivity extends BaseActivity {
             }
         });
         mViewParent = (FrameLayout) findViewById(R.id.webView1);
-        mWebView = new X5WebView(this, null);
 
+//        mWebView = new X5WebView(this, null);
+        mWebView = WebViewPool.getInstance().getWebView();
         if (savedInstanceState != null) {
             LogUtils.i("webview状态不为空，正在恢复");
             mWebView.restoreState(savedInstanceState);
@@ -505,9 +507,11 @@ public class BrowserActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (mWebView != null) {
+        WebViewPool.getInstance().recycleWebView(mViewParent,mWebView);
+        mWebView = null;
+       /* if (mWebView != null) {
             mWebView.release();
-        }
+        }*/
     }
 
 

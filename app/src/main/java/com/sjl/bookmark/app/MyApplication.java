@@ -49,6 +49,7 @@ public class MyApplication extends BaseApplication {
             return;
         }
         LeakCanary.install(this);
+//        WebViewPool.init();
     }
 
     private void initAsyncTask() {

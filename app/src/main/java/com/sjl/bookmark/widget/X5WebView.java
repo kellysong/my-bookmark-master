@@ -40,7 +40,7 @@ public class X5WebView extends WebView {
     private ProgressBar progressBar;
 
     public X5WebView(Context arg0) {
-        super(arg0);
+        this(arg0,null);
     }
 
 
