@@ -105,13 +105,13 @@ public class WebViewPool {
             WebVieWrap webVieWrap = webViewPool.get(i);
             X5WebView temp = webVieWrap.x5WebView;
             if (webView == temp) {
-                temp.loadUrl("");
-//                temp.loadUrl("about:blank");
                 temp.stopLoading();
                 temp.setWebChromeClient(null);
                 temp.setWebViewClient(null);
-                temp.clearCache(true);
                 temp.clearHistory();
+//                temp.clearCache(true);
+                temp.loadUrl("about:blank");
+                temp.pauseTimers();
                 webVieWrap.inUse = false;
                 break;
             }

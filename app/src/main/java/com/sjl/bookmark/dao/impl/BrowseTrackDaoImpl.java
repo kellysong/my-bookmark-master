@@ -6,7 +6,6 @@ import com.sjl.bookmark.dao.BrowseTrackDao;
 import com.sjl.bookmark.dao.db.BaseDao;
 import com.sjl.bookmark.entity.table.BrowseTrack;
 import com.sjl.core.util.AppUtils;
-import com.sjl.core.util.log.LogUtils;
 
 import org.greenrobot.greendao.query.QueryBuilder;
 
@@ -86,7 +85,7 @@ public class BrowseTrackDaoImpl extends BaseDao<BrowseTrack> {
      */
     public boolean saveBrowseTrackByType(int type, String articleId) {
         if (isExistBrowseTrack(type, articleId)) {
-            LogUtils.i("已经存在该记录");
+//            LogUtils.i("已经存在该记录");
             return false;
         }
         BrowseTrack browseTrack = new BrowseTrack();

@@ -134,7 +134,7 @@ public class BrowserActivity extends BaseActivity {
     protected void initData() {
 
     }
-
+    private boolean clear;
     /**
      * activity意外被杀
      *
@@ -152,6 +152,7 @@ public class BrowserActivity extends BaseActivity {
     }
 
     private void initWebView() {
+        clear = true;
 //        mWebView = new X5WebView(this, null);
         mProgressBar = mWebView.getProgressBar();
 
@@ -194,6 +195,15 @@ public class BrowserActivity extends BaseActivity {
                     toolbar.setTitle(view.getTitle());
                 }
 //                addImageClickListener(view);//待网页加载完全后设置图片点击的监听方法
+            }
+
+            @Override
+            public void doUpdateVisitedHistory(WebView webView, String s, boolean b) {
+                if (clear){
+                    webView.clearHistory();
+                    clear = false;
+                }
+
             }
         });
 
