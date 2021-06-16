@@ -515,6 +515,17 @@ public class BrowserActivity extends BaseActivity {
 
 
     @Override
+    public void onResume() {
+        super.onResume();
+        mWebView.resumeTimers();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mWebView.pauseTimers();
+    }
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         WebViewPool.getInstance().recycleWebView(mViewParent,mWebView);

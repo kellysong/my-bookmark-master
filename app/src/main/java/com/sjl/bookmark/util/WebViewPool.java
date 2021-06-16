@@ -111,7 +111,7 @@ public class WebViewPool {
                 temp.clearHistory();
 //                temp.clearCache(true);
                 temp.loadUrl("about:blank");
-                temp.pauseTimers();
+//                temp.pauseTimers();
                 webVieWrap.inUse = false;
                 break;
             }
