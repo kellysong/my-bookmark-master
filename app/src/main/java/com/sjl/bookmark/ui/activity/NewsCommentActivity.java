@@ -11,6 +11,7 @@ import android.view.animation.DecelerateInterpolator;
 import android.widget.TextView;
 
 import com.sjl.bookmark.R;
+import com.sjl.bookmark.kotlin.language.I18nUtils;
 import com.sjl.bookmark.ui.adapter.TopTabPagerAdapter;
 import com.sjl.bookmark.ui.fragment.NewsCommentFragment;
 import com.sjl.bookmark.widget.ColorFlipPagerTitleView;
@@ -56,7 +57,8 @@ public class NewsCommentActivity extends BaseActivity {
     @BindView(R.id.view_pager)
     ViewPager mViewPager;
 
-    private static final String[] TITLES = new String[]{"短评论", "长评论"};
+    private String[] TITLES = new String[]{I18nUtils.getString(R.string.news_short_comment), I18nUtils.getString(R.string.news_long_comment)};
+
     private TopTabPagerAdapter mTopTabPagerAdapter;
     private List<String> mDataList;
 
@@ -81,6 +83,7 @@ public class NewsCommentActivity extends BaseActivity {
 
     @Override
     protected void initData() {
+
         Intent intent = getIntent();
         id = intent.getStringExtra("id");
         int longCommentsCount = intent.getIntExtra("long_comments", 0);
@@ -154,7 +157,7 @@ public class NewsCommentActivity extends BaseActivity {
 
                 // set badge position
                 badgePagerTitleView.setXBadgeRule(new BadgeRule(BadgeAnchor.CONTENT_RIGHT, UIUtil.dip2px(context, 2)));
-                badgePagerTitleView.setYBadgeRule(new BadgeRule(BadgeAnchor.CONTENT_TOP,  -UIUtil.dip2px(context, 5)));
+                badgePagerTitleView.setYBadgeRule(new BadgeRule(BadgeAnchor.CONTENT_TOP, -UIUtil.dip2px(context, 5)));
 
                 // don't cancel badge when tab selected
                 badgePagerTitleView.setAutoCancelBadge(false);
@@ -179,7 +182,7 @@ public class NewsCommentActivity extends BaseActivity {
         ViewPagerHelper.bind(magicIndicator, mViewPager);
     }
 
-    protected int getColorPrimary(){
+    protected int getColorPrimary() {
         int color = SkinManager.getInstance().getColorPrimary();
         return color != -1 ? color : getResources().getColor(R.color.colorPrimary);
     }

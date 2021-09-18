@@ -1,7 +1,6 @@
 package com.sjl.bookmark.ui.activity;
 
 import android.content.Intent;
-import androidx.appcompat.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -13,6 +12,7 @@ import com.sjl.bookmark.R;
 import com.sjl.bookmark.kotlin.language.I18nUtils;
 import com.sjl.core.mvp.BaseActivity;
 
+import androidx.appcompat.widget.Toolbar;
 import butterknife.BindView;
 import butterknife.OnClick;
 
@@ -57,10 +57,10 @@ public class PersonalityActivity extends BaseActivity {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (count == 120) {
-                    Toast.makeText(PersonalityActivity.this, "字数已满", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(PersonalityActivity.this, R.string.word_full, Toast.LENGTH_SHORT).show();
                     etPersonality.setText(etPersonality.getText().toString().substring(0, MAX_WORD));
                 } else {
-                    tvMsg.setText("还可以输入" + (MAX_WORD - etPersonality.getText().toString().length()) + "字");
+                    tvMsg.setText(getString(R.string.input_hint,(MAX_WORD - etPersonality.getText().toString().length())));
                 }
             }
 
@@ -76,14 +76,14 @@ public class PersonalityActivity extends BaseActivity {
         String personality = getIntent().getStringExtra("personality");
         if (!TextUtils.isEmpty(personality)) {
             etPersonality.setText(personality);
-            tvMsg.setText("还可以输入" + (MAX_WORD - etPersonality.getText().toString().length()) + "字");
+            tvMsg.setText(getString(R.string.input_hint,(MAX_WORD - etPersonality.getText().toString().length())));
         }
     }
 
     @OnClick(R.id.btn_commit)
     public void onClick() {
         if (TextUtils.isEmpty(etPersonality.getText().toString())) {
-            Toast.makeText(this, "字符不能为空", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.input_empty_hint, Toast.LENGTH_SHORT).show();
         } else {
             setResult(RESULT_OK, new Intent().putExtra("personality", etPersonality.getText().toString()));
             finish();

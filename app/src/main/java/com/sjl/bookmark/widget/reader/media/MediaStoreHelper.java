@@ -3,16 +3,21 @@ package com.sjl.bookmark.widget.reader.media;
 import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
-import androidx.fragment.app.FragmentActivity;
-import androidx.loader.app.LoaderManager;
-import androidx.loader.content.Loader;
+
+import com.sjl.core.net.RxSchedulers;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
 import java.util.List;
 
+import androidx.fragment.app.FragmentActivity;
+import androidx.loader.app.LoaderManager;
+import androidx.loader.content.Loader;
+import io.reactivex.Observable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
+
 /**
- *
  * 获取媒体库的数据。
  */
 
@@ -41,11 +46,11 @@ public class MediaStoreHelper {
      */
     static class MediaLoaderCallbacks implements LoaderManager.LoaderCallbacks<Cursor> {
         protected WeakReference<Context> mContext;
-        protected MediaResultCallback mResultCallback;
+        protected WeakReference<MediaResultCallback> mResultCallback;
 
         public MediaLoaderCallbacks(Context context, MediaResultCallback resultCallback) {
             mContext = new WeakReference<>(context);
-            mResultCallback = resultCallback;
+            mResultCallback = new WeakReference<>(resultCallback);
         }
 
         @Override
@@ -56,7 +61,31 @@ public class MediaStoreHelper {
         @Override
         public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
             LocalFileLoader localFileLoader = (LocalFileLoader) loader;
-            localFileLoader.parseData(data, mResultCallback);
+            Observable.just(data).map(new Function<Cursor, List<File>>() {
+                @Override
+                public List<File> apply(Cursor cursor) throws Exception {
+                    List<File> files = localFileLoader.parseData(data);
+                    return files;
+                }
+            }).compose(RxSchedulers.applySchedulers()).subscribe(new Consumer<List<File>>() {
+                @Override
+                public void accept(List<File> files) throws Exception {
+
+                    if (mResultCallback == null) {
+                        return;
+                    }
+                    MediaResultCallback mediaResultCallback = mResultCallback.get();
+                    if (mediaResultCallback != null) {
+                        mediaResultCallback.onResultCallback(files);
+                    }
+                }
+            }, new Consumer<Throwable>() {
+                @Override
+                public void accept(Throwable throwable) throws Exception {
+
+                }
+            });
+
         }
 
         @Override

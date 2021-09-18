@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
         android:layout_gravity="center"
-        android:text="搜索收藏内容"/>
+        android:text="@string/search_collection"/>
 
     <!--搜索结果显示区域-->
     <androidx.recyclerview.widget.RecyclerView

@@ -18,7 +18,7 @@
         android:layout_margin="8dp"
         android:background="@color/item_background"
         android:gravity="start"
-        android:hint="留下您的签名..."
+        android:hint="@string/leave_your_signature"
         android:maxLength="120"
         android:padding="3dp"
         android:textColorHint="@color/cl_person_item_text"
@@ -31,7 +31,7 @@
         android:textSize="14sp"
         android:gravity="right"
         android:padding="5dp"
-        android:text="还可以输入120字"
+        android:text="@string/input_char_limit_hint"
         android:textColor="@color/gray" />
 
     <Button
@@ -42,6 +42,6 @@
         android:layout_marginRight="8dp"
         android:layout_marginTop="8dp"
         android:background="@drawable/btn_primary_color_bg"
-        android:text="提交"
+        android:text="@string/submit"
         android:textColor="@android:color/white" />
 </LinearLayout>

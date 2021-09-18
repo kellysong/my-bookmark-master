@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ssdk_weibo_oauth_regiseter">應用授權</string>
+    <string name="ssdk_website">http://www.mob.com</string>
+    <string name="ssdk_weibo_upload_content">分享圖片</string>
+    <string name="ssdk_wechat_client_inavailable">目前您的微信版本過低或未安裝微信，需要安裝微信才能使用</string>
+    <string name="ssdk_google_plus_client_inavailable">Google+ 版本過低或者沒有安裝，需要升級或安裝Google+才能使用！</string>
+    <string name="ssdk_qq_client_inavailable">QQ 版本過低或者沒有安裝，需要升級或安裝QQ才能使用！</string>
+    <string name="ssdk_pinterest_client_inavailable">Pinterest版本過低或者沒有安裝，需要升級或安裝Pinterest才能使用！</string>
+    <string name="ssdk_instagram_client_inavailable">Instagram版本過低或者沒有安裝，需要升級或安裝Instagram才能使用！</string>
+    <string name="ssdk_yixin_client_inavailable">目前您的易信版本過低或未安裝，需要安裝易信才能使用</string>
+    <string name="ssdk_line_client_inavailable">目前您的Line版本過低或未安裝，需要安裝Line才能使用</string>
+    <string name="ssdk_kakaotalk_client_inavailable">目前您的KakaoTalk版本過低或未安裝，需要安裝KakaoTalk才能使用</string>
+    <string name="ssdk_kakaostory_client_inavailable">目前您的KakaoStory版本過低或未安裝，需要安裝KakaoStory才能使用</string>
+    <string name="ssdk_whatsapp_client_inavailable">目前您的WhatsApp版本過低或未安裝，需要安裝WhatsApp才能使用</string>
+    <string name="ssdk_laiwang_client_inavailable">目前您的來往版本過低或未安裝，需要安裝來往才能使用</string>
+    <string name="ssdk_alipay_client_inavailable">目前您的支付寶版本過低或未安裝，需要安裝支付寶才能使用</string>
+    <string name="ssdk_facebookmessenger_client_inavailable">目前您的FacebookMessenger版本過低或未安裝，需要安裝才能使用</string>
+    <string name="ssdk_telegram_client_inavailable">目前您的Telegram版本過低或未安裝，需要安裝才能使用</string>
+    <string name="ssdk_dont_keep_activitys_client">由於您已開啟 不保留活動 ,導致授權功能無法正常使用.我們建議您點擊左下方 設置 按鈕,在 開發者選項 中關閉 不保留活動 功能.</string>
+
+    <string name="ssdk_sinaweibo">新浪微博</string>
+    <string name="ssdk_tencentweibo">騰訊微博</string>
+    <string name="ssdk_qzone">QQ空間</string>
+    <string name="ssdk_wechat">微信好友</string>
+    <string name="ssdk_wechatmoments">微信朋友圈</string>
+    <string name="ssdk_wechatfavorite">微信收藏</string>
+    <string name="ssdk_facebook">Facebook</string>
+    <string name="ssdk_twitter">Twitter</string>
+    <string name="ssdk_renren">人人網</string>
+    <string name="ssdk_kaixin">開心網</string>
+    <string name="ssdk_email">郵件</string>
+    <string name="ssdk_shortmessage">信息</string>
+    <string name="ssdk_sohumicroblog">搜狐微博</string>
+    <string name="ssdk_sohusuishenkan">搜狐隨身看</string>
+    <string name="ssdk_neteasemicroblog">網易微博</string>
+    <string name="ssdk_douban">豆瓣</string>
+    <string name="ssdk_youdao">有道雲筆記</string>
+    <string name="ssdk_evernote">印象筆記</string>
+    <string name="ssdk_linkedin">領英</string>
+    <string name="ssdk_googleplus">Google+</string>
+    <string name="ssdk_foursquare">FourSquare</string>
+    <string name="ssdk_qq">QQ</string>
+    <string name="ssdk_pinterest">Pinterest</string>
+    <string name="ssdk_flickr">Flickr</string>
+    <string name="ssdk_tumblr">Tumblr</string>
+    <string name="ssdk_dropbox">Dropbox</string>
+    <string name="ssdk_vkontakte">VK</string>
+    <string name="ssdk_instagram">Instagram</string>
+    <string name="ssdk_yixin">易信</string>
+    <string name="ssdk_yixinmoments">易信朋友圈</string>
+    <string name="ssdk_mingdao">明道</string>
+    <string name="ssdk_kakaotalk">KakaoTalk</string>
+    <string name="ssdk_kakaostory">KakaoStory</string>
+    <string name="ssdk_line">Line</string>
+    <string name="ssdk_bluetooth">藍牙</string>
+    <string name="ssdk_whatsapp">WhatsApp</string>
+    <string name="ssdk_pocket">Pocket</string>
+    <string name="ssdk_instapaper">Instapaper</string>
+    <string name="ssdk_instapaper_email">郵箱</string>
+    <string name="ssdk_instapaper_pwd">密碼</string>
+    <string name="ssdk_instapaper_login">登錄</string>
+    <string name="ssdk_instapaper_logining">登錄中…</string>
+    <string name="ssdk_instapager_email_or_password_incorrect">Email或密碼不正確</string>
+    <string name="ssdk_facebookmessenger">Facebook Messenger</string>
+    <string name="ssdk_laiwang">來往</string>
+    <string name="ssdk_laiwangmoments">來往動態</string>
+    <string name="ssdk_alipay">支付寶好友</string>
+    <string name="ssdk_alipaymoments">支付寶生活圈</string>
+    <string name="ssdk_plurk">Plurk</string>
+    <string name="ssdk_youtube">Youtube</string>
+    <string name="ssdk_dingding">釘釘</string>
+    <string name="ssdk_meipai">美拍</string>
+    <string name="ssdk_telegram">Telegram</string>
+    <string name="ssdk_cmcc">中國移動</string>
+    <string name="ssdk_share_to_qzone">分享到QQ空間</string>
+    <string name="ssdk_share_to_qq">分享到QQ</string>
+    <string name="ssdk_share_to_facebook">分享到Facebook</string>
+    <string name="ssdk_mingdao_share_content">網頁分享</string>
+    <string name="ssdk_share_to_mingdao">分享到明道</string>
+    <string name="ssdk_share_to_googleplus">分享到Google+</string>
+    <string name="ssdk_share_to_qzone_default">來自%s的分享</string>
+    <string name="ssdk_use_login_button">請改用「登錄」按鈕</string>
+    <string name="ssdk_share_to_youtube">分享到Youtube</string>
+
+    <string name="ssdk_gender_male">男</string>
+    <string name="ssdk_gender_female">女</string>
+    <string name="ssdk_symbol_ellipsis">...</string>
+
+    <!--sina web -->
+    <string name="ssdk_sina_web_close">關閉</string>
+    <string name="ssdk_sina_web_net_error">網絡出錯啦，請點擊按鈕重新加載</string>
+    <string name="ssdk_sina_web_refresh">重新加載</string>
+    <string name="ssdk_sina_web_title">微博分享</string>
+    <string name="ssdk_sina_web_login_title">登錄-新浪微博</string>
+
+
+    <!-- sms login -->
+    <string name="ssdk_sms_login">短訊登錄</string>
+    <string name="ssdk_sms_top_identify_text">短訊已發送，請填寫驗證碼</string>
+    <string name="ssdk_sms_btn_next">下一步</string>
+    <string name="ssdk_sms_btn_submit">提交</string>
+    <string name="ssdk_sms_btn_sende_voice">發送語音驗證</string>
+    <string name="ssdk_sms_zone">國家/地區</string>
+    <string name="ssdk_sms_china">中國</string>
+    <string name="ssdk_sms_phone">手機號</string>
+    <string name="ssdk_sms_top_text">請輸入您的手機號</string>
+    <string name="ssdk_sms_code">驗證碼</string>
+    <string name="ssdk_sms_send_again">重新發送</string>
+    <string name="ssdk_sms_input_phone_hint">請輸入手機號碼</string>
+    <string name="ssdk_sms_input_code_hint">請輸入驗證碼</string>
+    <string name="ssdk_sms_input_voice_code"><Data>短訊驗證碼收不到？請嘗試&lt;font color=#2ba245>語音驗證碼&lt;/font></Data></string>
+    <string name="ssdk_sms_dialog_btn_cancel">取消</string>
+    <string name="ssdk_sms_dialog_btn_ok">好</string>
+    <string name="ssdk_sms_dialog_btn_wait">等待</string>
+    <string name="ssdk_sms_dialog_btn_back">返回</string>
+    <string name="ssdk_sms_dialog_btn_sure">我知道了</string>
+    <string name="ssdk_sms_dialog_btn_login">確認登錄</string>
+    <string name="ssdk_sms_dialog_confirm_title">確認手機號碼</string>
+    <string name="ssdk_sms_dialog_confirm_des">我們將發送驗證碼短訊到這個手機號：\n</string>
+    <string name="ssdk_sms_dialog_error_title">手機號碼錯誤</string>
+    <string name="ssdk_sms_dialog_error_des">您輸入的是一個無效手機號碼</string>
+    <string name="ssdk_sms_dialog_close_identify_page">驗證碼短訊可能略有延遲，確定返回\n並重新開始？</string>
+    <string name="ssdk_sms_dialog_error_code">驗證碼不正確，請重新填寫</string>
+    <string name="ssdk_sms_dialog_voice_text">我們將以電話的方式告知您驗證碼，\n請注意接聽</string>
+    <string name="ssdk_sms_dialog_send_success">發送成功</string>
+    <string name="ssdk_sms_dialog_login_success">登錄成功</string>
+    <string name="ssdk_sms_dialog_smart_title">恭喜！該號碼已通過雲檢測</string>
+    <string name="ssdk_sms_dialog_smart_dec">您的設備為安全設備，該號碼已通過智能\n雲驗證，無需短訊驗證\n（本驗證過程不存在任何安全隱患）</string>
+    <string name="ssdk_sms_choose_country">選擇國家和地區</string>
+    <string name="ssdk_sms_country_search">搜索</string>
+
+    <string name="ssdk_sms_dialog_net_error">網絡不給力，請稍後重試</string>
+    <string name="ssdk_sms_dialog_system_error">系統有點小問題，請稍後重試</string>
+    <string name="ssdk_sms_dialog_error_desc_100">服務器錯誤</string>
+    <string name="ssdk_sms_dialog_error_desc_101">沒有權限請求</string>
+    <string name="ssdk_sms_dialog_error_desc_102">解密數據失敗</string>
+    <string name="ssdk_sms_dialog_error_desc_103">請求參數列表中缺少必要數據</string>
+    <string name="ssdk_sms_dialog_error_desc_104">請求數據非法</string>
+    <string name="ssdk_sms_dialog_error_desc_105">驗證碼錯誤</string>
+    <string name="ssdk_sms_dialog_error_desc_106">請求發送驗證碼失敗</string>
+    <string name="ssdk_sms_dialog_error_desc_107">該號碼超過接收驗證碼上\n限次數，請明日再試</string>
+    <string name="ssdk_sms_dialog_error_desc_108">該設備超過請求發送驗證\n碼上限次數，請明日再試</string>
+    <string name="ssdk_sms_dialog_error_desc_109">發送短訊太頻繁</string>
+
+    <string name="ssdk_cmcc_auth">手機認證服務由中國移動提供</string>
+    <string name="ssdk_cmcc_owner_number">本機號碼</string>
+    <string name="ssdk_cmcc_exchange_account">切換賬號</string>
+    <string name="ssdk_cmcc_login_one_key">本機號碼一鍵登錄</string>
+    <string name="ssdk_cmcc_title_logon">登錄</string>
+    <string name="ssdk_cmcc_login_argree">登錄即同意</string>
+    <string name="ssdk_cmcc_terms_of_service">《中國移動號碼服務條款》</string>
+    <string name="ssdk_cmcc_login_grant">並授權統一認證融合版獲取本機號碼</string>
+    <string name="ssdk_cmcc_login_again">登錄失敗，請嘗試短訊驗證碼登錄</string>
+    <string name="ssdk_cmcc_send_sms_bar">自動發送短訊登陸，請允許通過</string>
+    <string name="ssdk_cmcc_phone_number">手機號</string>
+    <string name="ssdk_cmcc_ver_code">驗證碼</string>
+    <string name="ssdk_cmcc_get_vercode">獲取驗證碼</string>
+    <string name="ssdk_cmcc_send_again">重新發送</string>
+    <string name="ssdk_cmcc_quick_login">快捷登錄</string>
+    <string name="ssdk_cmcc_loading_text">正在校驗您的身份，請稍後...</string>
+
+    <item name="ssdk_sina_web_title_id" type="id" />
+    <item name="ssdk_sms_id_clCountry" type="id" />
+    <item name="ssdk_sms_id_ll_back" type="id" />
+    <item name="ssdk_sms_id_tv_title" type="id" />
+    <item name="ssdk_sms_id_llTitle" type="id" />
+    <item name="ssdk_sms_id_ivSearch" type="id" />
+    <item name="ssdk_sms_id_llSearch" type="id" />
+    <item name="ssdk_sms_id_et_put_identify" type="id" />
+    <item name="ssdk_sms_id_iv_clear" type="id" />
+</resources>

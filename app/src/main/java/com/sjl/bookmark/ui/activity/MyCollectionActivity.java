@@ -3,11 +3,6 @@ package com.sjl.bookmark.ui.activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import androidx.core.content.ContextCompat;
-import androidx.appcompat.app.AlertDialog;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.appcompat.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -29,12 +24,17 @@ import com.sjl.bookmark.ui.presenter.MyCollectionPresenter;
 import com.sjl.bookmark.widget.PopWindow;
 import com.sjl.bookmark.widget.RecyclerViewLocation;
 import com.sjl.core.mvp.BaseActivity;
-import com.sjl.core.util.log.LogUtils;
 import com.sjl.core.util.VibrateHelper;
+import com.sjl.core.util.log.LogUtils;
 
 import java.util.Collections;
 import java.util.List;
 
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -182,10 +182,10 @@ public class MyCollectionActivity extends BaseActivity<MyCollectionPresenter> im
             int size = myCollectionAdapter.getData().size();
             if (index == size) {
                 isSelectAll = true;
-                mSelectAll.setText("取消全选");
+                mSelectAll.setText(getString(R.string.select_all_cancel));
             } else {
                 isSelectAll = false;
-                mSelectAll.setText("全选");
+                mSelectAll.setText(getString(R.string.select_all));
             }
             setBtnBackground(index);
             return;
@@ -390,9 +390,9 @@ public class MyCollectionActivity extends BaseActivity<MyCollectionPresenter> im
         Button cancel = (Button) builder.findViewById(R.id.btn_cancle);
         Button sure = (Button) builder.findViewById(R.id.btn_sure);
         if (index == 1) {
-            msg.setText("删除后不可恢复，是否删除该条目？");
+            msg.setText(R.string.delete_hint);
         } else {
-            msg.setText("删除后不可恢复，是否删除这" + index + "个条目？");
+            msg.setText(getResources().getString(R.string.delete_hint2, index));
         }
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -437,7 +437,7 @@ public class MyCollectionActivity extends BaseActivity<MyCollectionPresenter> im
             }
             index = myCollectionAdapter.getData().size();
             mBtnDelete.setEnabled(true);
-            mSelectAll.setText("取消全选");
+            mSelectAll.setText(getString(R.string.select_all_cancel));
             isSelectAll = true;
         } else {
             for (int i = 0, j = size; i < j; i++) {
@@ -445,7 +445,7 @@ public class MyCollectionActivity extends BaseActivity<MyCollectionPresenter> im
             }
             index = 0;
             mBtnDelete.setEnabled(false);
-            mSelectAll.setText("全选");
+            mSelectAll.setText(getString(R.string.select_all));
             isSelectAll = false;
         }
         myCollectionAdapter.notifyDataSetChanged();

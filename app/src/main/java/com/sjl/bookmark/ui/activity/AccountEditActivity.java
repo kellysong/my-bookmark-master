@@ -190,11 +190,11 @@ public class AccountEditActivity extends BaseActivity<AccountEditPresenter> impl
                 String userPhone = mUserPhone.getText().toString().trim();
                 String remark = mRemark.getText().toString().trim();
                 if (!TextUtils.isEmpty(userEmail) && !ValidatorUtils.isEmail(userEmail)){
-                    Toast.makeText(this,"邮箱格式不对",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, R.string.mailbox_format_error,Toast.LENGTH_SHORT).show();
                     return false;
                 }
                 if (!TextUtils.isEmpty(userPhone) && !ValidatorUtils.isMobile(userPhone)){
-                    Toast.makeText(this,"手机号格式不对",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, R.string.phone_format_error,Toast.LENGTH_SHORT).show();
                     return false;
                 }
                 long result = mPresenter.saveAccount(new Account(null, mAccountTypePosition, mAccountStatePosition, titleName, userName, passWord, userEmail, userPhone, remark, new Date()));
@@ -205,7 +205,8 @@ public class AccountEditActivity extends BaseActivity<AccountEditPresenter> impl
                     ViewUtils.hideKeyBoard(this,mTitle);
                     closeActivity(AccountIndexActivity.ADD_SUCCESS);
                 }else{
-                    Toast.makeText(this,"未知错误,result="+result,Toast.LENGTH_SHORT).show();
+                    String error = getString(R.string.unknown_error);
+                    Toast.makeText(this,error+",result="+result,Toast.LENGTH_SHORT).show();
                 }
 
                 return true;
@@ -240,7 +241,7 @@ public class AccountEditActivity extends BaseActivity<AccountEditPresenter> impl
         }
         mToolBar.setTitle(I18nUtils.getString(R.string.text_detail));
         mTimeTextView.setVisibility(View.VISIBLE);
-        mTimeTextView.setText("最后修改日期："+ TimeUtils.formatDateToStr(account.getDate(),TimeUtils.DATE_FORMAT_1));
+        mTimeTextView.setText(getString(R.string.last_update_date)+ TimeUtils.formatDateToStr(account.getDate(),TimeUtils.DATE_FORMAT_1));
         ViewUtils.hideKeyBoard(this,mTitle);
         mTitle.setText(DESUtils.decryptBase64DES(AppConstant.DES_ENCRYPTKEY,account.getAccountTitle()));
         mUserName.setText(DESUtils.decryptBase64DES(AppConstant.DES_ENCRYPTKEY,account.getUsername()));
@@ -317,7 +318,7 @@ public class AccountEditActivity extends BaseActivity<AccountEditPresenter> impl
     @Override
     public void onFocusChange(View v, boolean hasFocus) {
         if (hasFocus) {
-            mToolBar.setTitle("编辑");
+            mToolBar.setTitle(R.string.edit);
         }
     }
 
@@ -335,9 +336,9 @@ public class AccountEditActivity extends BaseActivity<AccountEditPresenter> impl
         int id = v.getId();
         if (id == R.id.btn_delete) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("提示");
-            builder.setMessage("是否删除账号密码?");
-            builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+            builder.setTitle(R.string.nb_common_tip);
+            builder.setMessage(R.string.account_delete_hint);
+            builder.setPositiveButton(R.string.sure, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     mPresenter.deleteAccount();
@@ -345,7 +346,7 @@ public class AccountEditActivity extends BaseActivity<AccountEditPresenter> impl
                     finish();
                 }
             });
-            builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+            builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
 

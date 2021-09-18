@@ -123,10 +123,10 @@ public class PopWindow extends PopupWindow {
     public void setTopStates(int topStates) {
         //判断是否已经置顶
         if (topStates == 1){
-            top.setText("取消置顶");
+            top.setText(R.string.top_cancel);
             this.executeTopFlag = false;
         }else {
-            top.setText("置顶");
+            top.setText(R.string.top);
             this.executeTopFlag = true;
         }
     }

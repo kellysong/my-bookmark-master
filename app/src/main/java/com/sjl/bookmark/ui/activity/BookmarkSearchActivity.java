@@ -4,8 +4,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -24,6 +22,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.sjl.bookmark.R;
+import com.sjl.bookmark.kotlin.language.I18nUtils;
 import com.sjl.core.mvp.BaseActivity;
 import com.sjl.core.util.log.LogUtils;
 import com.sjl.core.widget.FlowLayout;
@@ -31,6 +30,8 @@ import com.sjl.core.widget.FlowLayout;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.Toolbar;
 import butterknife.BindView;
 
 /**
@@ -69,8 +70,9 @@ public class BookmarkSearchActivity extends BaseActivity implements View.OnClick
      * 搜索标签，暂时写死
      */
     private String[] mVals = new String[]{"JavaSE", "Android", "JavaEE", "Mui",
-            "数据库", "前端", "应用商店", "其它",
-            "基础知识", "推送", "css", "h5", "网站"};//数据模拟，实际应从网络获取此数据
+            I18nUtils.getString(R.string.label_database), I18nUtils.getString(R.string.label_front_end), I18nUtils.getString(R.string.label_app_store), I18nUtils.getString(R.string.label_other),
+            I18nUtils.getString(R.string.label_basic_knowledge), I18nUtils.getString(R.string.label_push), I18nUtils.getString(R.string.label_css),
+            I18nUtils.getString(R.string.label_h5), I18nUtils.getString(R.string.label_website)};//数据模拟，实际应从网络获取此数据
 
     public static final String KEY_SEARCH_HISTORY_KEYWORD = "key_search_history_keyword";
     public static final String KEY_SEARCH_TEXT = "key_search_text";//搜索文本
@@ -230,9 +232,9 @@ public class BookmarkSearchActivity extends BaseActivity implements View.OnClick
         // 创建构建器
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         // 设置参数
-        builder.setTitle("提示")
-                .setMessage("确定清空历史搜索记录？")
-                .setPositiveButton("确定", new DialogInterface.OnClickListener() {// 积极
+        builder.setTitle(getString(R.string.nb_common_tip))
+                .setMessage(R.string.delete_hint3)
+                .setPositiveButton(R.string.sure, new DialogInterface.OnClickListener() {// 积极
 
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -242,7 +244,7 @@ public class BookmarkSearchActivity extends BaseActivity implements View.OnClick
                         mArrAdapter.notifyDataSetChanged();
                         mSearchHistoryLl.setVisibility(View.GONE);
                     }
-                }).setNegativeButton("取消", new DialogInterface.OnClickListener() {// 消极
+                }).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {// 消极
 
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -262,7 +264,7 @@ public class BookmarkSearchActivity extends BaseActivity implements View.OnClick
                     save();
                     showSearchList(keywords);
                 } else {
-                    Toast.makeText(BookmarkSearchActivity.this, "请输入搜索内容", Toast.LENGTH_LONG).show();
+                    Toast.makeText(BookmarkSearchActivity.this, R.string.input_search_content, Toast.LENGTH_LONG).show();
                 }
                 break;
             case R.id.clear_history_btn:

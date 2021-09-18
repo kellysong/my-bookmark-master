@@ -295,7 +295,7 @@ public class BookSearchActivity extends BaseActivity<BookSearchPresenter> implem
             }else {
                 last = mTagStart + TAG_LIMIT;
             }
-            showShortToast("没有更多数据了");
+            showShortToast(getString(R.string.no_load_more));
         }
         List<String> tags = mHotTagList.subList(mTagStart, last);
         mTgHot.setTags(tags);//设置到控件TagGroup

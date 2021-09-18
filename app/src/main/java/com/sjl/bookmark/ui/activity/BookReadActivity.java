@@ -807,9 +807,9 @@ public class BookReadActivity extends BaseActivity<BookReadPresenter> implements
         if (!mCollBook.isLocal() && !isCollected
                 && mCollBook.getBookChapters() != null && !mCollBook.getBookChapters().isEmpty()) {
             AlertDialog alertDialog = new AlertDialog.Builder(this)
-                    .setTitle("加入书架")
-                    .setMessage("喜欢本书就加入书架吧")
-                    .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    .setTitle(R.string.nb_file_add_shelf)
+                    .setMessage(R.string.nb_read_add_book_hint)
+                    .setPositiveButton(R.string.sure, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             //设置为已收藏
@@ -824,7 +824,7 @@ public class BookReadActivity extends BaseActivity<BookReadPresenter> implements
                             exit();
                         }
                     })
-                    .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             exit();

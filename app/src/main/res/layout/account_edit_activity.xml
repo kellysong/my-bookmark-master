@@ -35,14 +35,15 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="标题：" />
+                    android:text="@string/title" />
 
                 <com.rengwuxian.materialedittext.MaterialEditText
                     android:id="@+id/met_title"
                     style="@style/EditTextTheme"
-                    android:hint="标题"
+                    android:hint="@string/title"
                     android:lineSpacingExtra="4dp"
                     android:maxLength="20"
+                    android:layout_marginLeft="5dp"
                     app:met_clearButton="true"
                     app:met_primaryColor="@color/colorPrimary"
                     app:met_textColor="@color/cl_et_text"
@@ -62,15 +63,16 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="账号：" />
+                    android:text="@string/account_number" />
 
                 <com.rengwuxian.materialedittext.MaterialEditText
                     android:id="@+id/met_userName"
                     style="@style/EditTextTheme"
                     android:digits="0123456789abcdefghigklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ@._"
-                    android:hint="账号"
+                    android:hint="@string/account_number"
                     android:lineSpacingExtra="0dp"
                     android:maxLength="20"
+                    android:layout_marginLeft="5dp"
                     app:met_clearButton="true"
                     app:met_primaryColor="@color/colorPrimary"
                     app:met_textColor="@color/cl_et_text"
@@ -90,16 +92,17 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="密码：" />
+                    android:text="@string/password" />
 
                 <com.rengwuxian.materialedittext.MaterialEditText
                     android:id="@+id/met_password"
                     style="@style/EditTextTheme"
                     android:layout_weight="0.8"
-                    android:hint="密码"
+                    android:hint="@string/password"
                     android:inputType="textPassword"
                     android:lineSpacingExtra="4dp"
                     android:maxLength="20"
+                    android:layout_marginLeft="5dp"
                     app:met_clearButton="true"
                     app:met_primaryColor="?attr/colorPrimary"
                     app:met_textColor="@color/cl_et_text"
@@ -127,16 +130,17 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="邮箱：" />
+                    android:text="@string/mailbox" />
 
                 <com.rengwuxian.materialedittext.MaterialEditText
                     android:id="@+id/met_userEmail"
                     style="@style/EditTextTheme"
-                    android:hint="邮箱"
+                    android:hint="@string/mailbox"
                     android:inputType="textEmailAddress"
                     android:lineSpacingExtra="0dp"
                     android:maxLength="20"
                     app:met_clearButton="true"
+                    android:layout_marginLeft="5dp"
                     app:met_primaryColor="?attr/colorPrimary"
                     app:met_textColor="@color/cl_et_text"
                     app:met_textColorHint="@color/cl_et_text_color" />
@@ -154,16 +158,17 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="手机：" />
+                    android:text="@string/cellphone" />
 
                 <com.rengwuxian.materialedittext.MaterialEditText
                     android:id="@+id/met_userPhone"
                     style="@style/EditTextTheme"
-                    android:hint="手机"
+                    android:hint="@string/cellphone"
                     android:inputType="number"
                     android:lineSpacingExtra="0dp"
                     android:maxLength="11"
                     app:met_clearButton="true"
+                    android:layout_marginLeft="5dp"
                     app:met_primaryColor="?attr/colorPrimary"
                     app:met_textColor="@color/cl_et_text"
                     app:met_textColorHint="@color/cl_et_text_color" />
@@ -181,13 +186,14 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="类别：" />
+                    android:text="@string/category" />
 
                 <org.angmarch.views.NiceSpinner
                     android:id="@+id/np_type"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:clickable="true"
+                    android:layout_marginLeft="5dp"
                     app:arrowTint="@color/cl_ns_arrowTint"
                     app:backgroundSelector="@drawable/background_selector" />
             </LinearLayout>
@@ -203,13 +209,14 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="状态：" />
+                    android:text="@string/status" />
 
                 <org.angmarch.views.NiceSpinner
                     android:id="@+id/np_state"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:clickable="true"
+                    android:layout_marginLeft="5dp"
                     app:arrowTint="@color/cl_ns_arrowTint"
                     app:backgroundSelector="@drawable/background_selector" />
             </LinearLayout>
@@ -224,16 +231,17 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="备注：" />
+                    android:text="@string/remark" />
 
                 <com.rengwuxian.materialedittext.MaterialEditText
                     android:id="@+id/met_remark"
                     style="@style/EditTextTheme"
-                    android:hint="密码备忘信息"
+                    android:hint="@string/password_memo_info"
                     android:lineSpacingExtra="4dp"
                     app:met_clearButton="true"
                     app:met_maxCharacters="150"
                     app:met_minCharacters="0"
+                    android:layout_marginLeft="5dp"
                     app:met_primaryColor="?attr/colorPrimary"
                     app:met_textColor="@color/cl_et_text"
                     app:met_textColorHint="@color/cl_et_text_color" />
@@ -266,7 +274,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/delete_btn_bg"
-            android:text="删除"
+            android:text="@string/delete"
             android:textColor="@android:color/white"
             android:visibility="gone" />
     </com.balysv.materialripple.MaterialRippleLayout>

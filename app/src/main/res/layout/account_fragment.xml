@@ -45,6 +45,6 @@
             android:gravity="center"
             android:layout_marginTop="10dp"
             android:drawablePadding="10dp"
-            android:text="您还没添加任何账号"/>
+            android:text="@string/account_empty_hint"/>
     </LinearLayout>
 </FrameLayout>

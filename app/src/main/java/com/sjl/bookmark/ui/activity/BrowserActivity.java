@@ -157,8 +157,8 @@ public class BrowserActivity extends BaseActivity {
         mProgressBar = mWebView.getProgressBar();
 
         mViewParent.addView(mWebView, new FrameLayout.LayoutParams(
-                FrameLayout.LayoutParams.FILL_PARENT,
-                FrameLayout.LayoutParams.FILL_PARENT));
+                FrameLayout.LayoutParams.MATCH_PARENT,
+                FrameLayout.LayoutParams.MATCH_PARENT));
 
         mWebView.setWebViewClient(new WebViewClient() {
           /*  @Override
@@ -484,6 +484,7 @@ public class BrowserActivity extends BaseActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
                 case 0:
@@ -554,11 +555,11 @@ public class BrowserActivity extends BaseActivity {
         } else if (id == R.id.nav_collect) {
             int ret = CollectUtils.collectWebPage(this, title, url);
             if (ret == 0) {
-                SnackbarUtils.makeShort(mWebView, "收藏成功").show();
+                SnackbarUtils.makeShort(mWebView, getString(R.string.browser_collect_success)).show();
             } else if (ret == 1) {
-                SnackbarUtils.makeShort(mWebView, "收藏已存在").show();
+                SnackbarUtils.makeShort(mWebView, getString(R.string.browser_collection_exists)).show();
             } else if (ret == -1) {
-                SnackbarUtils.makeShort(mWebView, "收藏失败").show();
+                SnackbarUtils.makeShort(mWebView, getString(R.string.browser_collect_failed)).show();
             }
             return true;
         } else if (id == R.id.nav_copy_href) {

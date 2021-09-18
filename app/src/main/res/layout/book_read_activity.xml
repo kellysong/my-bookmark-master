@@ -65,14 +65,18 @@
                         android:id="@+id/read_tv_brief"
                         style="@style/NB.Theme.TextAppearance.Read.TopMenu"
                         android:layout_alignParentRight="true"
+                        android:singleLine="true"
+                        android:ellipsize="end"
                         android:background="@drawable/btn_gray_selector"
-                        android:text="简介" />
+                        android:text="@string/nb.read.brief" />
 
                     <TextView
                         android:id="@+id/read_tv_comment"
                         style="@style/NB.Theme.TextAppearance.Read.TopMenu"
                         android:layout_toLeftOf="@id/read_tv_brief"
                         android:background="@drawable/btn_gray_selector"
+                        android:singleLine="true"
+                        android:ellipsize="end"
                         android:text="@string/nb.read.comment" />
 
                 </RelativeLayout>
@@ -104,7 +108,7 @@
                     android:layout_width="80dp"
                     android:layout_height="match_parent"
                     android:gravity="center"
-                    android:text="上一章" />
+                    android:text="@string/nb.book_detail_previous_chapter" />
 
                 <SeekBar
                     android:id="@+id/read_sb_chapter_progress"
@@ -124,7 +128,7 @@
                     android:layout_width="80dp"
                     android:layout_height="match_parent"
                     android:gravity="center"
-                    android:text="下一章" />
+                    android:text="@string/nb.book_detail_next_chapter" />
             </LinearLayout>
 
             <!--菜单栏-->
@@ -178,7 +182,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
             android:layout_marginLeft="15dp"
-            android:text="目录"
+            android:text="@string/nb.read.category"
             android:textColor="@color/black"
             android:textSize="20sp" />
 

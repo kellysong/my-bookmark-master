@@ -11,7 +11,7 @@
         android:id="@+id/et_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="请输入要展示的文字"
+        android:hint="@string/barrage_hint"
         android:textSize="14sp" />
 
 

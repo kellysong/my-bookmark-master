@@ -3,16 +3,13 @@ package com.sjl.bookmark.ui.activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Handler;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.widget.Toolbar;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.sjl.bookmark.R;
 import com.sjl.bookmark.entity.zhuishu.table.CollectBook;
 import com.sjl.bookmark.kotlin.language.I18nUtils;
@@ -28,6 +25,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.Toolbar;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import butterknife.BindView;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -196,12 +196,12 @@ public class BookShelfActivity extends BaseActivity<BookShelfPresenter> implemen
         } else if (id == R.id.action_clear) {
             new AlertDialog.Builder(BookShelfActivity.this)
                     .setTitle(getResources().getString(R.string.nb_common_tip))
-                    .setMessage("确定清空书架?")
+                    .setMessage(R.string.book_shelf_hint)
                     .setPositiveButton(getResources().getString(R.string.nb_common_sure),
                             new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    showLoadingDialog("删除处理中...");
+                                    showLoadingDialog(getString(R.string.book_delete_hint));
                                     mPresenter.deleteAllBook();
                                     dialog.dismiss();
                                 }
@@ -222,7 +222,7 @@ public class BookShelfActivity extends BaseActivity<BookShelfPresenter> implemen
      */
     private void refreshShelfBook() {
         List<CollectBook> bookList = shelfAdapter.getBookList();
-        showLoadingDialog("正在更新图书");
+        showLoadingDialog(getString(R.string.book_update_hint));
         if (bookList != null && !bookList.isEmpty()) {//书架已经有数据
             mPresenter.getRecommendBook();
         } else {

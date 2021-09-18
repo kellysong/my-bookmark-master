@@ -39,7 +39,7 @@
                     android:background="@null"
                     android:cursorVisible="true"
                     android:drawableRight="@mipmap/discover_detail_delete"
-                    android:hint="搜索"
+                    android:hint="@string/search"
                     android:imeOptions="actionSearch"
                     android:maxLines="1"
                     android:singleLine="true"
@@ -73,7 +73,7 @@
             android:paddingBottom="4dp"
             android:paddingLeft="10dp"
             android:paddingTop="4dp"
-            android:text="搜索热词"
+            android:text="@string/hot_word"
             android:textSize="12sp" />
 
         <com.sjl.core.widget.FlowLayout
@@ -97,7 +97,7 @@
                 android:paddingBottom="4dp"
                 android:paddingLeft="10dp"
                 android:paddingTop="4dp"
-                android:text="历史搜索"
+                android:text="@string/history_search"
                 android:textSize="12sp" />
 
             <ListView
@@ -116,7 +116,7 @@
                 android:layout_gravity="center"
                 android:layout_marginTop="5dp"
                 android:background="@drawable/round_btn_selector"
-                android:text="清除历史搜索记录"
+                android:text="@string/clear_historical_search_records"
                 android:textSize="14sp" />
         </LinearLayout>
     </LinearLayout>

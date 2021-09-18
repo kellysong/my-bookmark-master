@@ -3,10 +3,6 @@ package com.sjl.bookmark.ui.activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import androidx.appcompat.app.AlertDialog;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.appcompat.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -30,6 +26,10 @@ import com.sjl.core.util.SnackbarUtils;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 
 /**
@@ -84,7 +84,7 @@ public class ExpressDetailActivity extends BaseActivity<ExpressDetailPresenter> 
 
     @Override
     protected void initListener() {
-        bindingToolbar(mToolBar, "物流详情");
+        bindingToolbar(mToolBar, getString(R.string.express_logistics_detail));
         btnRemark.setOnClickListener(this);
         btnSave.setOnClickListener(this);
         btnRetry.setOnClickListener(this);
@@ -107,13 +107,13 @@ public class ExpressDetailActivity extends BaseActivity<ExpressDetailPresenter> 
                 remark();//运单备注
                 break;
             case R.id.btn_save:
-                if (TextUtils.equals(btnSave.getText().toString(), "运单备注")) {
+                if (TextUtils.equals(btnSave.getText().toString(), getString(R.string.waybill_note))) {
                     remark();
                 } else {//保存运单信息，当查询不到且本地没有缓存记录时触发该动作
                     searchInfo.setIs_check("0");
                     mPresenter.updateExpressDetail(searchInfo, null);
                     View view = ExpressDetailActivity.this.getWindow().getDecorView().findViewById(android.R.id.content);
-                    SnackbarUtils.makeShort(view, "保存成功").show();
+                    SnackbarUtils.makeShort(view, R.string.save_success).show();
 //                    new Handler().postDelayed(new Runnable() {
 //                        @Override
 //                        public void run() {
@@ -186,7 +186,7 @@ public class ExpressDetailActivity extends BaseActivity<ExpressDetailPresenter> 
             llError.setVisibility(View.GONE);
             tvSearching.setVisibility(View.GONE);
             boolean ret = mPresenter.checkExistExpress(searchInfo.getPost_id());
-            btnSave.setText(ret ? "运单备注" : "保存运单信息");
+            btnSave.setText(ret ? getText(R.string.waybill_note) : getText(R.string.waybill_note_save));
             showLongToast(expressDetail.getStatus() + ":" + expressDetail.getMessage());
         }
     }
@@ -209,18 +209,18 @@ public class ExpressDetailActivity extends BaseActivity<ExpressDetailPresenter> 
         etRemark.setText(remark);
         etRemark.setSelection(etRemark.length());
         new AlertDialog.Builder(this)
-                .setTitle("备注")
+                .setTitle(R.string.remark)
                 .setView(view)
-                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                .setPositiveButton(R.string.sure, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         mPresenter.updateExpressRemark(searchInfo.getPost_id(), etRemark.getText().toString());
                         showExpressRemark();
                         View view = ExpressDetailActivity.this.getWindow().getDecorView().findViewById(android.R.id.content);
-                        SnackbarUtils.makeShort(view, "备注成功").show();
+                        SnackbarUtils.makeShort(view, R.string.remark_success).show();
                     }
                 })
-                .setNegativeButton("取消", null)
+                .setNegativeButton(R.string.cancel, null)
                 .show();
     }
 }

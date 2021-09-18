@@ -6,8 +6,8 @@ ext {
 
             minSdkVersion    : 14,
             targetSdkVersion : 28,
-            versionCode      : 1043,//后面两位代表累计版本，如33表示第33个版本
-            versionName      : "3.8.1",
+            versionCode      : 1044,//后面两位代表累计版本，如33表示第33个版本
+            versionName      : "3.8.2-RC1",
     ]
 
     def dependVersion = [

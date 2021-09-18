@@ -31,7 +31,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:text="头像"
+                    android:text="@string/person_head_portrait"
                     android:textColor="@color/cl_person_item_key" />
 
                 <ImageView
@@ -56,7 +56,7 @@
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="10dp"
-                    android:text="昵称"
+                    android:text="@string/person_nickname"
                     android:textColor="@color/cl_person_item_key" />
 
                 <TextView
@@ -88,7 +88,7 @@
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="10dp"
-                    android:text="性别"
+                    android:text="@string/person_sex"
                     android:textColor="@color/cl_person_item_key" />
 
                 <TextView
@@ -121,7 +121,7 @@
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="10dp"
-                    android:text="手机号"
+                    android:text="@string/person_mobile_number"
                     android:textColor="@color/cl_person_item_key" />
 
                 <TextView
@@ -149,7 +149,7 @@
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="10dp"
-                    android:text="个性签名"
+                    android:text="@string/person_personal_signature"
                     android:textColor="@color/cl_person_item_key" />
 
                 <TextView

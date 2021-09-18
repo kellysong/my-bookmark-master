@@ -289,7 +289,7 @@
                         android:layout_height="wrap_content"
                         android:gravity="right"
                         android:padding="15dp"
-                        android:text="更多"
+                        android:text="@string/more"
                         android:textColor="@color/nb.text.common_h2"
                         android:textSize="15sp" />
                 </LinearLayout>

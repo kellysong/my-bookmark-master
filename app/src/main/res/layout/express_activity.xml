@@ -26,7 +26,7 @@
             android:drawablePadding="10dp"
             android:drawableTop="@mipmap/ic_searching"
             android:gravity="center"
-            android:text="暂无新的物流信息"
+            android:text="@string/no_new_logistics_info"
             android:textColor="@color/grey"
             android:visibility="gone" />
     </FrameLayout>

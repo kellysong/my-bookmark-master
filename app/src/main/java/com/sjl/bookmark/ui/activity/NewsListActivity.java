@@ -1,9 +1,5 @@
 package com.sjl.bookmark.ui.activity;
 
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.appcompat.widget.Toolbar;
 import android.view.View;
 
 import com.jakewharton.rxbinding2.view.RxView;
@@ -20,6 +16,10 @@ import com.sjl.core.util.log.LogUtils;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import butterknife.BindView;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -98,15 +98,15 @@ public class NewsListActivity extends BaseActivity<NewsListPresenter> implements
 //                LogUtils.i("firstVisibleItemPosition:" + firstVisibleItemPosition + ",firstVisibleItemViewType:" + firstVisibleItemViewType);
 
                 if (firstVisibleItemViewType == NewsMultiDelegateAdapter.TYPE_HEADER) {
-                    mToolBar.setTitle("知乎日报");
+                    mToolBar.setTitle(R.string.group_tile_zhihu_daily);
                 } else if (firstVisibleItemViewType == NewsMultiDelegateAdapter.TYPE_HEADER_SECOND) {
-                    mToolBar.setTitle("今日热闻");
+                    mToolBar.setTitle(R.string.group_tile_today_news);
                 } else if (firstVisibleItemViewType == NewsMultiDelegateAdapter.TYPE_DATE) {
                     String date = newsMultiDelegateAdapter.getItem(firstVisibleItemPosition).getDate();
                     mToolBar.setTitle(date);
                 } else {
                     if (firstVisibleItemPosition < dateViewPosition) {
-                        mToolBar.setTitle("今日热闻");
+                        mToolBar.setTitle(R.string.group_tile_today_news);
                     } else {
                         mToolBar.setTitle(newsMultiDelegateAdapter.getItem(firstVisibleItemPosition).getDate());
                     }

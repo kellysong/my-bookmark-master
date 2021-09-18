@@ -20,7 +20,6 @@ import java.util.List;
 public class WebViewPool {
     private static List<WebVieWrap> webViewPool = new ArrayList<>();
 
-    private static final byte[] lock = new byte[0];
     private static int maxSize = 2;
 
 
@@ -67,11 +66,9 @@ public class WebViewPool {
         if (x5WebView != null) {//为空说明连接被销毁了
             return x5WebView;
         }
-        //再次判断
         if (webViewPool.size() < maxSize) {
             return buildWebView();
         }
-        //超出连接数,等待
         try {
             wait(2 * 1000);
             x5WebView = getWebView();
@@ -171,9 +168,7 @@ public class WebViewPool {
      * @param size webView池个数
      */
     public void setMaxPoolSize(int size) {
-        synchronized (lock) {
-            maxSize = size;
-        }
+        maxSize = size;
     }
 
     public static class WebVieWrap {

@@ -47,7 +47,7 @@
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="15dp"
-                    android:text="已选择"
+                    android:text="@string/Selected"
                     android:textColor="#1A1A1A"
                     android:textSize="14sp" />
 
@@ -71,7 +71,7 @@
                     android:layout_marginRight="15dp"
                     android:background="@drawable/button_noclickable_shape"
                     android:gravity="center"
-                    android:text="删除"
+                    android:text="@string/delete"
                     android:textColor="#b7b8bd"
                     android:textSize="14sp" />
 
@@ -84,7 +84,7 @@
                     android:layout_toLeftOf="@+id/btn_delete"
                     android:background="@drawable/bg_selete_all"
                     android:gravity="center"
-                    android:text="全选"
+                    android:text="@string/select_all"
                     android:textColor="#000001"
                     android:textSize="14sp" />
 

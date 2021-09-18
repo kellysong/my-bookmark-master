@@ -1,10 +1,6 @@
 package com.sjl.bookmark.ui.activity;
 
 import android.content.DialogInterface;
-import androidx.fragment.app.Fragment;
-import androidx.viewpager.widget.ViewPager;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -27,6 +23,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
+import androidx.viewpager.widget.ViewPager;
 import butterknife.BindView;
 
 /**
@@ -146,15 +146,15 @@ public class FileSystemActivity extends BaseTabActivity {
             public void onClick(View v) {
                 //弹出，确定删除文件吗。
                 new AlertDialog.Builder(FileSystemActivity.this)
-                        .setTitle("删除文件")
-                        .setMessage("确定删除文件吗?")
+                        .setTitle(R.string.delete_file)
+                        .setMessage(R.string.delete_file_hint)
                         .setPositiveButton(getResources().getString(R.string.nb_common_sure), new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 //删除选中的文件
                                 mCurFragment.deleteCheckedFiles();
                                 //提示删除文件成功
-                                showShortToast("删除文件成功");
+                                showShortToast(getString(R.string.delete_file_success));
                             }
                         })
                         .setNegativeButton(getResources().getString(R.string.nb_common_cancel), null)
@@ -181,7 +181,7 @@ public class FileSystemActivity extends BaseTabActivity {
 
     @Override
     protected List<String> createTabTitles() {
-        return Arrays.asList("智能导入", "手机目录");
+        return Arrays.asList(getString(R.string.smart_import), getString(R.string.cellphone_dir));
     }
 
     private BaseFileFragment.OnFileCheckedListener mListener = new BaseFileFragment.OnFileCheckedListener() {
@@ -218,10 +218,10 @@ public class FileSystemActivity extends BaseTabActivity {
             collBook.set_id(MD5Utils.strToMd5By16(file.getAbsolutePath()));
             collBook.setTitle(file.getName().replace(".txt", ""));
             collBook.setAuthor("");
-            collBook.setShortIntro("无");
+            collBook.setShortIntro(getString(R.string.nb_book_detail_none));
             collBook.setCover(file.getAbsolutePath());
             collBook.setLocal(true);
-            collBook.setLastChapter("开始阅读");
+            collBook.setLastChapter(getString(R.string.nb_book_detail_start_read));
             collBook.setUpdated(TimeUtils.formatDateToStr(file.lastModified(), TimeUtils.DATE_FORMAT_7));
             collBook.setLastRead(TimeUtils.
                     formatDateToStr(System.currentTimeMillis(), TimeUtils.DATE_FORMAT_7));
@@ -267,9 +267,9 @@ public class FileSystemActivity extends BaseTabActivity {
 
         //重置全选的文字
         if (mCurFragment.isCheckedAll()) {
-            mCbText.setText("取消");
+            mCbText.setText(getString(R.string.cancel));
         } else {
-            mCbText.setText("全选");
+            mCbText.setText(getString(R.string.select_all));
         }
 
     }

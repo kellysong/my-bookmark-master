@@ -4,14 +4,15 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
-import androidx.annotation.NonNull;
-import androidx.loader.content.CursorLoader;
 import android.text.TextUtils;
 
 import java.io.File;
 import java.sql.Blob;
 import java.util.ArrayList;
 import java.util.List;
+
+import androidx.annotation.NonNull;
+import androidx.loader.content.CursorLoader;
 
 /**
  * LocalFileLoader
@@ -44,14 +45,12 @@ public class LocalFileLoader extends CursorLoader {
         setSortOrder(SORT_ORDER);
     }
 
-    public void parseData(Cursor cursor, final MediaStoreHelper.MediaResultCallback resultCallback) {
+    public List<File> parseData(Cursor cursor) {
         List<File> files = new ArrayList<>();
         // 判断是否存在数据
         if (cursor == null) {
             // TODO:当媒体库没有数据的时候，需要做相应的处理
-            // 暂时直接返回空数据
-            resultCallback.onResultCallback(files);
-            return;
+            return files;
         }
         // 重复使用Loader时，需要重置cursor的position；
         cursor.moveToPosition(-1);
@@ -75,10 +74,10 @@ public class LocalFileLoader extends CursorLoader {
                 }
             }
         }
-        cursor.close();
-        if (resultCallback != null) {
-            resultCallback.onResultCallback(files);
+        if (!cursor.isClosed()){
+            cursor.close();
         }
+        return files;
     }
 
     /**

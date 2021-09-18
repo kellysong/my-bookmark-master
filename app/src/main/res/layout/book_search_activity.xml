@@ -44,7 +44,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@color/cl_search_bg"
-                android:hint="请输入书名 | 作者名"
+                android:hint="@string/book_serach_input_hint"
                 android:imeOptions="actionSearch"
                 android:maxLines="1"
                 android:singleLine="true"
@@ -100,7 +100,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:text="热门搜索"
+                    android:text="@string/hot_search"
                     android:textSize="15sp" />
 
                 <TextView
@@ -111,7 +111,7 @@
                     android:drawableLeft="@mipmap/ic_refresh"
                     android:drawablePadding="2dp"
                     android:gravity="center_vertical"
-                    android:text="换一批"
+                    android:text="@string/book_refresh"
                     android:theme="@style/btn_bg_ripple" />
             </RelativeLayout>
 

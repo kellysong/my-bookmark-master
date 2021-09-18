@@ -1,7 +1,5 @@
 package com.sjl.bookmark.ui.fragment;
 
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 
 import com.sjl.bookmark.R;
@@ -17,6 +15,8 @@ import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import java.io.File;
 import java.util.List;
 
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 
 /**
@@ -84,9 +84,19 @@ public class LocalBookFragment extends BaseFileFragment {
                 return false;
             }
         });
+
+    }
+
+    @Override
+    protected void onFirstUserVisible() {
+        long start = System.currentTimeMillis();
         MediaStoreHelper.getAllBookFile(getActivity(), new MediaStoreHelper.MediaResultCallback() {
             @Override
             public void onResultCallback(List<File> files) {
+                if (isDetached()){
+                    return;
+                }
+                System.out.println("txt文件加载耗时:"+(System.currentTimeMillis()-start)/1000.0+"s");
                 if (files.isEmpty()) {
                     mRlRefresh.showEmpty();
                 } else {
@@ -99,11 +109,6 @@ public class LocalBookFragment extends BaseFileFragment {
                 }
             }
         });
-    }
-
-    @Override
-    protected void onFirstUserVisible() {
-
     }
 
     @Override

@@ -11,10 +11,14 @@
 
     <include layout="@layout/toolbar_default" />
 
+<!--            app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget"
+处理大写问题
+-->
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tab_tl_indicator"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget"
         android:background="@color/colorPrimary"
         app:tabGravity="fill"
         app:tabIndicatorColor="@color/white"
@@ -53,9 +57,9 @@
 
             <TextView
                 android:id="@+id/tv_cb_text"
-                android:layout_width="40dp"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:text="全选"
+                android:text="@string/select_all"
                 android:gravity="center"
                 android:clickable="true"
                 android:textColor="@color/selector_cb_file" />
@@ -69,7 +73,6 @@
             android:layout_centerVertical="true"
             android:background="@drawable/selector_btn_add"
             android:minWidth="110dp"
-            android:text="加入书架"
             android:textColor="@color/selector_btn_file_add" />
 
         <Button
@@ -80,7 +83,7 @@
             android:layout_marginRight="15dp"
             android:layout_toLeftOf="@id/file_system_btn_add_book"
             android:background="@drawable/selector_btn_delete"
-            android:text="删除"
+            android:text="@string/delete"
             android:textColor="@color/selector_btn_file_delete" />
     </RelativeLayout>
 </LinearLayout>

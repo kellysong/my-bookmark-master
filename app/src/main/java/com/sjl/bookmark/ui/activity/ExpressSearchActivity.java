@@ -1,10 +1,6 @@
 package com.sjl.bookmark.ui.activity;
 
 import android.content.Intent;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.appcompat.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -30,6 +26,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 
 /**
@@ -146,7 +146,7 @@ public class ExpressSearchActivity extends BaseActivity<ExpressSearchPresenter> 
                 // 运单号扫描处理
                 String barCode = data.getStringExtra("barCode");
                 if (TextUtils.isEmpty(barCode)) {
-                    Toast.makeText(this, "扫描失败", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, R.string.express_scan_fail, Toast.LENGTH_SHORT).show();
                     return;
                 }
                 etPostId.setText(barCode.trim());
@@ -176,8 +176,9 @@ public class ExpressSearchActivity extends BaseActivity<ExpressSearchPresenter> 
                 }
             }
         }
-
-        String label = "<font color='%1$s'>没有查到？</font> <font color='%2$s'>请选择快递公司</font>";
+        String noQuery=getString(R.string.no_query);
+        String select= getString(R.string.select_hint);
+        String label = "<font color='%1$s'>"+noQuery+"</font> <font color='%2$s'>"+select+"</font>";
         String grey = String.format("#%06X", 0xFFFFFF & getResources().getColor(R.color.grey));
         String blue = String.format("#%06X", 0xFFFFFF & getResources().getColor(R.color.blue));
         ExpressCompany companyEntity = new ExpressCompany();
@@ -188,7 +189,10 @@ public class ExpressSearchActivity extends BaseActivity<ExpressSearchPresenter> 
     }
 
     private ExpressCompany getOfficialHref() {
-        String label = "<font color='%1$s'>没有查到？</font> <font color='%2$s'>使用网页查询</font>";
+        String noQuery=getString(R.string.no_query);
+        String select= getString(R.string.select_hint2);
+
+        String label = "<font color='%1$s'>"+noQuery+"</font> <font color='%2$s'>"+select+"</font>";
         String grey = String.format("#%06X", 0xFFFFFF & getResources().getColor(R.color.grey));
         String blue = String.format("#%06X", 0xFFFFFF & getResources().getColor(R.color.blue));
         ExpressCompany companyEntity = new ExpressCompany();

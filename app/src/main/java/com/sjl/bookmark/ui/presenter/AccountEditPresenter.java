@@ -5,9 +5,11 @@ import android.content.Intent;
 import android.text.TextUtils;
 import android.util.ArrayMap;
 
+import com.sjl.bookmark.R;
 import com.sjl.bookmark.app.AppConstant;
 import com.sjl.bookmark.dao.impl.AccountService;
 import com.sjl.bookmark.entity.table.Account;
+import com.sjl.bookmark.kotlin.language.I18nUtils;
 import com.sjl.bookmark.ui.contract.AccountEditContract;
 import com.sjl.core.util.security.DESUtils;
 
@@ -24,8 +26,10 @@ import java.util.List;
  * @copyright(C) 2018 song
  */
 public class AccountEditPresenter extends AccountEditContract.Presenter {
-    private List<String> accountTypes = Arrays.asList("安全", "娱乐", "社会", "开发", "其它");
-    private List<String> accountStates = Arrays.asList("在用", "闲置", "作废");
+    private List<String> accountTypes = Arrays.asList(I18nUtils.getString(R.string.account_enum_security), I18nUtils.getString(R.string.account_enum_entertainment),
+            I18nUtils.getString(R.string.account_enum_social), I18nUtils.getString(R.string.account_enum_development),
+            I18nUtils.getString(R.string.account_enum_other));
+    private List<String> accountStates = Arrays.asList(I18nUtils.getString(R.string.account_in_use), I18nUtils.getString(R.string.account_idle), I18nUtils.getString(R.string.account_invalid));
 
     private int createMode;
     private Account mGodInfo;

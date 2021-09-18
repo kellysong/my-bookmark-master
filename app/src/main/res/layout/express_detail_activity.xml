@@ -84,7 +84,7 @@
                 android:layout_height="45dp"
                 android:layout_margin="10dp"
                 android:background="@drawable/btn_common_bg_selector"
-                android:text="运单备注"
+                android:text="@string/waybill_note"
                 android:textColor="@color/white"
                 android:textSize="@dimen/big_small" />
         </LinearLayout>
@@ -104,7 +104,7 @@
                 android:layout_marginTop="30dp"
                 android:drawablePadding="10dp"
                 android:drawableTop="@mipmap/ic_no_exist"
-                android:text="抱歉，没有查到物流信息"
+                android:text="@string/no_query_the_logistics_information2"
                 android:textColor="@color/black"
                 android:textSize="@dimen/big_small" />
 
@@ -117,7 +117,6 @@
                 android:background="@drawable/btn_common_bg_selector"
                 android:paddingLeft="40dp"
                 android:paddingRight="40dp"
-                android:text="保存运单信息"
                 android:textColor="@color/white"
                 android:textSize="@dimen/big_small" />
 
@@ -136,7 +135,7 @@
                 android:layout_marginRight="@dimen/activity_horizontal_margin"
                 android:layout_marginTop="10dp"
                 android:lineSpacingExtra="8dp"
-                android:text="可能原因:"
+                android:text="@string/possible_cause"
                 android:textColor="@color/deep_orange" />
 
             <TextView
@@ -146,7 +145,7 @@
                 android:layout_marginRight="@dimen/activity_horizontal_margin"
                 android:layout_marginTop="8dp"
                 android:lineSpacingExtra="8dp"
-                android:text="1.你的快递刚刚寄出\n2.你输入的运单号或选择的快递公司有误"
+                android:text="@string/express_hint"
                 android:textColor="@color/black" />
 
             <View
@@ -173,7 +172,7 @@
                 android:drawablePadding="10dp"
                 android:drawableTop="@mipmap/ic_error"
                 android:gravity="center"
-                android:text="没有查询到物流信息"
+                android:text="@string/no_query_the_logistics_information"
                 android:textColor="@color/grey" />
 
             <Button
@@ -184,7 +183,7 @@
                 android:layout_marginRight="@dimen/activity_horizontal_margin"
                 android:layout_marginTop="30dp"
                 android:background="@drawable/btn_common_bg_selector"
-                android:text="点击重试"
+                android:text="@string/click_retry"
                 android:textColor="@color/white"
                 android:textSize="@dimen/big_small" />
         </LinearLayout>
@@ -198,7 +197,7 @@
             android:drawablePadding="10dp"
             android:drawableTop="@mipmap/ic_searching"
             android:gravity="center"
-            android:text="正在加载物流信息…"
+            android:text="@string/loading_logistics_information"
             android:textColor="@color/grey" />
     </FrameLayout>
 </LinearLayout>

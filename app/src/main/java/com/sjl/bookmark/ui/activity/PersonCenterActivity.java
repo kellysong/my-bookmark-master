@@ -108,7 +108,7 @@ public class PersonCenterActivity extends BaseSwipeBackActivity {
 
     @Override
     protected void initListener() {
-        bindingToolbar(mToolBar, "个人中心");
+        bindingToolbar(mToolBar, getString(R.string.person_center));
     }
 
     @Override
@@ -182,7 +182,7 @@ public class PersonCenterActivity extends BaseSwipeBackActivity {
                 etNickname.selectAll();
                 AlertDialog dialog = new AlertDialog.Builder(this)
                         .setView(inflate)
-                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                        .setPositiveButton(R.string.sure, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 tvNickname.setText(etNickname.getText());
@@ -194,7 +194,7 @@ public class PersonCenterActivity extends BaseSwipeBackActivity {
                                 showSaveButton();
                             }
                         })
-                        .setNegativeButton("取消", null)
+                        .setNegativeButton(R.string.cancel, null)
                         .create();
                 final Window window = dialog.getWindow();
                 final WindowManager.LayoutParams params = window.getAttributes();
@@ -206,7 +206,7 @@ public class PersonCenterActivity extends BaseSwipeBackActivity {
                 break;
             case R.id.rl_sex:
                 //修改性别
-                final String[] sexArr = new String[]{"男", "女"};
+                final String[] sexArr = new String[]{getString(R.string.man), getString(R.string.woman)};
                 String sex = tvSex.getText().toString();
                 int index = 0;
                 for (int i = 0; i < sexArr.length; i++) {
@@ -228,7 +228,7 @@ public class PersonCenterActivity extends BaseSwipeBackActivity {
                                 showSaveButton();
                                 dialog.dismiss();
                             }
-                        }).setNegativeButton("取消", null).show();
+                        }).setNegativeButton(R.string.cancel, null).show();
                 break;
             case R.id.rl_personality:
                 //修改个性签名
@@ -239,8 +239,8 @@ public class PersonCenterActivity extends BaseSwipeBackActivity {
             case R.id.fab_save:
                 //提交修改
                 new AlertDialog.Builder(this)
-                        .setMessage("确定保存用户信息?")
-                        .setPositiveButton("保存", new DialogInterface.OnClickListener() {
+                        .setMessage(R.string.save_user_info_hint)
+                        .setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 String nickname = tvNickname.getText().toString();
@@ -249,7 +249,7 @@ public class PersonCenterActivity extends BaseSwipeBackActivity {
                                 updateUser(changeAvatar, nickname, sex, personality);
                             }
                         })
-                        .setNegativeButton("取消", null)
+                        .setNegativeButton(R.string.cancel, null)
                         .show();
                 break;
         }
@@ -284,9 +284,9 @@ public class PersonCenterActivity extends BaseSwipeBackActivity {
         tvPersonality.setTextColor(getResources().getColor(R.color.gray));
         this.changeAvatar = false;
         if (userInfo == null) {//第一次
-            Toast.makeText(this, "保存成功", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.save_success, Toast.LENGTH_SHORT).show();
         } else {
-            Toast.makeText(this, "更新成功", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.update_success, Toast.LENGTH_SHORT).show();
         }
 
     }
@@ -323,7 +323,7 @@ public class PersonCenterActivity extends BaseSwipeBackActivity {
     }
 
     private void showTypeDialog() {
-        final String[] items = new String[]{"拍照", "从手机相册选择"};
+        final String[] items = new String[]{getString(R.string.take_photo), getString(R.string.choose_album)};
         // 创建对话框构建器
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         // 设置参数
@@ -466,7 +466,7 @@ public class PersonCenterActivity extends BaseSwipeBackActivity {
         options.setHideBottomControls(true);
         //设置裁剪图片可操作的手势
 //        options.setAllowedGestures(UCropActivity.SCALE, UCropActivity.ROTATE, UCropActivity.ALL);
-        options.setToolbarTitle("裁剪");//设置标题栏文字
+        options.setToolbarTitle(getString(R.string.tailor));//设置标题栏文字
         options.setMaxScaleMultiplier(3);//设置最大缩放比例300%
         options.setHideBottomControls(false);//隐藏下边控制栏
         options.setShowCropGrid(false);  //设置是否显示裁剪网格

@@ -73,14 +73,14 @@ public class ChangeSkinActivity extends BaseActivity {
     protected void initData() {
         skinDir = getSkinDir().getAbsolutePath();
         themeSkinList = new ArrayList<>();
-        themeSkinList.add(new ThemeSkin(0, "默认", "", "#03A9F4"));
-        themeSkinList.add(new ThemeSkin(1, "高贵棕", "skin_brown.skin", "#4e342e"));
-        themeSkinList.add(new ThemeSkin(2, "酷炫黑", "skin_black.skin", "#212121"));
+        themeSkinList.add(new ThemeSkin(0, getString(R.string.skin_default), "", "#03A9F4"));
+        themeSkinList.add(new ThemeSkin(1, getString(R.string.skin_noble_brown), "skin_brown.skin", "#4e342e"));
+        themeSkinList.add(new ThemeSkin(2, getString(R.string.skin_cool_black), "skin_black.skin", "#212121"));
 
-        themeSkinList.add(new ThemeSkin(3, "激情红", "skin_red.skin", "#F44336"));
-        themeSkinList.add(new ThemeSkin(4, "舒适绿", "skin_green.skin", "#4CAF50"));
-        themeSkinList.add(new ThemeSkin(5, "活力橙", "skin_orange.skin", "#FF9800"));
-        themeSkinList.add(new ThemeSkin(6, "高雅灰", "skin_grey.skin", "#9E9E9E"));
+        themeSkinList.add(new ThemeSkin(3, getString(R.string.skin_passion_red), "skin_red.skin", "#F44336"));
+        themeSkinList.add(new ThemeSkin(4, getString(R.string.skin_comfortable_green), "skin_green.skin", "#4CAF50"));
+        themeSkinList.add(new ThemeSkin(5, getString(R.string.skin_vibrant_orange), "skin_orange.skin", "#FF9800"));
+        themeSkinList.add(new ThemeSkin(6, getString(R.string.skin_elegant_grey), "skin_grey.skin", "#9E9E9E"));
 
         mThemeSkinAdapter = new ThemeSkinAdapter(R.layout.theme_skin_recycle_item, themeSkinList);
         GridLayoutManager layoutManager = new GridLayoutManager(this, 3);
@@ -91,7 +91,7 @@ public class ChangeSkinActivity extends BaseActivity {
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
                 boolean nightMode = DarkModeUtils.INSTANCE.isNightMode(mContext);
                 if (nightMode) {
-                    showToast("当前处于深色模式，请先设置为正常模式");
+                    showToast(getString(R.string.skin_change_hint));
                     return;
                 }
                 int skin = PreferencesHelper.getInstance(mContext).getInteger(AppConstant.SETTING.CURRENT_SELECT_SKIN, 0);
@@ -124,7 +124,7 @@ public class ChangeSkinActivity extends BaseActivity {
                         int skin = PreferencesHelper.getInstance(mContext).getInteger(AppConstant.SETTING.CURRENT_SELECT_SKIN, 0);
                         ThemeSkin themeSkin = mThemeSkinAdapter.getData().get(skin);
                         loadSkin(themeSkin.getSkinFileName());
-                        showShortToast("更新成功");
+                        showShortToast(getString(R.string.skin_update_success));
                     }
                 }, 1000);
 
@@ -179,12 +179,12 @@ public class ChangeSkinActivity extends BaseActivity {
 
                     @Override
                     public void onSuccess() {
-                        Toast.makeText(mContext, "主题更换成功", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(mContext, R.string.skin_theme_change_success, Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
                     public void onFailed() {
-                        Toast.makeText(mContext, "主题更换失败", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(mContext, R.string.skin_theme_change_fail, Toast.LENGTH_SHORT).show();
                     }
                 });
     }

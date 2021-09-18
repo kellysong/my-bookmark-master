@@ -36,7 +36,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="热门搜索"
+                        android:text="@string/hot_search"
                         android:textSize="@dimen/micro"
                         android:textStyle="bold" />
 
@@ -62,7 +62,7 @@
                         android:id="@+id/contentTextView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="历史搜索"
+                        android:text="@string/history_search"
                         android:layout_marginBottom="5dp"
                         android:textSize="@dimen/micro"
                         android:textStyle="bold" />
@@ -86,7 +86,7 @@
                         android:layout_marginTop="5dp"
                         android:layout_marginBottom="8dp"
                         android:background="@drawable/round_btn_selector"
-                        android:text="清除历史搜索记录"
+                        android:text="@string/clear_historical_search_records"
                         android:textSize="@dimen/small" />
                 </LinearLayout>
             </LinearLayout>

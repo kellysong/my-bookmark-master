@@ -13,15 +13,13 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
-import androidx.annotation.Nullable;
-import androidx.core.app.NotificationCompat;
-import androidx.core.content.FileProvider;
 import android.widget.RemoteViews;
 
 import com.sjl.bookmark.BuildConfig;
 import com.sjl.bookmark.R;
 import com.sjl.bookmark.api.MyBookmarkService;
 import com.sjl.bookmark.app.AppConstant;
+import com.sjl.bookmark.kotlin.language.LanguageManager;
 import com.sjl.bookmark.ui.activity.MainActivity;
 import com.sjl.core.net.RetrofitHelper;
 import com.sjl.core.net.filedownload.DownloadProgressHandler;
@@ -31,7 +29,9 @@ import com.sjl.core.util.log.LogUtils;
 import java.io.File;
 import java.util.List;
 
-
+import androidx.annotation.Nullable;
+import androidx.core.app.NotificationCompat;
+import androidx.core.content.FileProvider;
 
 
 /**
@@ -58,8 +58,10 @@ public class DownloadIntentService extends IntentService {
                 getSystemService(Context.NOTIFICATION_SERVICE);
         //Android O(8.0)通知栏适配,需要NotificationChannel
         if (Build.VERSION.SDK_INT >= 26) {
+            String download = getBaseContext().getString(R.string.app_download);
+
             NotificationChannel channel = new NotificationChannel(PUSH_CHANNEL_ID,
-                    "下载", NotificationManager.IMPORTANCE_HIGH);
+                    download, NotificationManager.IMPORTANCE_HIGH);
             channel.enableLights(true); //是否在桌面icon右上角展示小红点
             channel.setLightColor(Color.GREEN); //小红点颜色
             channel.setShowBadge(true); //是否在久按桌面图标时显示此渠道的通知
@@ -85,8 +87,6 @@ public class DownloadIntentService extends IntentService {
         }
 
         buildNotification();
-
-
 
 
         /**
@@ -125,19 +125,28 @@ public class DownloadIntentService extends IntentService {
         });
     }
 
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(LanguageManager.INSTANCE.getLocalContext(base));
+    }
+
     private void buildNotification() {
+        String download = getBaseContext().getString(R.string.app_download);
+        String startDownload = getBaseContext().getString(R.string.app_start_download);
+        String downloaded = getBaseContext().getString(R.string.app_downloaded);
         Intent updateIntent = new Intent(DownloadIntentService.this, MainActivity.class);//点击跳转到主页
         updateIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(DownloadIntentService.this, 0, updateIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         final RemoteViews remoteViews = new RemoteViews(getPackageName(), R.layout.notify_download);
         remoteViews.setProgressBar(R.id.pb_progress, 100, 0, false);
-        remoteViews.setTextViewText(R.id.tv_progress, "已下载" + 0 + "%");
+        remoteViews.setTextViewText(R.id.tv_progress, downloaded + 0 + "%");
+
 
         final NotificationCompat.Builder builder =
-                new NotificationCompat.Builder(DownloadIntentService.this,PUSH_CHANNEL_ID)//特别注意添加面板id，否则不出来
-                        .setTicker("开始下载")
+                new NotificationCompat.Builder(DownloadIntentService.this, PUSH_CHANNEL_ID)//特别注意添加面板id，否则不出来
+                        .setTicker(startDownload)
                         .setChannelId(PUSH_CHANNEL_ID)
-                        .setContentTitle("下载")
+                        .setContentTitle(download)
                         .setCustomContentView(remoteViews)
                         .setWhen(System.currentTimeMillis())
                         .setContentIntent(pendingIntent)

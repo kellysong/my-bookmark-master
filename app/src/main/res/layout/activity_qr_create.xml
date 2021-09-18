@@ -47,7 +47,7 @@
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="20dp"
                 android:background="@drawable/btn_bg_outlined"
-                android:text="保存"
+                android:text="@string/save"
                 android:textColor="@drawable/btn_next_text" />
 
             <Button
@@ -58,7 +58,7 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="20dp"
                 android:background="@drawable/btn_bg_outlined"
-                android:text="分享给朋友"
+                android:text="@string/share_with_friends"
                 android:textColor="@drawable/btn_next_text" />
         </LinearLayout>
     </LinearLayout>

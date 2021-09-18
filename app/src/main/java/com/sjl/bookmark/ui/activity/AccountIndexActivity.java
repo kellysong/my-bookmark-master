@@ -49,7 +49,7 @@ public class AccountIndexActivity extends BaseActivity {
     private List<Fragment> list;
     private AccountPagerListAdapter adapter;
     private int position;
-    private String[] titles = {"在用", "闲置", "作废"};
+    private String[] titles = {I18nUtils.getString(R.string.account_in_use), I18nUtils.getString(R.string.account_idle), I18nUtils.getString(R.string.account_invalid)};
 
 
     @Override

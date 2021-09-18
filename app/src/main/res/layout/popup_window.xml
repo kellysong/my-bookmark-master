@@ -19,7 +19,7 @@
             android:background="@drawable/item_selector"
             android:gravity="center"
             android:padding="12dp"
-            android:text="转发"
+            android:text="@string/transpond"
             android:textColor="@color/black2"
             android:textSize="16sp" />
 
@@ -35,7 +35,7 @@
             android:background="@drawable/item_selector"
             android:gravity="center"
             android:padding="12dp"
-            android:text="删除"
+            android:text="@string/delete"
             android:textColor="@color/black2"
             android:textSize="16sp" />
 
@@ -50,7 +50,7 @@
             android:background="@drawable/item_selector"
             android:gravity="center"
             android:padding="12dp"
-            android:text="置顶"
+            android:text="@string/top"
             android:textColor="@color/black2"
             android:textSize="16sp" />
 
@@ -65,7 +65,7 @@
             android:background="@drawable/item_selector"
             android:gravity="center"
             android:padding="12dp"
-            android:text="更多"
+            android:text="@string/more"
             android:textColor="@color/black2"
             android:textSize="16sp" />
 

@@ -6,11 +6,6 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
-import androidx.core.content.ContextCompat;
-import androidx.core.widget.NestedScrollView;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.appcompat.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
@@ -34,13 +29,18 @@ import com.sjl.core.mvp.BaseActivity;
 import com.sjl.core.net.RxBus;
 import com.sjl.core.net.RxSchedulers;
 import com.sjl.core.net.RxVoid;
-import com.sjl.core.util.log.LogUtils;
 import com.sjl.core.util.datetime.TimeUtils;
+import com.sjl.core.util.log.LogUtils;
 import com.sjl.core.widget.RefreshLayout;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
 import java.util.List;
 
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
+import androidx.core.widget.NestedScrollView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 import io.reactivex.functions.Consumer;
 
@@ -304,7 +304,7 @@ public class BookDetailActivity extends BaseActivity<BookDetailPresenter> implem
             }            //设置图片
             mTvChase.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(this, R.mipmap.ic_book_list_delete), null,
                     null, null);
-            mTvRead.setText("继续阅读");
+            mTvRead.setText(R.string.nb_book_detail_continue_read);
         } else {
             isCollected = false;
             mTvChase.setText(getResources().getString(R.string.nb_book_detail_chase_update));
@@ -317,7 +317,7 @@ public class BookDetailActivity extends BaseActivity<BookDetailPresenter> implem
             }            //设置图片
             mTvChase.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(BookDetailActivity.this, R.mipmap.ic_book_list_add), null,
                     null, null);
-            mTvRead.setText("开始阅读");
+            mTvRead.setText(R.string.nb_book_detail_start_read);
 
             mCollBookBean = bookDetail.getCollBookBean();
         }

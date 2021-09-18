@@ -1,8 +1,6 @@
 package com.sjl.bookmark.ui.fragment;
 
 import android.os.Environment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 
@@ -24,6 +22,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 
 /**
@@ -129,14 +129,14 @@ public class FileCategoryFragment extends BaseFileFragment {
                 }
             }
         });
-        File root = Environment.getExternalStorageDirectory();
-        toggleFileTree(root);
+
     }
 
 
     @Override
     protected void onFirstUserVisible() {
-
+        File root = Environment.getExternalStorageDirectory();
+        toggleFileTree(root);
     }
 
     @Override

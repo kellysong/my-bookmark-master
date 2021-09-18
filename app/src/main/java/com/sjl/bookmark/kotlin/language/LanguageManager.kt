@@ -69,6 +69,22 @@ object LanguageManager {
     }
 
 
+    fun getLocalContext(context: Context): Context {
+        var languageType: Int = -1
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            languageType = getCurrentLanguageType(context)
+        } else {
+            languageType = getCurrentLanguageType(MyApplication.getContext())
+        }
+        var locale: Locale
+        if (languageType == null) {//如果没有指定语言使用系统首选语言
+            locale = getSystemPreferredLanguage()
+        } else {//指定了语言使用指定语言
+            locale = getSupportLanguage(languageType)!!
+        }
+        val attachBaseContext = LanguageUtils.attachBaseContext(context, locale)
+        return attachBaseContext
+    }
 
     /**
      * 是否支持此语言

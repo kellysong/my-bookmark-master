@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -64,6 +65,10 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -163,6 +168,8 @@ public class MainActivity extends BaseActivity<BasePresenter>
         initWaveView(waveView);
 
         //switchFragment(0);
+        //注意：高版本肯能无效或报错
+        hookToast();
     }
 
 
@@ -375,16 +382,16 @@ public class MainActivity extends BaseActivity<BasePresenter>
         final PreferencesHelper preferencesHelper = PreferencesHelper.getInstance(mContext);
         String date = (String) preferencesHelper.get(AppConstant.SETTING.LOGIN_DATE, "");
         String currentDate = TimeUtils.formatDateToStr(new Date(), TimeUtils.DATE_FORMAT_4);
-        if (currentDate.equals(date)){
+        if (currentDate.equals(date)) {
             return;
         }
-        RetrofitHelper.getInstance().getApiService(WanAndroidApiService.class).login("songjiali","songjiali")
+        RetrofitHelper.getInstance().getApiService(WanAndroidApiService.class).login("songjiali", "songjiali")
                 .compose(RxSchedulers.applySchedulers()).as(bindLifecycle()).subscribe(new RxObserver<DataResponse<UserLogin>>() {
             @Override
             public void _onNext(DataResponse<UserLogin> userLoginDataResponse) {
-                if (userLoginDataResponse.getErrorCode() == 0){
+                if (userLoginDataResponse.getErrorCode() == 0) {
                     LogUtils.i("登录成功");
-                    preferencesHelper.put(AppConstant.SETTING.LOGIN_DATE,currentDate);
+                    preferencesHelper.put(AppConstant.SETTING.LOGIN_DATE, currentDate);
                 }
 
             }
@@ -446,7 +453,7 @@ public class MainActivity extends BaseActivity<BasePresenter>
                                 } else {
                                     msg = "备份我的收藏失败";
                                 }
-                                notificationUtils.sendNotification(1, "自动备份", msg, null, null);
+                                notificationUtils.sendNotification(1, getString(R.string.auto_backup), msg, null, null);
                                 preferencesHelper.put(AppConstant.SETTING.AUTO_BACKUP_COLLECTION_TIME, System.currentTimeMillis());
                             }
 
@@ -517,7 +524,7 @@ public class MainActivity extends BaseActivity<BasePresenter>
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
-                        LogUtils.e("初始化头像失败",throwable);
+                        LogUtils.e("初始化头像失败", throwable);
                     }
                 });
     }
@@ -526,7 +533,7 @@ public class MainActivity extends BaseActivity<BasePresenter>
      * 监听头像更新
      */
     public void registerUpdateHeadImg() {
-       RxBus.getInstance()
+        RxBus.getInstance()
                 .toObservable(AppConstant.RxBusFlag.FLAG_2, EventBusDto.class)
                 .compose(RxSchedulers.applySchedulers())
                 .as(bindLifecycle())
@@ -700,9 +707,9 @@ public class MainActivity extends BaseActivity<BasePresenter>
 
     private void scanResult(String text) {
         new AlertDialog.Builder(this)
-                .setTitle("提示")
+                .setTitle(R.string.nb_common_tip)
                 .setMessage(text)
-                .setPositiveButton("确定", null)
+                .setPositiveButton(R.string.sure, null)
                 .show();
     }
 
@@ -781,12 +788,70 @@ public class MainActivity extends BaseActivity<BasePresenter>
         } else {
             if (System.currentTimeMillis() - DOUBLE_CLICK_TIME > 2000) {
                 DOUBLE_CLICK_TIME = System.currentTimeMillis();
-                Toast.makeText(this, "再按一次退出应用", Toast.LENGTH_SHORT).show();
+
+                Toast.makeText(this, R.string.exit_app_hint, Toast.LENGTH_SHORT).show();
             } else {
                 mFragments = null;
                 super.onBackPressed();
             }
 
         }
+    }
+
+    /**
+     * 基于hook去除 Toast前面的应用名,https://mp.weixin.qq.com/s/B3ooLGa-uQK4pf9RrZvY5g
+     */
+    private void hookToast() {
+        try {
+            Class<Toast> toastClass = Toast.class;
+            //获取sService的Field
+            Field sServiceField = toastClass.getDeclaredField("sService");
+            sServiceField.setAccessible(true);
+            //获取sService原始对象
+            Method getServiceMethod = toastClass.getDeclaredMethod("getService", null);
+            getServiceMethod.setAccessible(true);
+            Object service = getServiceMethod.invoke(null);
+            //动态代理替换
+            Class<?> aClass = Class.forName("android.app.INotificationManager");
+            Object proxy = Proxy.newProxyInstance(Thread.class.getClassLoader(), new Class[]{aClass}, new InvocationHandler() {
+                @Override
+                public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+                    // 判断enqueueToast()方法时执行操作
+                    if (method.getName().equals("enqueueToast")) {
+                        Log.e("hook", method.getName());
+                        try {
+                            getContent(args[1]);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    return method.invoke(service, args);
+                }
+            });
+            // 用代理对象给sService赋值
+            sServiceField.set(null, proxy);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+    }
+
+    private static void getContent(Object arg) throws ClassNotFoundException, NoSuchFieldException, IllegalAccessException {
+        // 获取TN的class
+        Class<?> tnClass = Class.forName(Toast.class.getName() + "$TN");
+        // 获取mNextView的Field
+        Field mNextViewField = tnClass.getDeclaredField("mNextView");
+        mNextViewField.setAccessible(true);
+        // 获取mNextView实例
+        LinearLayout mNextView = (LinearLayout) mNextViewField.get(arg);
+        // 获取textview
+        TextView childView = (TextView) mNextView.getChildAt(0);
+        // 获取文本内容
+        CharSequence text = childView.getText();
+//        LogUtils.i("hook toast content before: " + text);
+        // 替换文本并赋值
+        childView.setText(text.toString().split("：")[1]);
+//        LogUtils.i("hook toast content after: " + childView.getText());
     }
 }

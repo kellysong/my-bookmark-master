@@ -1,7 +1,5 @@
 package com.sjl.bookmark.ui.activity;
 
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -19,11 +17,13 @@ import com.sjl.bookmark.ui.adapter.MyCollectionAdapter;
 import com.sjl.bookmark.ui.contract.MyCollectionContract;
 import com.sjl.bookmark.ui.presenter.MyCollectionPresenter;
 import com.sjl.core.mvp.BaseActivity;
-import com.sjl.core.util.log.LogUtils;
 import com.sjl.core.util.ViewUtils;
+import com.sjl.core.util.log.LogUtils;
 
 import java.util.List;
 
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 
 import static com.sjl.bookmark.app.MyApplication.getContext;
@@ -130,7 +130,7 @@ public class MyCollectionSearchActivity extends BaseActivity<MyCollectionPresent
                 } else {
                     mRecyclerView.setVisibility(View.GONE);
                     mMsg.setVisibility(View.VISIBLE);
-                    mMsg.setText("暂无条目");
+                    mMsg.setText(R.string.no_item);
                 }
                 break;
             case HttpConstant.LoadType.TYPE_LOAD_MORE_SUCCESS://加载更多
