@@ -164,7 +164,7 @@
                             android:layout_height="wrap_content"
                             android:ellipsize="end"
                             android:singleLine="true"
-                            android:text="追书人数"
+                            android:text="@string/book_detail_readers"
                             android:textColor="@color/nb.text.common_h2"
                             android:textSize="13sp" />
 
@@ -193,7 +193,7 @@
                             android:layout_height="wrap_content"
                             android:ellipsize="end"
                             android:singleLine="true"
-                            android:text="读者留存率"
+                            android:text="@string/book_detail_retention"
                             android:textColor="@color/nb.text.common_h2"
                             android:textSize="13sp" />
 
@@ -222,7 +222,7 @@
                             android:layout_height="wrap_content"
                             android:ellipsize="end"
                             android:singleLine="true"
-                            android:text="日更新字数"
+                            android:text="@string/book_detail_updated_words"
                             android:textColor="@color/nb.text.common_h2"
                             android:textSize="13sp" />
 

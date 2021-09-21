@@ -1,11 +1,13 @@
 package com.sjl.bookmark.ui.activity;
 
+import android.content.Context;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.widget.EditText;
 
 import com.sjl.bookmark.R;
+import com.sjl.bookmark.kotlin.language.LanguageManager;
 import com.sjl.bookmark.widget.MarqueeView;
 import com.sjl.core.mvp.BaseActivity;
 
@@ -37,6 +39,11 @@ public class BarrageShowActivity extends BaseActivity {
     }
 
     @Override
+    protected void attachBaseContext(Context newBase) {//横屏要加这个才行，未知原因
+        super.attachBaseContext(LanguageManager.INSTANCE.getLocalContext(newBase));
+    }
+
+    @Override
     protected void initListener() {
         et_content.addTextChangedListener(new TextWatcher() {
             @Override
@@ -64,4 +71,5 @@ public class BarrageShowActivity extends BaseActivity {
     protected void initData() {
 
     }
+
 }

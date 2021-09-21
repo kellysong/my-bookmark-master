@@ -1,12 +1,16 @@
 include ':app', ':spots-dialog-lib', ':photoview'
-
-//include ':my-common-lib'
-//project (':my-common-lib').projectDir = new File('D:/workspace_android/my-lib/my-common-lib/')
-//include ':my-common-lib:base-core'
-//include ':my-common-lib:base-adapter'
-
-//include ':my-hardware-lib'
-//project (':my-hardware-lib').projectDir = new File('D:/workspace_android/my-lib/my-hardware-lib/')
-//include ':my-hardware-lib:nfcard'
-//include ':my-hardware-lib:zxing'
+def useLocalDependenceMyCommon = false
+if (useLocalDependenceMyCommon){
+    include ':my-common-lib'
+    project(':my-common-lib').projectDir = new File('D:/workspace_android/my-lib/my-common-lib/')
+    include ':my-common-lib:base-core'
+    include ':my-common-lib:base-adapter'
+}
+def useLocalDependenceMyHardware = false
+if (useLocalDependenceMyHardware){
+    include ':my-hardware-lib'
+    project (':my-hardware-lib').projectDir = new File('D:/workspace_android/my-lib/my-hardware-lib/')
+    include ':my-hardware-lib:nfcard'
+    include ':my-hardware-lib:zxing'
+}
 include ':location'

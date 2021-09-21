@@ -13,7 +13,7 @@
     <!--wifi密码查看-->
     <string name="iten_name_hint">Name：</string>
     <string name="item_pasword_hint">Password：</string>
-    <string name="copy_success">Password copy success</string>
+    <string name="copy_success">Password copy successful</string>
     <string name="not_root_hint">Please get root permission...</string>
     <string name="not_root_hint_txt">Please make sure that this program has obtained Root authority. If there is no Root authority, please download the third-party tool for Root, and KingRoot is recommended!</string>
     <string name="empty_password">Empty password</string>
@@ -23,7 +23,7 @@
     <string name="finger_up_first_error">Connect at least 4 points, please try again</string>
     <string name="finger_up_first_success">Please draw an unlock pattern at this time</string>
     <string name="finger_up_second_error">Inconsistent with last input, please try again</string>
-    <string name="finger_up_second_success">Draw  success</string>
+    <string name="finger_up_second_success">Draw  successful</string>
     <string name="check_error">Password error. Please try again</string>
     <!-- 密码锁-->
     <string name="lockscreen_access_pattern_start">"Draw an unlock pattern"</string>
@@ -156,6 +156,35 @@
     <string name="nb.book.recommend">%1$d people recommend</string>
     <string name="nb.book.type">[%1$s]</string>
     <string name="nb.read.no_chapter">The %1$d chapter (%2$d)</string>
+
+    <!--OpenCC-->
+<!--        <string-array name="conversion_type_array">
+        <item>不转换</item>
+        <item>台湾正体到简体(大陆常用词汇)</item>
+        <item>简体到香港繁体</item>
+        <item>简体到繁体</item>
+        <item>简体到台湾正体</item>
+        <item>简体到繁体(台湾常用词汇)</item>
+        <item>繁体到香港繁体</item>
+        <item>繁体到简体</item>
+        <item>繁体到台湾正体</item>
+        <item>台湾正体到简体</item>
+        <item>香港繁体到简体</item>
+    </string-array>-->
+    <string-array name="conversion_type_array">
+        <item>Don\'t convert</item>
+        <item>TW to CN (Common)</item>
+        <item>CN to HKT</item>
+        <item>CN to traditional</item>
+        <item>CN to TW</item>
+        <item>CN to TW (Common)</item>
+        <item>Traditional to HKT</item>
+        <item>Traditional to CN</item>
+        <item>Traditional to TW</item>
+        <item>TW to CN</item>
+        <item>HKT to CN</item>
+    </string-array>
+
     <string name="share_title">Share</string>
     <string name="share_article_url">%1$s share【%2$s】：%3$s</string>
     <string name="share_type_url">%1$s share【%2$s】 theme：http://www.wanandroid.com/article/list/0?cid=%3$d</string>
@@ -168,7 +197,7 @@
     <string name="cellphone_dir">Cellphone directory</string>
     <string name="select_all_cancel">Cancel select all</string>
     <string name="transpond">Transpond</string>
-    <string name="top">Top</string>
+    <string name="top">Stick on Top</string>
     <string name="save">Save</string>
     <string name="share_with_friends">Share with friends</string>
     <string name="delete_hint">Unrecoverable after deletion. Do you want to delete it?</string>
@@ -202,7 +231,7 @@
     <string name="skin_vibrant_orange">Vibrant Orange</string>
     <string name="skin_elegant_grey">Elegant Grey</string>
     <string name="skin_change_hint">It is in dark mode. Please set it to normal mode before</string>
-    <string name="skin_update_success">Update success</string>
+    <string name="skin_update_success">Update successful</string>
     <string name="skin_theme_change_success">Theme change successful</string>
     <string name="skin_theme_change_fail">Theme change failed</string>
     <string name="person_center">个人中心</string>
@@ -263,7 +292,7 @@
     <string name="book_shelf_hint">Sure to empty the shelves?</string>
     <string name="book_delete_hint">Delete process...</string>
     <string name="book_update_hint">Updating books</string>
-    <string name="book_read_setting3">Translate simplified Chinese to traditional Chinese</string>
+    <string name="book_read_setting3">Lang. conversion</string>
     <string name="book_read_setting2">Full screen mode</string>
     <string name="book_read_setting1">Volume button to turn pages</string>
     <string name="barrage_hint">Please enter the text to be displayed</string>
@@ -297,4 +326,82 @@
     <string name="app_downloaded">Downloaded</string>
     <string name="nb_read_add_book_hint">If you like a book, add it to the shelf</string>
     <string name="file_dir_back">GO back</string>
+
+    <string name="item_encryption_type">Encryption type：</string>
+    <string name="updating">Updating...</string>
+    <string name="gesture_pwd_hint">The gesture password was created successfully</string>
+    <string name="gesture_pwd_hint2">The gesture password is changed successfully</string>
+    <string name="gesture_pwd_hint3">Discard gesture password change</string>
+    <string name="clear_browsing_hint">Are you sure to clear all article history?</string>
+    <string name="clear_success">Clear successfully</string>
+    <string name="language_select_hint">Select language</string>
+    <string name="network_unavailable">Network Unavailable</string>
+    <string name="downloading">Downloading</string>
+    <string name="checking_update">Checking update</string>
+    <string name="version_update_hint">version is up-to-date</string>
+    <string name="version_update_failed">Check update failure</string>
+    <string name="bookmark_file_download_failed">Bookmark file download failed</string>
+    <string name="bookmark_update_hint">Bookmark update successfully</string>
+    <string name="bookmark_update_hint2">Bookmark update failed</string>
+    <string name="bookmark_update_hint3">Update bookmark data to database exception</string>
+    <string name="read_setting_system">System</string>
+    <string name="read_setting_default">Default</string>
+    <string name="read_setting_simulation">Simulation</string>
+    <string name="read_setting_cover">Cover</string>
+    <string name="read_setting_sliding">Sliding</string>
+    <string name="read_setting_rolling">Rolling</string>
+    <string name="read_setting_more"><![CDATA[More setting >>]]></string>
+    <string name="data_empty">Empty</string>
+    <string name="delete_file_source_hint">Delete source file</string>
+    <string name="in_transit">In transit</string>
+    <string name="news_sub_comments">&#160;Comments</string>
+    <string name="page_loader_hint">Try to loading...</string>
+    <string name="page_loader_hint2">Load failed (click edge retry)</string>
+    <string name="page_loader_hint3">The content of the article is empty</string>
+    <string name="page_loader_hint4">Please wait while typesetting...</string>
+    <string name="page_loader_hint5">File parsing error</string>
+    <string name="page_loader_hint6">The directory list is empty</string>
+    <string name="book_detail_readers">Readers</string>
+    <string name="book_detail_retention">Readers Retention</string>
+    <string name="book_detail_updated_words">Updated Words</string>
+    <string name="file_deleting">Deleting...</string>
+    <string name="synchronizing">Synchronizing...</string>
+
+    <string name="feedback">Feedback on pocket bookmark</string>
+    <string name="suggestions">Please write your suggestions for pocket bookmark</string>
+    <string name="select_email_client">Select an email client</string>
+    <string name="book_detail_add_shelf_hint">Adding to the bookshelf</string>
+    <string name="book_detail_add_shelf_hint2">Failed to join bookshelf, please check network</string>
+    <string name="book_detail_add_shelf_hint3">Add bookshelf successfully</string>
+    <string name="img_save_success">The image has been saved successfully</string>
+    <string name="save_failed">Save failed</string>
+    <string name="permission_open">Open</string>
+    <string name="permission_set_hint">"Please allow the application to use  %1$s permissions in Permissions Settings.</string>
+    <string name="app_match_hint">No suitable application type was found:</string>
+    <string name="paging_load">Paging load：</string>
+    <string name="sync_hint">No data is available and cannot be synchronized</string>
+    <string name="sync_success">Synchronize successfully</string>
+    <string name="sync_hint2">Synchronization is up-to-date</string>
+    <string name="sync_failed">Synchronize failed</string>
+    <string name="backup_hint">In the backup...</string>
+    <string name="backup_hint2">No data is available and cannot be backed up</string>
+    <string name="backup_hint3">Backup collection failed</string>
+    <string name="backup_hint4">Backup collection successfully，a total of %1$d</string>
+    <string name="recovering">Recovering...</string>
+    <string name="recover_hint">Restore collection successfully，a total of %1$d</string>
+    <string name="recover_hint2">Restore collection failed</string>
+    <string name="request_failed">Request failed</string>
+    <string name="collection_recover_hint">Do you want to restore bookmarks remotely?</string>
+    <string name="collection_recover_hint2">Recovery efforts, please wait...</string>
+    <string name="collection_recover_hint3">Restore %1$d bookmarks</string>
+    <string name="collection_recover_hint4">No data can be recovered currently</string>
+    <string name="collection_recover_hint5">Restore collection failed</string>
+    <string name="comment_get_failed">Failed to get comments</string>
+    <string name="news_detail_get_failed">Failed to get news details</string>
+    <string name="news_other_get_failed">Failed to get additional news information</string>
+    <string name="news_details_empty">News details empty</string>
+    <string name="date_format1">MMMM dd EEEE</string>
+    <string name="share_app">Share application</string>
+    <string name="language_auto">Auto</string>
+    <string name="unknown">Unknown</string>
 </resources>

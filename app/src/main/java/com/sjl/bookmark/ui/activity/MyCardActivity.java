@@ -106,7 +106,7 @@ public class MyCardActivity extends BaseActivity implements View.OnClickListener
                 }
                 intent.setData(uri);
                 sendBroadcast(intent);//发送广播，可以在相册中显示出来
-                SnackbarUtils.makeShort(mMyCard,"图片已保存成功").show();
+                SnackbarUtils.makeShort(mMyCard,getString(R.string.img_save_success)).show();
                 break;
             case R.id.btn_share_card://分享二维码
                 if (!file.exists()){

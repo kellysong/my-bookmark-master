@@ -29,9 +29,9 @@ public class CreateLockPresenter extends CreateLockContract.Presenter {
     public void init(Intent intent) {
         createMode = intent.getIntExtra("CREATE_MODE", AppConstant.SETTING.CREATE_MODE);
         if (createMode == AppConstant.SETTING.CREATE_GESTURE) {
-            mView.setTitle("设置手势密码");
+            mView.setTitle(mContext.getString(R.string.setting_gesture_pwd));
         } else if (createMode == AppConstant.SETTING.UPDATE_GESTURE) {
-            mView.setTitle("修改手势密码");
+            mView.setTitle(mContext.getString(R.string.setting_update_gesture_pwd));
         }
     }
 

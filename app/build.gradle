@@ -20,8 +20,8 @@ MobSDK {
     appSecret "80dcb4b2c4161fd00b3776bc0d180d40"
     ShareSDK {
 //        version '3.2.1.2' //不支持了20190826，依赖下载出错
-        version '3.6.6'
-
+//        version '3.6.6'
+        version '3.9.2' //2021.0810.1434
         gui false//不添加OnekeyShare，自定义
         devInfo {
             SinaWeibo {//新浪微博
@@ -260,10 +260,10 @@ dependencies {
 	annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
 
     /*硬件相关*/
-   // implementation project (':my-hardware-lib:nfcard')
-   //implementation project (':my-hardware-lib:zxing')
-	implementation 'com.github.kellysong.my-hardware:nfcard:1.1.0'
-	implementation 'com.github.kellysong.my-hardware:zxing:1.1.0'
+    /*implementation project (':my-hardware-lib:nfcard')
+    implementation project (':my-hardware-lib:zxing')*/
+	implementation 'com.github.kellysong.my-hardware:nfcard:1.1.1'
+	implementation 'com.github.kellysong.my-hardware:zxing:1.1.1'
 
     /*今日头条屏幕适配*/
     implementation 'me.jessyan:autosize:1.1.2'
@@ -315,7 +315,8 @@ dependencies {
 
     // OpenCC to convert Simp. Chinese to Trad. Chinese
     implementation 'com.zqc.opencc.android.lib:lib-opencc-android:0.8.0@aar'
-
+    //新版崩溃https://github.com/qichuan/android-opencc
+//    implementation 'com.github.qichuan:android-opencc:1.2.0'
     //    compile 'com.scwang.smartrefresh:SmartRefreshLayout:1.1.0-alpha-16'
 
     //实现类似微博内容，@用户，链接高亮，@用户和链接可点击跳转，可展开和收回的TextView

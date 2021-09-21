@@ -1,4 +1,4 @@
-# my-bookmark-master
+# my-bookmark-master（口袋书签）
 技术架构：基于 Material Design + MVP + RxJava + Retrofit + Glide等开源框架开发
 特点：
 集学习、便民、娱乐于一体的综合软件，适合初中级Android开发者，能学到：
@@ -20,7 +20,7 @@
 # apk下载
 [安装包](pocket_bookmark.apk)
 
-[更新日志](Google书签app更新说明.md)
+[更新日志](口袋书签app更新说明.md)
 
 # 效果图
 

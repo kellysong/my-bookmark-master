@@ -1,5 +1,6 @@
 package com.sjl.bookmark.ui.presenter;
 
+import com.sjl.bookmark.R;
 import com.sjl.bookmark.api.ZhiHuApiService;
 import com.sjl.bookmark.entity.zhihu.NewsCommentDto;
 import com.sjl.bookmark.ui.contract.NewsCommentContract;
@@ -32,7 +33,7 @@ public class NewsCommentPresenter extends NewsCommentContract.Presenter {
             @Override
             public void accept(Throwable throwable) throws Exception {
                 LogUtils.e("获取长评论异常,id:" + id, throwable);
-                mView.showError("获取新闻长评论失败");
+                mView.showError(mContext.getString(R.string.comment_get_failed));
             }
         });
     }
@@ -50,7 +51,7 @@ public class NewsCommentPresenter extends NewsCommentContract.Presenter {
             @Override
             public void accept(Throwable throwable) throws Exception {
                 LogUtils.e("获取短评论异常,id:" + id, throwable);
-                mView.showError("获取短闻长评论失败");
+                mView.showError(mContext.getString(R.string.comment_get_failed));
             }
         });
     }

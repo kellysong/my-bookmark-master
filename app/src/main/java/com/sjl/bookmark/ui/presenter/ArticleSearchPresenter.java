@@ -1,5 +1,6 @@
 package com.sjl.bookmark.ui.presenter;
 
+import com.sjl.bookmark.R;
 import com.sjl.bookmark.api.WanAndroidApiService;
 import com.sjl.bookmark.entity.Article;
 import com.sjl.bookmark.entity.DataResponse;
@@ -93,7 +94,7 @@ public class ArticleSearchPresenter extends ArticleSearchContract.Presenter {
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
-                        mView.showFailMsg("分页加载：" + throwable.getMessage());
+                        mView.showFailMsg(mContext.getString(R.string.paging_load) + throwable.getMessage());
                     }
                 });
 

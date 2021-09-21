@@ -48,7 +48,7 @@ public class SettingFragment extends BasePreferenceFragment<SettingPresenter> im
         //进度条对话框
         mProgressDialog = new ProgressDialog(getActivity());
         // 设置对话框参数
-        mProgressDialog.setMessage("正在更新...");
+        mProgressDialog.setMessage(getString(R.string.updating));
         mProgressDialog.setCancelable(false);
         // 设置进度条参数
         mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
@@ -64,7 +64,7 @@ public class SettingFragment extends BasePreferenceFragment<SettingPresenter> im
         //圆形对话框
         mCircleDialog = new ProgressDialog(getActivity());
         // 设置对话框参数
-        mCircleDialog.setMessage("正在同步...");
+        mCircleDialog.setMessage(getString(R.string.synchronizing));
         mCircleDialog.setCancelable(false);
     }
 
@@ -143,9 +143,9 @@ public class SettingFragment extends BasePreferenceFragment<SettingPresenter> im
         LogUtils.i("resultCode="+resultCode);
         if (requestCode == 0){
             if (resultCode == 1) {
-                showSnackBar("手势密码创建成功");
+                showSnackBar(getString(R.string.gesture_pwd_hint));
             }else if(resultCode == 2){
-                showSnackBar("手势密码修改成功");
+                showSnackBar(getString(R.string.gesture_pwd_hint2));
             }else if(resultCode == 10){//放弃设置手势密码
                 PreferencesHelper preferencesHelper = PreferencesHelper.getInstance(getActivity());
                 preferencesHelper.put(AppConstant.SETTING.OPEN_GESTURE, false);
@@ -153,7 +153,7 @@ public class SettingFragment extends BasePreferenceFragment<SettingPresenter> im
                 openGesture.setChecked(false);
                 mPresenter.resetGestureFlag();
             }else if(resultCode == 20){
-                showSnackBar("放弃手势密码修改");
+                showSnackBar(getString(R.string.gesture_pwd_hint3));
             }
 
         }

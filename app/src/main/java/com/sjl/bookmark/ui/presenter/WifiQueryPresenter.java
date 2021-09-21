@@ -72,6 +72,7 @@ public class WifiQueryPresenter extends WifiQueryContract.Presenter {
             @Override
             public void subscribe(ObservableEmitter<Object> e) throws Exception {
                 readWifiInfo(e);
+                e.onComplete();
             }
         }).compose(RxSchedulers.<Object>applySchedulers()).as(this.<Object>bindLifecycle())
                 .subscribe(new Observer<Object>() {
@@ -143,7 +144,7 @@ public class WifiQueryPresenter extends WifiQueryContract.Presenter {
             }
         }
         if (TextUtils.isEmpty(wifiConf.toString())) {
-            e.onNext("无Root权限");
+            e.onComplete();
             return;
         }
         ArrayList<WifiInfo> mWifiInfoList = new ArrayList<>();
@@ -168,7 +169,7 @@ public class WifiQueryPresenter extends WifiQueryContract.Presenter {
                 if (keyMatcher.find()) {
                     wifiInfo.setEncryptType(keyMatcher.group(1));
                 } else {
-                    wifiInfo.setEncryptType("未知");
+                    wifiInfo.setEncryptType(mContext.getString(R.string.unknown));
                 }
                 mWifiInfoList.add(wifiInfo);
             }

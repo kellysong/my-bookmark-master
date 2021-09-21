@@ -14,9 +14,17 @@ import java.util.List;
 public class ExpressName {
 
     /**
-     * comCode :
-     * num : 479389994039
-     * auto : [{"comCode":"zhongtong","id":"","noCount":14849,"noPre":"479389","startTime":""},{"comCode":"minghangkuaidi","id":"","noCount":9,"noPre":"479389","startTime":""}]
+     *{
+     * comCode: "",
+     * num: "YT5800956776422",
+     * auto: [
+     * {
+     * comCode: "yuantong",
+     * lengthPre: 15,
+     * name: "圆通速递"
+     * }
+     * ]
+     * }
      */
 
     private String comCode;
@@ -49,18 +57,15 @@ public class ExpressName {
 
     public static class AutoBean {
         /**
-         * comCode : zhongtong
-         * id :
-         * noCount : 14849
-         * noPre : 479389
-         * startTime :
+         * comCode: "yuanton
+         * lengthPre:
+         * name: "圆通
          */
 
         private String comCode;
-        private String id;
-        private int noCount;
-        private String noPre;
-        private String startTime;
+        private int lengthPre;
+        private String name;
+
 
         public String getComCode() {
             return comCode;
@@ -70,36 +75,20 @@ public class ExpressName {
             this.comCode = comCode;
         }
 
-        public String getId() {
-            return id;
+        public int getLengthPre() {
+            return lengthPre;
         }
 
-        public void setId(String id) {
-            this.id = id;
+        public void setLengthPre(int lengthPre) {
+            this.lengthPre = lengthPre;
         }
 
-        public int getNoCount() {
-            return noCount;
+        public String getName() {
+            return name;
         }
 
-        public void setNoCount(int noCount) {
-            this.noCount = noCount;
-        }
-
-        public String getNoPre() {
-            return noPre;
-        }
-
-        public void setNoPre(String noPre) {
-            this.noPre = noPre;
-        }
-
-        public String getStartTime() {
-            return startTime;
-        }
-
-        public void setStartTime(String startTime) {
-            this.startTime = startTime;
+        public void setName(String name) {
+            this.name = name;
         }
     }
 }

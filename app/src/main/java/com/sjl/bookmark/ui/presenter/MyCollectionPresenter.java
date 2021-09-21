@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.widget.Toast;
 
+import com.sjl.bookmark.R;
 import com.sjl.bookmark.api.MyBookmarkService;
 import com.sjl.bookmark.app.MyApplication;
 import com.sjl.bookmark.dao.impl.CollectDaoImpl;
@@ -94,18 +95,18 @@ public class MyCollectionPresenter extends MyCollectionContract.Presenter {
             return;
         }
         AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-        builder.setTitle("提示");
-        builder.setMessage("是否远程恢复收藏书签?")
-                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+        builder.setTitle(R.string.nb_common_tip);
+        builder.setMessage(R.string.collection_recover_hint)
+                .setPositiveButton(R.string.sure, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         ProgressDialog progressDialog = new ProgressDialog(mContext);
-                        progressDialog.setMessage("努力恢复中,请稍等...");
+                        progressDialog.setMessage(mContext.getString(R.string.collection_recover_hint2));
                         progressDialog.setCancelable(false);
                         progressDialog.show();
                         requestCollectionData(progressDialog);
                     }
                 })
-                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         dialog.dismiss();
 
@@ -139,13 +140,13 @@ public class MyCollectionPresenter extends MyCollectionContract.Presenter {
                             LogUtils.i("收藏恢复成功，共恢复" + collectionList.size() + "条");
                             loadMyCollection();//刷新列表数据
                             progressDialog.cancel();
-                            Toast.makeText(mContext, "本次恢复收藏书签" + collectionList.size() + "条", Toast.LENGTH_LONG).show();
+                            Toast.makeText(mContext, mContext.getString(R.string.collection_recover_hint3,collectionList.size()), Toast.LENGTH_LONG).show();
                         } else if (dataResponse.getCode() == ErrorCode.ERROR_NO_DATA) {
                             progressDialog.cancel();
-                            Toast.makeText(mContext, "当前没数据可以恢复", Toast.LENGTH_LONG).show();
+                            Toast.makeText(mContext, mContext.getString(R.string.collection_recover_hint4), Toast.LENGTH_LONG).show();
                         } else {
                             progressDialog.cancel();
-                            Toast.makeText(mContext, "收藏恢复失败," + dataResponse.getMsg(), Toast.LENGTH_LONG).show();
+                            Toast.makeText(mContext, mContext.getString(R.string.collection_recover_hint5)+"," + dataResponse.getMsg(), Toast.LENGTH_LONG).show();
                         }
                     }
                 }, new Consumer<Throwable>() {
@@ -153,7 +154,7 @@ public class MyCollectionPresenter extends MyCollectionContract.Presenter {
                     public void accept(Throwable throwable) throws Exception {
                         LogUtils.e("收藏恢复异常", throwable);
                         progressDialog.cancel();
-                        Toast.makeText(mContext, "收藏恢复失败", Toast.LENGTH_LONG).show();
+                        Toast.makeText(mContext, mContext.getString(R.string.collection_recover_hint5), Toast.LENGTH_LONG).show();
                     }
                 });
 

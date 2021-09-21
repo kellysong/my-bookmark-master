@@ -1,5 +1,6 @@
 package com.sjl.bookmark.ui.presenter;
 
+import com.sjl.bookmark.R;
 import com.sjl.bookmark.api.ZhiHuApiService;
 import com.sjl.bookmark.app.AppConstant;
 import com.sjl.bookmark.entity.zhihu.NewsDto;
@@ -49,7 +50,7 @@ public class NewsListPresenter extends NewsListContract.Presenter {
                 newsLists.add(top);
                 NewsList today = new NewsList();
                 today.setItemType(NewsMultiDelegateAdapter.TYPE_HEADER_SECOND);
-                today.setToday("今日热闻");
+                today.setToday(mContext.getString(R.string.group_tile_today_news));
                 newsLists.add(today);
                 ArrayList<Story> stories = news.getStories();
                 NewsList item;
@@ -165,7 +166,7 @@ public class NewsListPresenter extends NewsListContract.Presenter {
      * @return
      */
     private String getBeforeDate(int num) {
-        SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd", Locale.US);
+        SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd",Locale.getDefault());
         Calendar calendar = Calendar.getInstance();
         calendar.roll(Calendar.DAY_OF_YEAR, num);
         return format.format(calendar.getTime());
@@ -178,8 +179,10 @@ public class NewsListPresenter extends NewsListContract.Presenter {
      */
     private  String formatTitleDate(String yyyyMMdd) {
         try {
-            SimpleDateFormat format1 = new SimpleDateFormat("yyyyMMdd", Locale.US);
-            SimpleDateFormat format2 = new SimpleDateFormat("MM月dd日 EEEE", Locale.CHINA);
+            SimpleDateFormat format1 = new SimpleDateFormat("yyyyMMdd",Locale.getDefault());
+            //MM月dd日 EEEE
+            String string = mContext.getString(R.string.date_format1);
+            SimpleDateFormat format2 = new SimpleDateFormat(string,Locale.getDefault());
             return format2.format(format1.parse(yyyyMMdd));
         } catch (ParseException e) {
             e.printStackTrace();

@@ -266,9 +266,9 @@ public class ArticleSearchActivity extends BaseActivity<ArticleSearchPresenter> 
         // 创建构建器
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         // 设置参数
-        builder.setTitle("提示")
-                .setMessage("确定清空历史搜索记录？")
-                .setPositiveButton("确定", new DialogInterface.OnClickListener() {// 积极
+        builder.setTitle(R.string.nb_common_tip)
+                .setMessage(R.string.delete_hint3)
+                .setPositiveButton(R.string.sure, new DialogInterface.OnClickListener() {// 积极
 
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -278,7 +278,7 @@ public class ArticleSearchActivity extends BaseActivity<ArticleSearchPresenter> 
                         mArrAdapter.notifyDataSetChanged();
                         historySearchKey.setVisibility(View.GONE);
                     }
-                }).setNegativeButton("取消", new DialogInterface.OnClickListener() {// 消极
+                }).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {// 消极
 
             @Override
             public void onClick(DialogInterface dialog, int which) {

@@ -6,14 +6,15 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.provider.MediaStore;
 
+import com.sjl.bookmark.R;
 import com.sjl.bookmark.api.ZhiHuApiService;
 import com.sjl.bookmark.entity.zhihu.NewsDetailDto;
 import com.sjl.bookmark.entity.zhihu.NewsExtraDto;
 import com.sjl.bookmark.ui.contract.NewsDetailContract;
 import com.sjl.core.net.RetrofitHelper;
 import com.sjl.core.net.RxSchedulers;
-import com.sjl.core.util.log.LogUtils;
 import com.sjl.core.util.ToastUtils;
+import com.sjl.core.util.log.LogUtils;
 
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -66,7 +67,7 @@ public class NewsDetailPresenter extends NewsDetailContract.Presenter {
         }, new Consumer<Throwable>() {
             @Override
             public void accept(Throwable throwable) throws Exception {
-                ToastUtils.showShort(mContext, "分享失败");
+                ToastUtils.showShort(mContext, mContext.getString(R.string.ssdk_oks_share_failed));
             }
         });
     }
@@ -106,7 +107,7 @@ public class NewsDetailPresenter extends NewsDetailContract.Presenter {
             @Override
             public void accept(Throwable throwable) throws Exception {
                 LogUtils.e("获取新闻额外信息异常", throwable);
-                mView.showError("获取新闻额外信息失败");
+                mView.showError(mContext.getString(R.string.news_other_get_failed));
             }
         });
 
@@ -119,7 +120,7 @@ public class NewsDetailPresenter extends NewsDetailContract.Presenter {
             @Override
             public ObservableSource<NewsDetailDto> apply(NewsDetailDto newsDetail) throws Exception {
                 if (newsDetail == null) {
-                    return Observable.error(new Exception("获取新闻详情为空"));
+                    return Observable.error(new Exception(mContext.getString(R.string.news_details_empty)));
                 }
                 String body = newsDetail.getBody();
                 body = body.substring(body.indexOf("<div class=\"question\">"));//去掉头部图片
@@ -141,7 +142,7 @@ public class NewsDetailPresenter extends NewsDetailContract.Presenter {
             @Override
             public void accept(Throwable throwable) throws Exception {
                 LogUtils.e("获取新闻详情异常", throwable);
-                mView.showError("获取新闻详情失败");
+                mView.showError(mContext.getString(R.string.news_detail_get_failed));
             }
         });
     }

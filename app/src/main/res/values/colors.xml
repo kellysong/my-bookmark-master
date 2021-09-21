@@ -50,7 +50,7 @@
     <!-- 置顶背景色 -->
     <color name="cl_top_bg">#ededed</color>
     <!--    账号管理编辑框-->
-    <color name="cl_et_text">@color/white</color>
+    <color name="cl_et_text">@color/black</color>
     <color name="cl_et_text_color">@color/gray</color>
     <color name="cl_ns_arrowTint">@color/black</color>
     <color name="cl_ns_forbid_bg">#eeeeee</color>

@@ -21,45 +21,33 @@ import java.util.*
  */
 object LanguageUtils {
 
-    fun applyLanguage(context: Context, locale: Locale) {
-        val resources = context.resources
-        val configuration = resources.configuration
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            // apply locale
-            configuration.setLocale(locale)
-        } else {
-            // updateConfiguration
-            configuration.locale = locale
-            val dm = resources.displayMetrics
-            resources.updateConfiguration(configuration, dm)
-        }
-        Locale.setDefault(locale)
-    }
 
     fun attachBaseContext(context: Context, locale: Locale): Context {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            return createConfigurationResources(context, locale)
-        } else {
-            applyLanguage(context, locale)
-            return context
-        }
-    }
-
-    @TargetApi(Build.VERSION_CODES.N)
-    private fun createConfigurationResources(context: Context, locale: Locale): Context {
         val resources = context.resources
         val configuration = resources.configuration
-        configuration.setLocale(locale)
+        when {
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.N -> {
+                configuration.setLocale(locale)
+                val localeList = LocaleList(locale)
+                LocaleList.setDefault(localeList)
+                configuration.locales = localeList
+                Locale.setDefault(locale)
+                LocaleList.setDefault(localeList);
+                resources.updateConfiguration(configuration, resources.displayMetrics)        //必须加,否则无效
+                return context.createConfigurationContext(configuration)
+            }
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1 -> {
+                configuration.setLocale(locale)
+                Locale.setDefault(locale)
+                return context.createConfigurationContext(configuration);
+            }
+            else -> {
 
-        val dm = resources.displayMetrics
-
-
-        val localeList = LocaleList(locale)
-        LocaleList.setDefault(localeList)
-        configuration.locales = localeList
-        Locale.setDefault(locale)
-        resources.updateConfiguration(configuration, dm)        //必须加,否则无效
-
-        return context.createConfigurationContext(configuration)
+                configuration.locale = locale;
+                Locale.setDefault(locale)
+                resources.updateConfiguration(configuration, resources.displayMetrics);
+                return context
+            }
+        }
     }
 }

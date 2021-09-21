@@ -1,5 +1,6 @@
 package com.sjl.bookmark.ui.activity;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
@@ -16,12 +17,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.PowerManager;
 import android.provider.Settings;
-import com.google.android.material.appbar.AppBarLayout;
-import androidx.core.content.ContextCompat;
-import androidx.core.view.ViewCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.widget.Toolbar;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
@@ -35,6 +30,7 @@ import android.widget.ListView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.google.android.material.appbar.AppBarLayout;
 import com.sjl.bookmark.R;
 import com.sjl.bookmark.dao.impl.DaoFactory;
 import com.sjl.bookmark.entity.zhuishu.table.BookChapter;
@@ -53,16 +49,23 @@ import com.sjl.bookmark.widget.reader.loader.PageLoader;
 import com.sjl.core.mvp.BaseActivity;
 import com.sjl.core.net.RxBus;
 import com.sjl.core.net.RxSchedulers;
-import com.sjl.core.util.log.LogUtils;
-import com.sjl.core.util.log.LoggerUtils;
 import com.sjl.core.util.ViewUtils;
 import com.sjl.core.util.datetime.TimeUtils;
+import com.sjl.core.util.log.LogUtils;
+import com.sjl.core.util.log.LoggerUtils;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
 
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
+import androidx.core.view.ViewCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import butterknife.BindView;
+import io.reactivex.Observable;
 import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
 
 /**
  * 小说阅读器Activity
@@ -459,6 +462,7 @@ public class BookReadActivity extends BaseActivity<BookReadPresenter> implements
                             chapter.title = WordUtils.convertCC(chapter.title, mPageView.getContext());
                         }
                         mCategoryAdapter.refreshItems(chapters);
+
                     }
 
                     @Override
@@ -523,6 +527,7 @@ public class BookReadActivity extends BaseActivity<BookReadPresenter> implements
     /**
      * 初始化屏幕亮度
      */
+    @SuppressLint("InvalidWakeLockTag")
     private void initBrightness() {
         //设置当前Activity的Brightness
         if (ReadSettingManager.getInstance().isBrightnessAuto()) {
@@ -788,6 +793,7 @@ public class BookReadActivity extends BaseActivity<BookReadPresenter> implements
         }
     }
 
+    @SuppressLint("WrongConstant")
     @Override
     public void onBackPressed() {
         if (mAblTopMenu.getVisibility() == View.VISIBLE) {
@@ -949,8 +955,29 @@ public class BookReadActivity extends BaseActivity<BookReadPresenter> implements
             LogUtils.i("currentConvertType:" + convertType + ",tempConvertType:" + tempConvertType);
             if (convertType != tempConvertType && tempConvertType != 0) {
                 //修复语言改变时不能刷新章节语言问题
-                mPageLoader.refreshChapter(mPageLoader.getChapterPos());
-                convertType = tempConvertType;
+                int chapterPos = mPageLoader.getChapterPos();
+
+                Observable.just(chapterPos).map(new Function<Integer, Boolean>() {
+                    @Override
+                    public Boolean apply(Integer integer) throws Exception {
+                        return  mPageLoader.refreshChapter(chapterPos);
+                    }
+                }).compose(RxSchedulers.applySchedulers()).as(bindLifecycle()).subscribe(new Consumer<Boolean>() {
+                    @Override
+                    public void accept(Boolean ret) throws Exception {
+                        if (ret){
+                            mPageLoader.skipToChapter(chapterPos);
+                            convertType = tempConvertType;
+                        }
+
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        LogUtils.e("语言转换异常",throwable);
+                    }
+                });
+
 
             }
         }

@@ -6,6 +6,7 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.sjl.bookmark.R;
 import com.sjl.bookmark.api.MyBookmarkService;
 import com.sjl.bookmark.app.AppConstant;
 import com.sjl.bookmark.dao.impl.CollectDaoImpl;
@@ -42,7 +43,7 @@ public class BackupAndSyncPresenter extends BackupAndSyncContract.Presenter {
     public void setClickPreferenceKey(String key) {
         if (TextUtils.equals(key, "立即同步")) {
             syncCollection();
-        }else if (TextUtils.equals(key, "自动备份")) {
+        } else if (TextUtils.equals(key, "自动备份")) {
             isAutoBackup = !isAutoBackup;
             PreferencesHelper preferencesHelper = PreferencesHelper.getInstance(mContext);
             preferencesHelper.put(AppConstant.SETTING.AUTO_BACKUP_COLLECTION, isAutoBackup);
@@ -70,15 +71,14 @@ public class BackupAndSyncPresenter extends BackupAndSyncContract.Presenter {
      */
     private void syncCollection() {
         if (!AppUtils.isConnected(mContext)) {
-            Toast.makeText(mContext, "当前网络不可用，无法同步", Toast.LENGTH_SHORT).show();
+            Toast.makeText(mContext, R.string.network_unavailable, Toast.LENGTH_SHORT).show();
             return;
         }
-        mView.showLoading("正在同步...");
+        mView.showLoading(mContext.getString(R.string.synchronizing));
         CollectDaoImpl collectService = new CollectDaoImpl(mContext);
         List<Collection> collection = collectService.findAllCollection();
         if (AppUtils.isEmpty(collection)) {
-            Toast.makeText(mContext, "当前没有可用数据，无法同步", Toast.LENGTH_SHORT).show();
-            mView.hideLoading("当前没有可用数据，无法同步");
+            mView.hideLoading(mContext.getString(R.string.sync_hint));
             return;
         }
         RetrofitHelper instance = RetrofitHelper.getInstance();
@@ -94,31 +94,41 @@ public class BackupAndSyncPresenter extends BackupAndSyncContract.Presenter {
                     public void accept(ResponseDto<Object> dataResponse) throws Exception {
                         LogUtils.i("同步收藏响应结果码：" + dataResponse.getCode());
                         if (dataResponse.getCode() == 0) {
-                            mView.hideLoading("同步收藏成功");
+                            mView.hideLoading(mContext.getString(R.string.sync_success));
                         } else {
-                            mView.hideLoading("已同步至最新，无须同步");
+                            mView.hideLoading(mContext.getString(R.string.sync_hint2));
                         }
                     }
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
                         LogUtils.e("同步收藏异常", throwable);
-                        mView.hideLoading("同步收藏失败");
+                        mView.hideLoading(mContext.getString(R.string.sync_failed));
                     }
                 });
 
     }
 
     /**
+     *  LogUtils.i("同步收藏响应结果码：" + dataResponse.getCode());
+     *                                    if (dataResponse.getCode() == 0)
+     *                                        mView.hideLoading(mContext.getString(R.string.sync_success));
+     *                                } else
+     *
+     *                                {
+     *                                    mView.hideLoading(mContext.getString(R.string.sync_hint2));
+     *                                }
+     */
+
+    /**
      * 本地备份
      */
     private void localBackupCollection() {
-        mView.showLoading("正在备份...");
+        mView.showLoading(mContext.getString(R.string.backup_hint));
         CollectDaoImpl collectService = new CollectDaoImpl(mContext);
         final List<Collection> collection = collectService.findAllCollection();
         if (AppUtils.isEmpty(collection)) {
-            Toast.makeText(mContext, "当前没有可用数据，无法备份", Toast.LENGTH_SHORT).show();
-            mView.hideLoading("当前没有可用数据，无法备份");
+            mView.hideLoading(mContext.getString(R.string.backup_hint2));
             return;
         }
         //开始序列化数据
@@ -145,9 +155,9 @@ public class BackupAndSyncPresenter extends BackupAndSyncContract.Presenter {
                     public void onNext(Boolean ret) {
                         String msg = "";
                         if (ret) {
-                            msg = "备份收藏成功，共" + collection.size() + "条";
+                            msg = mContext.getString(R.string.backup_hint4,collection.size());
                         } else {
-                            msg = "备份收藏失败";
+                            msg = mContext.getString(R.string.backup_hint3);
                         }
                         mView.hideLoading(msg);
                     }
@@ -155,7 +165,7 @@ public class BackupAndSyncPresenter extends BackupAndSyncContract.Presenter {
                     @Override
                     public void onError(Throwable e) {
                         LogUtils.e("备份收藏异常", e);
-                        mView.hideLoading("备份收藏异常");
+                        mView.hideLoading(mContext.getString(R.string.backup_hint3));
                     }
 
                     @Override
@@ -169,7 +179,7 @@ public class BackupAndSyncPresenter extends BackupAndSyncContract.Presenter {
      * 本地恢复
      */
     private void localRecoverCollection() {
-        mView.showLoading("正在恢复...");
+        mView.showLoading(mContext.getString(R.string.recovering));
         //开始反序列化数据
         Observable.just("collection")
                 .map(new Function<String, Boolean>() {
@@ -202,9 +212,9 @@ public class BackupAndSyncPresenter extends BackupAndSyncContract.Presenter {
                     public void onNext(Boolean ret) {
                         String msg = "";
                         if (ret) {
-                            msg = "恢复收藏成功，共" + recoverSize + "条";
+                            msg = mContext.getString(R.string.recover_hint,recoverSize);
                         } else {
-                            msg = "恢复收藏失败";
+                            msg = mContext.getString(R.string.recover_hint2);
                         }
                         mView.hideLoading(msg);
                     }
@@ -212,7 +222,7 @@ public class BackupAndSyncPresenter extends BackupAndSyncContract.Presenter {
                     @Override
                     public void onError(Throwable e) {
                         LogUtils.e("恢复收藏异常", e);
-                        mView.hideLoading("恢复收藏异常");
+                        mView.hideLoading(mContext.getString(R.string.recover_hint2));
                     }
 
                     @Override
@@ -222,7 +232,6 @@ public class BackupAndSyncPresenter extends BackupAndSyncContract.Presenter {
                 });
 
     }
-
 
 
 }

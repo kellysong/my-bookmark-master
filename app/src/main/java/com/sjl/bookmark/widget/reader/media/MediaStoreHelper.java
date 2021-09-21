@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
 
+import com.sjl.core.net.RxLifecycleUtils;
 import com.sjl.core.net.RxSchedulers;
 
 import java.io.File;
@@ -33,6 +34,7 @@ public class MediaStoreHelper {
      */
     public static void getAllBookFile(FragmentActivity activity, MediaResultCallback resultCallback) {
         // 将文件的获取处理交给 LoaderManager。
+        RxLifecycleUtils.setLifecycleOwner(activity);
         activity.getSupportLoaderManager()
                 .initLoader(LoaderCreator.ALL_BOOK_FILE, null, new MediaLoaderCallbacks(activity, resultCallback));
     }
@@ -51,6 +53,7 @@ public class MediaStoreHelper {
         public MediaLoaderCallbacks(Context context, MediaResultCallback resultCallback) {
             mContext = new WeakReference<>(context);
             mResultCallback = new WeakReference<>(resultCallback);
+
         }
 
         @Override
@@ -67,7 +70,8 @@ public class MediaStoreHelper {
                     List<File> files = localFileLoader.parseData(data);
                     return files;
                 }
-            }).compose(RxSchedulers.applySchedulers()).subscribe(new Consumer<List<File>>() {
+            }).compose(RxSchedulers.applySchedulers())
+                    .as(RxLifecycleUtils.bindLifecycle()).subscribe(new Consumer<List<File>>() {
                 @Override
                 public void accept(List<File> files) throws Exception {
 

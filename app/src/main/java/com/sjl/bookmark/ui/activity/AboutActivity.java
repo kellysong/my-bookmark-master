@@ -109,8 +109,8 @@ public class AboutActivity extends BaseActivity<AboutPresenter> implements About
         Intent email = new Intent(Intent.ACTION_SEND);
         email.setType("message/rfc822");
         email.putExtra(Intent.EXTRA_EMAIL, new String[] {"kelly168163@163.com"});
-        email.putExtra(Intent.EXTRA_SUBJECT, "对Google书签的反馈");
-        email.putExtra(Intent.EXTRA_TEXT, "请写出你对Google书签的建议...");
-        startActivity(Intent.createChooser(email, "选择邮箱客户端"));
+        email.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.feedback));
+        email.putExtra(Intent.EXTRA_TEXT, getString(R.string.suggestions));
+        startActivity(Intent.createChooser(email, getString(R.string.select_email_client)));
     }
 }

@@ -1,6 +1,5 @@
 package com.sjl.bookmark.ui.activity;
 
-import androidx.appcompat.widget.Toolbar;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
@@ -26,13 +25,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import androidx.appcompat.widget.Toolbar;
 import butterknife.BindView;
 
 /**
  * wifi密码查询
  * add by Kelly on 20170302
  */
-public class WifiQueryActivity extends BaseActivity<WifiQueryPresenter> implements WifiQueryContract.View{
+public class WifiQueryActivity extends BaseActivity<WifiQueryPresenter> implements WifiQueryContract.View {
     @BindView(R.id.common_toolbar)
     Toolbar mToolBar;
     @BindView(R.id.listview)
@@ -74,26 +74,28 @@ public class WifiQueryActivity extends BaseActivity<WifiQueryPresenter> implemen
 
     /**
      * 只能有一个参数
+     *
      * @param msg
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void noRoot(String msg) {
-        LogUtils.i("msg1:"+msg);
+        LogUtils.i("msg1:" + msg);
         ll_empty.setVisibility(View.VISIBLE);
         mTextHint.setText(R.string.not_root_hint_txt);
-        Toast.makeText(getApplicationContext(), R.string.not_root_hint, Toast.LENGTH_LONG).show();
+        Toast.makeText(this, R.string.not_root_hint, Toast.LENGTH_LONG).show();
     }
 
     /*测试=======================start*/
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void noRoot2(String msg) {
-        LogUtils.i("msg2:"+msg);
+        LogUtils.i("msg2:" + msg);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void no1(Map msg) {
 
     }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void no2(Map msg) {
 
@@ -121,7 +123,7 @@ public class WifiQueryActivity extends BaseActivity<WifiQueryPresenter> implemen
                 protected void convert(ViewHolder viewHolder, WifiInfo item, int position) {
                     viewHolder.setText(R.id.item_name, getString(R.string.iten_name_hint) + item.getName());
                     viewHolder.setText(R.id.item_password, getString(R.string.item_pasword_hint) + item.getPassword());
-                    viewHolder.setText(R.id.item_type,"加密类型："+item.getEncryptType());
+                    viewHolder.setText(R.id.item_type, getString(R.string.item_encryption_type) + item.getEncryptType());
                 }
             });
             mListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {

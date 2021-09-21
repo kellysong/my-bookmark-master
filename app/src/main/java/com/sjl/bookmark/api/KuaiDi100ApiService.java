@@ -32,15 +32,14 @@ public interface KuaiDi100ApiService {
     /**
      * 查询快递名称
      * http://www.kuaidi100.com/autonumber/autoComNum?resultv2=1&text=479389994039
-     * http://www.kuaidi100.com/autonumber/autoComNum?resultv2=1&text=75140941296388
+     * https://www.kuaidi100.com/autonumber/autoComNum?text=YT5800956776422
      *
-     * @param resultv2
      * @param expressNo 快递运单号
      * @return
      */
     @Headers({"Domain-Name:kuaidi100"})
     @GET("autonumber/autoComNum")
-    Observable<ExpressName> queryExpressNameByNo(@Query("resultv2") int resultv2, @Query("text") String expressNo);
+    Observable<ExpressName> queryExpressNameByNo(@HeaderMap Map<String,String> headers,@Query("text") String expressNo);
 
 
 
@@ -106,7 +105,7 @@ public interface KuaiDi100ApiService {
      * @return
      */
     @Headers({"Domain-Name:kuaidi100"
-            ,"Referer: https://www.kuaidi100.com/"})
+            ,"Referer: https://www.kuaidi100.com/","X-Requested-With: XMLHttpRequest"})
     @GET("query")
     Observable<ExpressDetail> queryExpressInfoSchedule(@HeaderMap Map<String, String> headers, @Query("type") String type,
 
@@ -116,7 +115,7 @@ public interface KuaiDi100ApiService {
 
 
     /**
-     * 采用阿里云查询接口，免费版有限制，暂时停用
+     * 采用阿里云查询接口，免费版有限制，暂时停用,个人账号，调用次数有限，切勿频繁使用https://market.aliyun.com/products/57126001/cmapi021863.html?spm=5176.2020520132.101.3.2f967218ShNdbf#sku=yuncode1586300000
      * @param no 快递单号
      * @param type 快递公司字母简写：不知道可不填 95%能自动识别，填写查询速度会更快
      * @return

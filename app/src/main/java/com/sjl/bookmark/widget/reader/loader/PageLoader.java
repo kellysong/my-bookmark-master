@@ -8,9 +8,9 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Typeface;
-import androidx.core.content.ContextCompat;
 import android.text.TextPaint;
 
+import com.sjl.bookmark.R;
 import com.sjl.bookmark.app.MyApplication;
 import com.sjl.bookmark.dao.impl.DaoFactory;
 import com.sjl.bookmark.entity.zhuishu.table.BookRecord;
@@ -23,9 +23,9 @@ import com.sjl.bookmark.widget.reader.bean.PageStyle;
 import com.sjl.bookmark.widget.reader.bean.TxtChapter;
 import com.sjl.bookmark.widget.reader.bean.TxtPage;
 import com.sjl.core.net.RxSchedulers;
-import com.sjl.core.util.log.LogUtils;
 import com.sjl.core.util.ViewUtils;
 import com.sjl.core.util.datetime.TimeUtils;
+import com.sjl.core.util.log.LogUtils;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -33,6 +33,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.core.content.ContextCompat;
 import io.reactivex.Single;
 import io.reactivex.SingleEmitter;
 import io.reactivex.SingleObserver;
@@ -40,7 +41,7 @@ import io.reactivex.SingleOnSubscribe;
 import io.reactivex.disposables.Disposable;
 
 /**
- * 页面加载器
+ * 页面加载器，小说阅读器来源：https://github.com/newbiechen1024/NovelReader
  */
 
 public abstract class PageLoader {
@@ -827,22 +828,22 @@ public abstract class PageLoader {
             String tip = "";
             switch (mStatus) {
                 case STATUS_LOADING:
-                    tip = "正在拼命加载中...";
+                    tip = mContext.getString(R.string.page_loader_hint);
                     break;
                 case STATUS_ERROR:
-                    tip = "加载失败(点击边缘重试)";
+                    tip = mContext.getString(R.string.page_loader_hint2);
                     break;
                 case STATUS_EMPTY:
-                    tip = "文章内容为空";
+                    tip =mContext.getString(R.string.page_loader_hint3);
                     break;
                 case STATUS_PARING:
-                    tip = "正在排版请等待...";
+                    tip = mContext.getString(R.string.page_loader_hint4);
                     break;
                 case STATUS_PARSE_ERROR:
-                    tip = "文件解析错误";
+                    tip = mContext.getString(R.string.page_loader_hint5);
                     break;
                 case STATUS_CATEGORY_EMPTY:
-                    tip = "目录列表为空";
+                    tip = mContext.getString(R.string.page_loader_hint6);
                     break;
             }
 
@@ -1466,14 +1467,16 @@ public abstract class PageLoader {
     /**
      * 根据当前章节索引刷新章节内容
      * @param chapterPos
+     * @return
      */
-    public void refreshChapter(int chapterPos) {
+    public boolean refreshChapter(int chapterPos) {
         try {
             refreshMemoryData();
-            skipToChapter(chapterPos);
+            return true;
         } catch (Exception e) {
             LogUtils.e("refreshChapter",e);
         }
+        return false;
     }
 
     /**

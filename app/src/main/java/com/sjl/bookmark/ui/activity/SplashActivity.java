@@ -115,7 +115,7 @@ public class SplashActivity extends BaseActivity {
         } else if (BuildConfig.appType == 1) {
             openAPPReader();
         } else {
-            ToastUtils.showShort(this, "找不到合适的应用类型:" + BuildConfig.appType);
+            ToastUtils.showShort(this, getString(R.string.app_match_hint) + BuildConfig.appType);
             finish();
         }
 
@@ -226,17 +226,18 @@ public class SplashActivity extends BaseActivity {
      */
     private void showDialogTipUserGoToAppSetting(Set<String> denied) {
         final String str = PermissionRequestUtils.getPermissionName(denied);
+        String string = getString(R.string.permission_set_hint,str);
         new AlertDialog.Builder(this)
-                .setTitle("权限不足")
-                .setMessage("请在-应用设置-权限管理中，允许该应用使用" + str + "权限")
-                .setPositiveButton("立即开启", new DialogInterface.OnClickListener() {
+                .setTitle(R.string.nb_common_tip)
+                .setMessage(string)
+                .setPositiveButton(R.string.permission_open, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         // 跳转到应用设置界面
                         goToAppSetting();
                     }
                 })
-                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         finish();

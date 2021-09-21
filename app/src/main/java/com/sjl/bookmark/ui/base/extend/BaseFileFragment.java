@@ -2,6 +2,7 @@ package com.sjl.bookmark.ui.base.extend;
 
 import com.sjl.bookmark.ui.adapter.FileSystemAdapter;
 import com.sjl.core.mvp.BaseFragment;
+import com.sjl.core.mvp.BasePresenter;
 
 import java.io.File;
 import java.util.List;
@@ -11,7 +12,7 @@ import java.util.List;
  * FileSystemActivity的基础Fragment类
  */
 
-public abstract class BaseFileFragment extends BaseFragment {
+public abstract class BaseFileFragment<T extends BasePresenter> extends BaseFragment<T> {
 
     protected FileSystemAdapter mAdapter;
     protected OnFileCheckedListener mListener;

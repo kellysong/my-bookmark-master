@@ -6,6 +6,7 @@
     <external-path name="bookmark_update" path="com.sjl.bookmark/update" />
     <external-path name="external_storage_root" path="." />
     <external-files-path name="external-files-path" path="." />
+    <external-path name="external_path" path="." />
     <!--
         <root-path/> 代表设备的根目录new File("/");
         <files-path/> 代表context.getFilesDir()

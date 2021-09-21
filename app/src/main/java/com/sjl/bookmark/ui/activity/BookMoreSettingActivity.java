@@ -1,7 +1,5 @@
 package com.sjl.bookmark.ui.activity;
 
-import androidx.appcompat.widget.SwitchCompat;
-import androidx.appcompat.widget.Toolbar;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.AdapterView;
@@ -15,6 +13,8 @@ import com.sjl.bookmark.kotlin.language.I18nUtils;
 import com.sjl.bookmark.widget.reader.ReadSettingManager;
 import com.sjl.core.mvp.BaseActivity;
 
+import androidx.appcompat.widget.SwitchCompat;
+import androidx.appcompat.widget.Toolbar;
 import butterknife.BindView;
 
 /**
@@ -43,6 +43,8 @@ public class BookMoreSettingActivity extends BaseActivity {
     RelativeLayout mRlConvertType;
     @BindView(R.id.more_setting_sc_convert_type)
     Spinner mScConvertType;
+    @BindView(R.id.more_setting_tv_convert_type)
+    TextView mTvConvertType;
     private ReadSettingManager mSettingManager;
     private boolean isVolumeTurnPage;
     private boolean isFullScreen;
@@ -54,7 +56,7 @@ public class BookMoreSettingActivity extends BaseActivity {
 
     @Override
     protected void initView() {
-
+        mTvConvertType.setSelected(true);
     }
 
     @Override

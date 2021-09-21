@@ -28,7 +28,7 @@ import butterknife.BindView;
  * @time 2018/12/10 14:38
  * @copyright(C) 2018 song
  */
-public class LocalBookFragment extends BaseFileFragment {
+public class LocalBookFragment<BasePresenter> extends BaseFileFragment {
     @BindView(R.id.refresh_layout)
     RefreshLayout mRlRefresh;
     @BindView(R.id.local_book_rv_content)

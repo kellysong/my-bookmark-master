@@ -121,7 +121,7 @@ public class MyApplication extends BaseApplication {
 
                     @Override
                     public boolean printHttpLog() {
-                        return false;
+                        return BuildConfig.DEBUG;
                     }
                 })
 //                .setInterceptor(new WanAndroidCookieInterceptor())

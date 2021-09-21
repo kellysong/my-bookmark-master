@@ -1,25 +1,27 @@
 package com.sjl.bookmark.ui.presenter;
 
 import android.content.Intent;
-import androidx.annotation.NonNull;
 
 import com.sjl.bookmark.api.KuaiDi100ApiService;
 import com.sjl.bookmark.app.AppConstant;
 import com.sjl.bookmark.app.MyApplication;
 import com.sjl.bookmark.dao.impl.HistoryExpressService;
 import com.sjl.bookmark.entity.ExpressDetail;
+import com.sjl.bookmark.entity.ExpressDetail2;
 import com.sjl.bookmark.entity.ExpressSearchInfo;
 import com.sjl.bookmark.entity.table.HistoryExpress;
 import com.sjl.bookmark.ui.contract.ExpressDetailContract;
 import com.sjl.core.net.RetrofitHelper;
 import com.sjl.core.net.RxSchedulers;
-import com.sjl.core.util.log.LogUtils;
 import com.sjl.core.util.datetime.TimeUtils;
+import com.sjl.core.util.log.LogUtils;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import androidx.annotation.NonNull;
 import io.reactivex.ObservableSource;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
@@ -107,87 +109,10 @@ public class ExpressDetailPresenter extends ExpressDetailContract.Presenter {
     public void queryExpressDetail(final ExpressSearchInfo searchInfo) {
 
         final KuaiDi100ApiService apiService = RetrofitHelper.getInstance().getApiService(KuaiDi100ApiService.class);
+//        aliCloudQuery(apiService,searchInfo);
 
-//        apiService.queryExpressInfoScheduleNew(searchInfo.getPost_id(), "")
-//                .map(new Function<ExpressDetail2, ExpressDetail>() {
-//                    @Override
-//                    public ExpressDetail apply(ExpressDetail2 expressDetail2) throws Exception {
-//                        if ("0".equals(expressDetail2.getStatus())) {
-//                            List<ExpressDetail2.ResultBean.ListBean> list = expressDetail2.getResult().getList();
-//                            ExpressDetail expressDetail = new ExpressDetail();
-//                            expressDetail.setStatus("200");
-//                            if (expressDetail2.getResult().getDeliverystatus().equals("3")){
-//                                expressDetail.setIscheck("1");//已经签收
-//                            }else {
-//                                expressDetail.setIscheck("0");
-//                            }
-//                            expressDetail.setCom(searchInfo.getCode());
-//                            ExpressDetail.DataBean dataBean;
-//                            List< ExpressDetail.DataBean> dataBeanList = new ArrayList<>();
-//                            for (ExpressDetail2.ResultBean.ListBean listBean:list){
-//                                dataBean = new ExpressDetail.DataBean();
-//                                dataBean.setFtime(listBean.getTime());
-//                                dataBean.setTime(listBean.getTime());
-//                                dataBean.setContext(listBean.getStatus());
-//                                dataBeanList.add(dataBean);
-//                            }
-//                            expressDetail.setData(dataBeanList);
-//                            return  expressDetail;
-//                        } else {
-//                            ExpressDetail expressDetail = new ExpressDetail();
-//                            expressDetail.setStatus("401");
-//                            return expressDetail;
-//                        }
-//                    }
-//                })
-//                .compose(RxSchedulers.<ExpressDetail>applySchedulers())
-//                .as(this.<ExpressDetail>bindLifecycle())
-//                .subscribe(new Consumer<ExpressDetail>() {
-//                    @Override
-//                    public void accept(ExpressDetail expressDetail) throws Exception {
-//                        mView.showExpressDetail(expressDetail);
-//                    }
-//                }, new Consumer<Throwable>() {
-//                    @Override
-//                    public void accept(Throwable throwable) throws Exception {
-//                        LogUtils.e("搜索快递明细异常", throwable);
-//                        mView.showErrorInfo();
-//                    }
-//                });
+        disguiseKuaiDi100Query(searchInfo);
 
-
-        apiService.getCookie().concatMap(new Function<Response<ResponseBody>, ObservableSource<ExpressDetail>>() {
-            @Override
-            public ObservableSource<ExpressDetail> apply(retrofit2.Response<ResponseBody> responseBodyResponse) throws Exception {
-                double random = Math.random();
-                Headers headers = responseBodyResponse.headers();
-                List<String> cookies = headers.values("Set-Cookie");
-                LogUtils.w("Set-Cookie:" + cookies.toString());
-                String cookie1 = disguiseCookie("Hm_lvt_22ea01af58ba2be0fec7c11b25e88e6c", 4, 5 * 1000);
-                LogUtils.w(cookie1);
-                String cookie2 = disguiseCookie("Hm_lpvt_22ea01af58ba2be0fec7c11b25e88e6c", 1, 0);
-                LogUtils.w(cookie2);
-                String cookie = cookies.toString() + ";" + cookie1 + ";" + cookie2;
-                Map<String, String> headersMap = new HashMap<>();
-                headersMap.put("Cookie", cookie);
-                headersMap.put("User-Agent", getRandomUserAgent());
-                return apiService.queryExpressInfoSchedule(headersMap, searchInfo.getCode(), searchInfo.getPost_id(), random, "");
-            }
-        }).compose(RxSchedulers.<ExpressDetail>applySchedulers())
-                .as(this.<ExpressDetail>bindLifecycle())
-                .subscribe(new Consumer<ExpressDetail>() {
-                    @Override
-                    public void accept(ExpressDetail expressDetail) throws Exception {
-                        LogUtils.i("快递信息：" + expressDetail.toString());
-                        mView.showExpressDetail(expressDetail);
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
-                        LogUtils.e("搜索快递明细异常", throwable);
-                        mView.showErrorInfo();
-                    }
-                });
        /* double random = Math.random();
         apiService.queryExpressInfoSchedule(cookie, searchInfo.getCode(), searchInfo.getPost_id(), random, "")
                 .compose(RxSchedulers.<ExpressDetail>applySchedulers())
@@ -208,12 +133,135 @@ public class ExpressDetailPresenter extends ExpressDetailContract.Presenter {
 
     }
 
+    private void aliCloudQuery(KuaiDi100ApiService apiService, ExpressSearchInfo searchInfo) {
+        apiService.queryExpressInfoScheduleNew(searchInfo.getPost_id(), "")
+                .map(new Function<ExpressDetail2, ExpressDetail>() {
+                    @Override
+                    public ExpressDetail apply(ExpressDetail2 expressDetail2) throws Exception {
+                        if ("0".equals(expressDetail2.getStatus())) {
+                            List<ExpressDetail2.ResultBean.ListBean> list = expressDetail2.getResult().getList();
+                            ExpressDetail expressDetail = new ExpressDetail();
+                            expressDetail.setStatus("200");
+                            if (expressDetail2.getResult().getDeliverystatus().equals("3")){
+                                expressDetail.setIscheck("1");//已经签收
+                            }else {
+                                expressDetail.setIscheck("0");
+                            }
+                            expressDetail.setCom(searchInfo.getCode());
+                            ExpressDetail.DataBean dataBean;
+                            List< ExpressDetail.DataBean> dataBeanList = new ArrayList<>();
+                            for (ExpressDetail2.ResultBean.ListBean listBean:list){
+                                dataBean = new ExpressDetail.DataBean();
+                                dataBean.setFtime(listBean.getTime());
+                                dataBean.setTime(listBean.getTime());
+                                dataBean.setContext(listBean.getStatus());
+                                dataBeanList.add(dataBean);
+                            }
+                            expressDetail.setData(dataBeanList);
+                            return  expressDetail;
+                        } else {
+                            ExpressDetail expressDetail = new ExpressDetail();
+                            expressDetail.setStatus(expressDetail.getStatus());
+                            expressDetail.setMessage(expressDetail2.getMsg());
+
+                            return expressDetail;
+                        }
+                    }
+                })
+                .compose(RxSchedulers.<ExpressDetail>applySchedulers())
+                .as(this.<ExpressDetail>bindLifecycle())
+                .subscribe(new Consumer<ExpressDetail>() {
+                    @Override
+                    public void accept(ExpressDetail expressDetail) throws Exception {
+                        mView.showExpressDetail(expressDetail);
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        LogUtils.e("搜索快递明细异常", throwable);
+                        mView.showErrorInfo();
+                    }
+                });
+
+    }
+
+    private void disguiseKuaiDi100Query(ExpressSearchInfo searchInfo) {
+        final KuaiDi100ApiService apiService = RetrofitHelper.getInstance().getApiService(KuaiDi100ApiService.class);
+        apiService.getCookie().concatMap(new Function<Response<ResponseBody>, ObservableSource<ExpressDetail>>() {
+            @Override
+            public ObservableSource<ExpressDetail> apply(Response<ResponseBody> responseBodyResponse) throws Exception {
+                double random = Math.random();
+                Headers headers = responseBodyResponse.headers();
+                List<String> cookies = headers.values("Set-Cookie");
+                StringBuilder cookiesSb = new StringBuilder();
+                /**
+                 * globacsrftoken=NLHvl3wteSgfNyfLwgeUBe4-ZSRlHi6UO_VNMZ6eTqk; Domain=www.kuaidi100.com; Expires=Tue, 21-Sep-2021 02:20:19 GMT; Path=/globalauto.do
+                 * csrftoken=NLHvl3wteShwh8Ji-YjD884Dh0IfWiNYSIg6CVVixvc; Domain=.kuaidi100.com; Expires=Tue, 21-Sep-2021 02:20:19 GMT; Path=/query
+                 * _adadqeqwe1321312dasddocTitle=kuaidi100; domain=.kuaidi100.com; path=/;
+                 * _adadqeqwe1321312dasddocReferrer=; domain=.kuaidi100.com; path=/;
+                 * _adadqeqwe1321312dasddocHref=; domain=.kuaidi100.com; path=/;
+                 * _adadqeqwe1321312dasddocTitle=kuaidi100; domain=.kuaidi100.com; path=/all;
+                 */
+             /*   for (String c : cookies) {
+                    System.out.println(c);
+                    if (c.contains("csrftoken")) {
+                        String[] split = c.split(";");
+                        cookiesSb.append(split[0]).append(";");
+                    } else if (c.contains("_clck")) {
+                        String[] split = c.split(";");
+                        cookiesSb.append(split[0]).append(";");
+                    } else if (c.contains("_clsk")) {
+                        String[] split = c.split(";");
+                        cookiesSb.append(split[0]).append(";");
+                    } else if (c.endsWith("Title")) {
+                        String[] split = c.split(";");
+                        cookiesSb.append(split[0]).append(";");
+                    } else if (c.contains("Referrer")) {
+                        String[] split = c.split(";");
+                        cookiesSb.append(split[0]).append(";");
+                    } else if (c.contains("Href")) {
+                        String[] split = c.split(";");
+                        cookiesSb.append(split[0]).append(";");
+                    }
+                }*/
+                String cookiesStr = cookies.toString();
+//                String cookiesStr = cookiesSb.toString();
+                LogUtils.w("Set-Cookie:" + cookiesStr);
+                String cookie1 = disguiseCookie("Hm_lvt_22ea01af58ba2be0fec7c11b25e88e6c", 4, 5 * 1000);
+                LogUtils.w("cookie1:" + cookie1);
+                String cookie2 = disguiseCookie("Hm_lpvt_22ea01af58ba2be0fec7c11b25e88e6c", 1, 0);
+                LogUtils.w("cookie2:" + cookie2);
+                String cookie = cookiesStr + ";" + cookie1 + ";" + cookie2;
+                Map<String, String> headersMap = new HashMap<>();
+                LogUtils.w("cookiesStr:" + cookiesStr);
+                headersMap.put("Cookie", cookie);
+                headersMap.put("User-Agent", getRandomUserAgent());
+                return apiService.queryExpressInfoSchedule(headersMap, searchInfo.getCode(), searchInfo.getPost_id(), random, "");
+            }
+        }).compose(RxSchedulers.<ExpressDetail>applySchedulers())
+                .as(this.<ExpressDetail>bindLifecycle())
+                .subscribe(new Consumer<ExpressDetail>() {
+                    @Override
+                    public void accept(ExpressDetail expressDetail) throws Exception {
+                        LogUtils.i("快递信息：" + expressDetail.toString());
+                        mView.showExpressDetail(expressDetail);
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        LogUtils.e("搜索快递明细异常", throwable);
+//                        mView.showErrorInfo();
+                        aliCloudQuery(apiService,searchInfo);
+                    }
+                });
+    }
+
     /**
      * 获取随机的UserAgent,伪装UserAgent
      *
      * @return
      */
-    private String getRandomUserAgent() {
+    public static String getRandomUserAgent() {
         int index = (int) (Math.random() * userAgents.length);
         return userAgents[index];
     }
@@ -227,7 +275,7 @@ public class ExpressDetailPresenter extends ExpressDetailContract.Presenter {
      * @return
      */
     @NonNull
-    private String disguiseCookie(String name, int num, int step) {
+    public static String disguiseCookie(String name, int num, int step) {
         StringBuilder sb = new StringBuilder();
         sb.append(name + "=");
         long timestamp = System.currentTimeMillis();

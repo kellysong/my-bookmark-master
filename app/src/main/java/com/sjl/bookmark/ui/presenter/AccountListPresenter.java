@@ -10,6 +10,7 @@ import com.sjl.bookmark.app.AppConstant;
 import com.sjl.bookmark.app.MyApplication;
 import com.sjl.bookmark.dao.impl.AccountService;
 import com.sjl.bookmark.entity.table.Account;
+import com.sjl.bookmark.kotlin.language.I18nUtils;
 import com.sjl.bookmark.ui.activity.AccountEditActivity;
 import com.sjl.bookmark.ui.contract.AccountListContract;
 import com.sjl.core.entity.EventBusDto;
@@ -96,6 +97,9 @@ public class AccountListPresenter extends AccountListContract.Presenter {
         @Override
         protected void convert(ViewHolder holder, final Account account, int position) {
             holder.setText(R.id.tv_title, DESUtils.decryptBase64DES(AppConstant.DES_ENCRYPTKEY, account.getAccountTitle()));
+            String accountNo = I18nUtils.getString(R.string.account_number);
+            String pwd = I18nUtils.getString(R.string.password);
+            holder.setText(R.id.tv_account_no, accountNo + ":").setText(R.id.tv_account_pwd, pwd + ":");
             holder.setText(R.id.tv_username, DESUtils.decryptBase64DES(AppConstant.DES_ENCRYPTKEY, account.getUsername()));
             if (isOpenShow) {//密码可见
                 holder.setText(R.id.tv_password, DESUtils.decryptBase64DES(AppConstant.DES_ENCRYPTKEY, account.getPassword()));
@@ -106,21 +110,22 @@ public class AccountListPresenter extends AccountListContract.Presenter {
             holder.setText(R.id.tv_date, TimeUtils.getRangeByDate(account.getDate()));
             //"安全", "娱乐", "社会", "开发", "其它"
             String labelMsg = "";
+
             switch (account.getAccountType()) {
                 case 0:
-                    labelMsg = "安全";
+                    labelMsg = I18nUtils.getString(R.string.account_enum_security);
                     break;
                 case 1:
-                    labelMsg = "娱乐";
+                    labelMsg = I18nUtils.getString(R.string.account_enum_entertainment);
                     break;
                 case 2:
-                    labelMsg = "社会";
+                    labelMsg = I18nUtils.getString(R.string.account_enum_social);
                     break;
                 case 3:
-                    labelMsg = "开发";
+                    labelMsg = I18nUtils.getString(R.string.account_enum_development);
                     break;
                 case 4:
-                    labelMsg = "其它";
+                    labelMsg = I18nUtils.getString(R.string.account_enum_other);
                     break;
                 default:
                     break;

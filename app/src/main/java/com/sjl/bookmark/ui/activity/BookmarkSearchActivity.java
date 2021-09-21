@@ -232,7 +232,7 @@ public class BookmarkSearchActivity extends BaseActivity implements View.OnClick
         // 创建构建器
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         // 设置参数
-        builder.setTitle(getString(R.string.nb_common_tip))
+        builder.setTitle(R.string.nb_common_tip)
                 .setMessage(R.string.delete_hint3)
                 .setPositiveButton(R.string.sure, new DialogInterface.OnClickListener() {// 积极
 

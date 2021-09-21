@@ -11,6 +11,7 @@ import com.sjl.bookmark.ui.adapter.FileSystemAdapter;
 import com.sjl.bookmark.ui.adapter.RecyclerViewDivider;
 import com.sjl.bookmark.ui.base.extend.BaseFileFragment;
 import com.sjl.bookmark.widget.reader.BookManager;
+import com.sjl.core.net.RxSchedulers;
 import com.sjl.core.util.security.MD5Utils;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
@@ -25,6 +26,10 @@ import java.util.List;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
+import io.reactivex.Observable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
 
 /**
  * 手机目录
@@ -35,7 +40,7 @@ import butterknife.BindView;
  * @time 2018/12/10 14:38
  * @copyright(C) 2018 song
  */
-public class FileCategoryFragment extends BaseFileFragment {
+public class FileCategoryFragment<BasePresenter> extends BaseFileFragment {
 
     @BindView(R.id.file_category_tv_path)
     TextView mTvPath;
@@ -152,18 +157,35 @@ public class FileCategoryFragment extends BaseFileFragment {
     private void toggleFileTree(File file){
         //路径名
         mTvPath.setText(getString(R.string.nb_file_path,file.getPath()));
-        //通过过滤获取数据
-        File[] files = file.listFiles(new SimpleFileFilter());
-        //转换成List
-        List<File> rootFiles = Arrays.asList(files);
-        //排序
-        Collections.sort(rootFiles,new FileComparator());
-        //加入列表
-        mAdapter.refreshItems(rootFiles);
-        //反馈
-        if (mListener != null){
-            mListener.onCategoryChanged();
-        }
+        Disposable subscribe = Observable.just(file).map(new Function<File, List<File>>() {
+            @Override
+            public List<File> apply(File file) throws Exception {
+                //通过过滤获取数据
+                File[] files = file.listFiles(new SimpleFileFilter());
+                //转换成List
+                List<File> rootFiles = Arrays.asList(files);
+                //排序
+                Collections.sort(rootFiles, new FileComparator());
+                return rootFiles;
+            }
+        }).compose(RxSchedulers.applySchedulers())
+                .subscribe(new Consumer<List<File>>() {
+                    @Override
+                    public void accept(List<File> files) throws Exception {
+                        //加入列表
+                        mAdapter.refreshItems(files);
+                        //反馈
+                        if (mListener != null) {
+                            mListener.onCategoryChanged();
+                        }
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+
+                    }
+                });
+
     }
 
 

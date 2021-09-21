@@ -257,7 +257,7 @@ public class PhotoBrowserActivity extends Activity implements View.OnClickListen
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            Toast.makeText(PhotoBrowserActivity.this, "保存成功", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(PhotoBrowserActivity.this, R.string.save_success, Toast.LENGTH_SHORT).show();
                         }
                     });
                 }
@@ -267,7 +267,7 @@ public class PhotoBrowserActivity extends Activity implements View.OnClickListen
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            Toast.makeText(PhotoBrowserActivity.this, "保存失败", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(PhotoBrowserActivity.this, R.string.save_failed, Toast.LENGTH_SHORT).show();
                         }
                     });
                 }

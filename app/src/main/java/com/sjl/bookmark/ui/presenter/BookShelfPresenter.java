@@ -2,7 +2,6 @@ package com.sjl.bookmark.ui.presenter;
 
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
-import androidx.appcompat.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.CheckBox;
@@ -21,8 +20,8 @@ import com.sjl.bookmark.ui.contract.BookShelfContract;
 import com.sjl.core.net.RetrofitHelper;
 import com.sjl.core.net.RxSchedulers;
 import com.sjl.core.net.RxVoid;
-import com.sjl.core.util.log.LogUtils;
 import com.sjl.core.util.datetime.TimeUtils;
+import com.sjl.core.util.log.LogUtils;
 import com.sjl.core.util.security.MD5Utils;
 
 import java.io.File;
@@ -30,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import androidx.appcompat.app.AlertDialog;
 import io.reactivex.Single;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
@@ -82,7 +82,7 @@ public class BookShelfPresenter extends BookShelfContract.Presenter {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
                         LogUtils.e("获取推荐书籍异常：" + throwable.getMessage(), throwable);
-                        mView.showErrorMsg("请求失败");
+                        mView.showErrorMsg(mContext.getString(R.string.request_failed));
                     }
                 });
     }
@@ -110,7 +110,7 @@ public class BookShelfPresenter extends BookShelfContract.Presenter {
                     .inflate(R.layout.dialog_delete, null);
             final CheckBox cb = (CheckBox) view.findViewById(R.id.delete_cb_select);
             new AlertDialog.Builder(mContext)
-                    .setTitle("删除文件?")
+                    .setTitle(mContext.getString(R.string.delete_file_hint))
                     .setView(view)
                     .setPositiveButton(mContext.getResources().getString(R.string.nb_common_sure), new DialogInterface.OnClickListener() {
                         @Override
@@ -118,7 +118,7 @@ public class BookShelfPresenter extends BookShelfContract.Presenter {
                             boolean isSelected = cb.isChecked();
                             if (isSelected) {
                                 ProgressDialog progressDialog = new ProgressDialog(mContext);
-                                progressDialog.setMessage("正在删除中...");
+                                progressDialog.setMessage(mContext.getString(R.string.file_deleting));
                                 progressDialog.show();
                                 //删除
                                 File file = new File(collectBook.getCover());
@@ -142,7 +142,7 @@ public class BookShelfPresenter extends BookShelfContract.Presenter {
                     .show();
         } else {//在线图书删除逻辑
             final ProgressDialog progressDialog = new ProgressDialog(mContext);
-            progressDialog.setMessage("正在删除中...");
+            progressDialog.setMessage(mContext.getString(R.string.file_deleting));
             progressDialog.show();
             collBookBeanService.deleteCollBookInRx(collectBook)
                     .compose(RxSchedulers.<RxVoid>applySingle())

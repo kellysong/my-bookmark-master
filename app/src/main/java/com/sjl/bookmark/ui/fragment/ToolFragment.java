@@ -3,7 +3,6 @@ package com.sjl.bookmark.ui.fragment;
 import android.os.Bundle;
 import android.view.View;
 
-import com.sinpo.xnfc.NFCardActivity;
 import com.sjl.bookmark.R;
 import com.sjl.bookmark.entity.ModuleMenu;
 import com.sjl.bookmark.kotlin.language.I18nUtils;
@@ -12,6 +11,7 @@ import com.sjl.bookmark.ui.activity.BarrageShowActivity;
 import com.sjl.bookmark.ui.activity.BookShelfActivity;
 import com.sjl.bookmark.ui.activity.BrowserActivity;
 import com.sjl.bookmark.ui.activity.ExpressActivity;
+import com.sjl.bookmark.ui.activity.MyNfcActivity;
 import com.sjl.bookmark.ui.activity.NewsListActivity;
 import com.sjl.bookmark.ui.activity.SpeedDetectionActivity;
 import com.sjl.bookmark.ui.activity.WifiQueryActivity;
@@ -61,7 +61,7 @@ public class ToolFragment extends BaseFragment {
         moduleMenus = new ArrayList<>();
         moduleMenus.add(new ModuleMenu(I18nUtils.getString(R.string.tool_account_manager), R.mipmap.menu_password, AccountIndexActivity.class));
         moduleMenus.add(new ModuleMenu(I18nUtils.getString(R.string.tool_wifi_query), R.mipmap.menu_wifi, WifiQueryActivity.class));
-        moduleMenus.add(new ModuleMenu(I18nUtils.getString(R.string.tool_balance_query), R.mipmap.menu_card, NFCardActivity.class));
+        moduleMenus.add(new ModuleMenu(I18nUtils.getString(R.string.tool_balance_query), R.mipmap.menu_card, MyNfcActivity.class));
         //http://www.szmc.net/page/html5.html
         moduleMenus.add(new ModuleMenu(I18nUtils.getString(R.string.tool_shenzhen_subway), R.mipmap.menu_subway, "http://jtapi.bendibao.com/ditie/inc/sz/xianluda.gif"));
         moduleMenus.add(new ModuleMenu(I18nUtils.getString(R.string.tool_my_express), R.mipmap.menu_express_query, ExpressActivity.class));

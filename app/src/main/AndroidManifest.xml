@@ -75,13 +75,14 @@
         <!--Android 7.0需要使用FileProvider生成content:// Uri来替代file:// Uri-->
         <provider
             android:name="androidx.core.content.FileProvider"
-            android:authorities="${PACKAGE_NAME}.fileProvider"
+            android:authorities="${applicationId}.fileProvider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
+
         <activity
             android:name="com.sjl.bookmark.ui.activity.MainActivity"
             android:configChanges="orientation|keyboardHidden"
@@ -301,7 +302,26 @@
              </intent-filter>
          </receiver>
  -->
+        <activity
+            android:name=".ui.activity.MyNfcActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:windowBackground="@null"
+            android:windowSoftInputMode="adjustUnspecified|stateAlwaysHidden" >
+            <intent-filter>
+                <action android:name="android.nfc.action.TECH_DISCOVERED" />
+            </intent-filter>
 
+            <meta-data
+                android:name="android.nfc.action.TECH_DISCOVERED"
+                android:resource="@xml/nfc_tech_filter" />
+
+            <intent-filter>
+                <action android:name="android.nfc.action.TAG_DISCOVERED" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

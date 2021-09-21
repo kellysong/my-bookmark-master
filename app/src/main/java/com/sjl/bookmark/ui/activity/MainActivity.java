@@ -35,13 +35,13 @@ import com.sjl.bookmark.entity.DataResponse;
 import com.sjl.bookmark.entity.UserInfo;
 import com.sjl.bookmark.entity.UserLogin;
 import com.sjl.bookmark.entity.table.Collection;
-import com.sjl.bookmark.kotlin.language.I18nUtils;
 import com.sjl.bookmark.ui.adapter.MainViewPagerAdapter;
 import com.sjl.bookmark.ui.fragment.CategoryFragment;
 import com.sjl.bookmark.ui.fragment.HomeFragment;
 import com.sjl.bookmark.ui.fragment.ToolFragment;
 import com.sjl.bookmark.util.NavigationViewHelper;
 import com.sjl.bookmark.util.NotificationUtils;
+import com.sjl.bookmark.util.WebViewPool;
 import com.sjl.bookmark.widget.WaveView;
 import com.sjl.core.entity.EventBusDto;
 import com.sjl.core.mvp.BaseActivity;
@@ -169,7 +169,7 @@ public class MainActivity extends BaseActivity<BasePresenter>
 
         //switchFragment(0);
         //注意：高版本肯能无效或报错
-        hookToast();
+//        hookToast();
     }
 
 
@@ -276,7 +276,7 @@ public class MainActivity extends BaseActivity<BasePresenter>
                         if (searchMenuItem != null) {
                             searchMenuItem.setVisible(true);
                         }
-                        setToolbarTitle(I18nUtils.getString(R.string.bottom_tab_home), true);
+                        setToolbarTitle(getString(R.string.bottom_tab_home), true);
                         switchFragmentNew(0);
                         break;
                     case R.id.nav_category:
@@ -284,7 +284,7 @@ public class MainActivity extends BaseActivity<BasePresenter>
                         if (searchMenuItem != null) {
                             searchMenuItem.setVisible(false);
                         }
-                        setToolbarTitle(I18nUtils.getString(R.string.bottom_tab_category), false);
+                        setToolbarTitle(getString(R.string.bottom_tab_category), false);
                         switchFragmentNew(1);
                         break;
                     case R.id.nav_tool:
@@ -292,7 +292,7 @@ public class MainActivity extends BaseActivity<BasePresenter>
                         if (searchMenuItem != null) {
                             searchMenuItem.setVisible(false);
                         }
-                        setToolbarTitle(I18nUtils.getString(R.string.bottom_tab_tool), false);
+                        setToolbarTitle(getString(R.string.bottom_tab_tool), false);
                         switchFragmentNew(2);
                         break;
                     default:
@@ -775,6 +775,7 @@ public class MainActivity extends BaseActivity<BasePresenter>
         mFragments = null;
         if (!executeChangeLanguage) {
             BrowseMapper.clearAll();
+            WebViewPool.destroyPool();
             killAll();
             System.exit(0);//退出虚拟机
         }
@@ -801,6 +802,7 @@ public class MainActivity extends BaseActivity<BasePresenter>
     /**
      * 基于hook去除 Toast前面的应用名,https://mp.weixin.qq.com/s/B3ooLGa-uQK4pf9RrZvY5g
      */
+    @SuppressWarnings("停用")
     private void hookToast() {
         try {
             Class<Toast> toastClass = Toast.class;
@@ -808,7 +810,7 @@ public class MainActivity extends BaseActivity<BasePresenter>
             Field sServiceField = toastClass.getDeclaredField("sService");
             sServiceField.setAccessible(true);
             //获取sService原始对象
-            Method getServiceMethod = toastClass.getDeclaredMethod("getService", null);
+            Method getServiceMethod = toastClass.getDeclaredMethod("getService", new  Class[ 0 ]);
             getServiceMethod.setAccessible(true);
             Object service = getServiceMethod.invoke(null);
             //动态代理替换

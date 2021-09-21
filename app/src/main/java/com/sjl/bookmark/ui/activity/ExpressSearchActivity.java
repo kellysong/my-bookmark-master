@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.renny.zxing.Activity.CaptureActivity;
+import com.sjl.bookmark.BuildConfig;
 import com.sjl.bookmark.R;
 import com.sjl.bookmark.app.AppConstant;
 import com.sjl.bookmark.entity.ExpressCompany;
@@ -85,6 +86,9 @@ public class ExpressSearchActivity extends BaseActivity<ExpressSearchPresenter> 
         rvSuggestion.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
         rvSuggestion.setAdapter(adapter);
 //        mPresenter.getSuggestionList(etPostId);
+        if (BuildConfig.DEBUG) {
+            etPostId.setText("YT580095677642");
+        }
     }
 
     @Override
@@ -176,9 +180,9 @@ public class ExpressSearchActivity extends BaseActivity<ExpressSearchPresenter> 
                 }
             }
         }
-        String noQuery=getString(R.string.no_query);
-        String select= getString(R.string.select_hint);
-        String label = "<font color='%1$s'>"+noQuery+"</font> <font color='%2$s'>"+select+"</font>";
+        String noQuery = getString(R.string.no_query);
+        String select = getString(R.string.select_hint);
+        String label = "<font color='%1$s'>" + noQuery + "</font> <font color='%2$s'>" + select + "</font>";
         String grey = String.format("#%06X", 0xFFFFFF & getResources().getColor(R.color.grey));
         String blue = String.format("#%06X", 0xFFFFFF & getResources().getColor(R.color.blue));
         ExpressCompany companyEntity = new ExpressCompany();
@@ -189,10 +193,10 @@ public class ExpressSearchActivity extends BaseActivity<ExpressSearchPresenter> 
     }
 
     private ExpressCompany getOfficialHref() {
-        String noQuery=getString(R.string.no_query);
-        String select= getString(R.string.select_hint2);
+        String noQuery = getString(R.string.no_query);
+        String select = getString(R.string.select_hint2);
 
-        String label = "<font color='%1$s'>"+noQuery+"</font> <font color='%2$s'>"+select+"</font>";
+        String label = "<font color='%1$s'>" + noQuery + "</font> <font color='%2$s'>" + select + "</font>";
         String grey = String.format("#%06X", 0xFFFFFF & getResources().getColor(R.color.grey));
         String blue = String.format("#%06X", 0xFFFFFF & getResources().getColor(R.color.blue));
         ExpressCompany companyEntity = new ExpressCompany();

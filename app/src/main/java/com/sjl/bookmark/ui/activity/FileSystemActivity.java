@@ -15,6 +15,7 @@ import com.sjl.bookmark.ui.base.extend.BaseTabActivity;
 import com.sjl.bookmark.ui.fragment.FileCategoryFragment;
 import com.sjl.bookmark.ui.fragment.LocalBookFragment;
 import com.sjl.core.net.RxBus;
+import com.sjl.core.net.RxLifecycleUtils;
 import com.sjl.core.util.datetime.TimeUtils;
 import com.sjl.core.util.security.MD5Utils;
 
@@ -300,5 +301,11 @@ public class FileSystemActivity extends BaseTabActivity {
             mCbSelectAll.setClickable(false);
             mCbSelectAll.setEnabled(false);
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        RxLifecycleUtils.clear();
     }
 }

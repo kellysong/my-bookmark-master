@@ -91,7 +91,7 @@ public class NewsCommentActivity extends BaseActivity {
         longCommentsCountStr = longCommentsCount > 99 ? "99+" : String.valueOf(longCommentsCount);
         shortCommentsCountStr = shortCommentsCount > 99 ? "99+" : String.valueOf(shortCommentsCount);
         int commentsCount = intent.getIntExtra("comments", 0);
-        bindingToolbar(mToolBar, commentsCount + "条点评");
+        bindingToolbar(mToolBar, commentsCount + getString(R.string.news_sub_comments));
 
         List<BaseFragment> fragmentList = new ArrayList<>();
         mDataList = Arrays.asList(TITLES);

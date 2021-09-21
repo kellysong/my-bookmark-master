@@ -74,13 +74,22 @@ public class ExpressSearchPresenter extends ExpressSearchContract.Presenter {
     @Override
     public void getSuggestionList(String postId) {
         KuaiDi100ApiService apiService = RetrofitHelper.getInstance().getApiService(KuaiDi100ApiService.class);
-        apiService.queryExpressNameByNo(1, postId)
+        String cookie1 = ExpressDetailPresenter.disguiseCookie("Hm_lvt_22ea01af58ba2be0fec7c11b25e88e6c", 4, 5 * 1000);
+        LogUtils.w(cookie1);
+        String cookie2 = ExpressDetailPresenter.disguiseCookie("Hm_lpvt_22ea01af58ba2be0fec7c11b25e88e6c", 1, 0);
+        LogUtils.w(cookie2);
+        String cookie = cookie1 + ";" + cookie2;
+        Map<String, String> headersMap = new HashMap<>();
+        headersMap.put("Cookie", cookie);
+        headersMap.put("User-Agent", ExpressDetailPresenter.getRandomUserAgent());
+        apiService.queryExpressNameByNo(headersMap,postId)
                 .compose(RxSchedulers.<ExpressName>applySchedulers())
                 .as(this.<ExpressName>bindLifecycle())
                 .subscribe(new Consumer<ExpressName>() {
                     @Override
                     public void accept(ExpressName expressName) throws Exception {
                         mView.showSuggestionCompany(expressName);
+
                     }
                 }, new Consumer<Throwable>() {
                     @Override
@@ -88,7 +97,6 @@ public class ExpressSearchPresenter extends ExpressSearchContract.Presenter {
                         LogUtils.e("搜索快递公司异常", throwable);
                     }
                 });
-
 
     }
 

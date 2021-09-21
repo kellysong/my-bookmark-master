@@ -97,12 +97,10 @@ public class BookDetailActivity extends BaseActivity<BookDetailPresenter> implem
     @BindView(R.id.book_detail_rv_recommend_book_list)
     RecyclerView mRvRecommendBookList;
 
-    /************************************/
     private BookHotCommentAdapter mHotCommentAdapter;
     private BookListAdapter mBookListAdapter;
     private CollectBook mCollBookBean;
     private ProgressDialog mProgressDialog;
-    /*******************************************/
     private String mBookId;
     private boolean isBriefOpen = false;
     private boolean isCollected = false;
@@ -377,7 +375,7 @@ public class BookDetailActivity extends BaseActivity<BookDetailPresenter> implem
     public void waitToBookShelf() {
         if (mProgressDialog == null) {
             mProgressDialog = new ProgressDialog(this);
-            mProgressDialog.setTitle("正在添加到书架中");
+            mProgressDialog.setTitle(getString(R.string.book_detail_add_shelf_hint));
         }
         mProgressDialog.show();
     }
@@ -387,7 +385,7 @@ public class BookDetailActivity extends BaseActivity<BookDetailPresenter> implem
         if (mProgressDialog != null) {
             mProgressDialog.dismiss();
         }
-        showShortToast("加入书架失败，请检查网络");
+        showShortToast(getString(R.string.book_detail_add_shelf_hint2));
     }
 
     @Override
@@ -395,7 +393,7 @@ public class BookDetailActivity extends BaseActivity<BookDetailPresenter> implem
         if (mProgressDialog != null) {
             mProgressDialog.dismiss();
         }
-        showShortToast("加入书架成功");
+        showShortToast(getString(R.string.book_detail_add_shelf_hint3));
         //更新书架
         RxBus.getInstance().post(true);
     }

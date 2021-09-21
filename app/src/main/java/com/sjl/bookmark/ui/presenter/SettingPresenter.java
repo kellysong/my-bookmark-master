@@ -8,6 +8,7 @@ import android.preference.PreferenceFragment;
 import android.text.TextUtils;
 import android.widget.Toast;
 
+import com.mob.MobSDK;
 import com.sjl.bookmark.R;
 import com.sjl.bookmark.api.MyBookmarkService;
 import com.sjl.bookmark.app.AppConstant;
@@ -131,17 +132,17 @@ public class SettingPresenter extends SettingContract.Presenter {
             mContext.startActivity(intent);
         } else if (TextUtils.equals(key, "清除浏览记录")) {
             AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-            builder.setTitle("提示");
-            builder.setMessage("确定清除所有文章浏览记录?")
-                    .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+            builder.setTitle(R.string.nb_common_tip);
+            builder.setMessage(R.string.clear_browsing_hint)
+                    .setPositiveButton(R.string.sure, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
                             DaoFactory.getBrowseTrackDao().deleteAllBrowseTrack();
                             EventBusDto eventBusDto = new EventBusDto(0);
                             RxBus.getInstance().post(AppConstant.RxBusFlag.FLAG_1, eventBusDto);
-                            Toast.makeText(mContext, "清除成功", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(mContext, R.string.clear_success, Toast.LENGTH_SHORT).show();
                         }
                     })
-                    .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
                             dialog.dismiss();
                         }
@@ -153,7 +154,9 @@ public class SettingPresenter extends SettingContract.Presenter {
         } else if (TextUtils.equals(key, "检查更新")) {
             checkAppUpdate();
         } else if (TextUtils.equals(key, "分享应用")) {
-            ShareSDKUtils.getInstance(mContext).useDefaultGUI("分享", "分享应用", "https://csdnimg.cn/pubfooter/images/csdn_cs_qr.png", "https://blog.csdn.net/augfun/article/details/72618592", null);
+            //新规适配
+            MobSDK.submitPolicyGrantResult(true, null);
+            ShareSDKUtils.getInstance(mContext.getApplicationContext()).useDefaultGUI(mContext.getString(R.string.menu_share), mContext.getString(R.string.share_app), "https://csdnimg.cn/pubfooter/images/csdn_cs_qr.png", "https://blog.csdn.net/augfun/article/details/72618592", null);
         } else if (TextUtils.equals(key, "关于")) {
             Intent intent = new Intent(mContext, AboutActivity.class);
             mContext.startActivity(intent);
@@ -191,9 +194,9 @@ public class SettingPresenter extends SettingContract.Presenter {
      * 更换语言
      */
     private void changeLanguage() {
-        final String items[] = {"跟随系统","简体中文", "繁体中文(台灣)", "繁体中文(香港)", "English"};
+        final String items[] = {mContext.getString(R.string.language_auto),"简体中文", "繁体中文(台灣)", "繁体中文(香港)", "English"};
         AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-        builder.setTitle("请选择语言");
+        builder.setTitle(R.string.language_select_hint);
         final int type = LanguageManager.INSTANCE.getCurrentLanguageType(mContext);
         builder.setSingleChoiceItems(items, type,
                 new DialogInterface.OnClickListener() {
@@ -244,14 +247,14 @@ public class SettingPresenter extends SettingContract.Presenter {
     private void checkAppUpdate() {
 
         if (!AppUtils.isConnected(mContext)) {
-            Toast.makeText(mContext, "当前网络不可用，无法更新", Toast.LENGTH_SHORT).show();
+            Toast.makeText(mContext, R.string.network_unavailable, Toast.LENGTH_SHORT).show();
             return;
         }
         if (AppUtils.isServiceRunning(mContext, DownloadIntentService.class.getName())) {
-            Toast.makeText(mContext, "正在下载中", Toast.LENGTH_SHORT).show();
+            Toast.makeText(mContext, R.string.downloading, Toast.LENGTH_SHORT).show();
             return;
         }
-        mView.showLoading(1, "正在检测新版本");
+        mView.showLoading(1, mContext.getString(R.string.checking_update));
         RetrofitHelper instance = RetrofitHelper.getInstance();
         MyBookmarkService apiService = instance.getApiService(MyBookmarkService.class);
 
@@ -268,10 +271,10 @@ public class SettingPresenter extends SettingContract.Presenter {
                                 mView.hideLoading(true, "");
                                 showDialog(updateInfoDto);
                             } else {
-                                mView.hideLoading(true, "已经更新到最新版本");
+                                mView.hideLoading(true, mContext.getString(R.string.version_update_hint));
                             }
                         } else if (dataResponse.getCode() == -1) {
-                            mView.hideLoading(true, "已经更新到最新版本");
+                            mView.hideLoading(true, mContext.getString(R.string.version_update_hint));
                         } else {
                             mView.hideLoading(false, dataResponse.getMsg());
                         }
@@ -280,7 +283,7 @@ public class SettingPresenter extends SettingContract.Presenter {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
                         LogUtils.e("检查更新异常", throwable);
-                        mView.hideLoading(false, "检查更新失败");
+                        mView.hideLoading(false, mContext.getString(R.string.version_update_failed));
                     }
                 });
 
@@ -347,10 +350,10 @@ public class SettingPresenter extends SettingContract.Presenter {
      */
     private void updateBookmarks() {
         if (!AppUtils.isConnected(mContext)) {
-            Toast.makeText(mContext, "当前网络不可用，无法更新", Toast.LENGTH_SHORT).show();
+            Toast.makeText(mContext, R.string.network_unavailable, Toast.LENGTH_SHORT).show();
             return;
         }
-        mView.showLoading(0, "正在更新...");
+        mView.showLoading(0, mContext.getString(R.string.downloading));
         RetrofitHelper instance = RetrofitHelper.getInstance();
         MyBookmarkService apiService = instance.getApiService(MyBookmarkService.class);
         FileDownloader.downloadFile(apiService.downloadBookmarkFile(), AppConstant.BOOKMARK_PATH, "bookmark.html", new DownloadProgressHandler() {
@@ -371,7 +374,7 @@ public class SettingPresenter extends SettingContract.Presenter {
             @Override
             public void onError(Throwable e) {
                 LogUtils.e("下载书签文件异常", e);
-                mView.hideLoading(false, "下载书签文件异常");
+                mView.hideLoading(false, mContext.getString(R.string.bookmark_file_download_failed));
                 FileDownloader.clear();
             }
         });
@@ -406,9 +409,11 @@ public class SettingPresenter extends SettingContract.Presenter {
                     public void onNext(Boolean ret) {
                         String msg = "";
                         if (ret) {
-                            msg = "更新书签成功";
+                            //Update bookmark successfully
+
+                            msg = mContext.getString(R.string.bookmark_update_hint);
                         } else {
-                            msg = "更新书签失败";
+                            msg = mContext.getString(R.string.bookmark_update_hint2);
                         }
                         mView.hideLoading(ret, msg);
                     }
@@ -416,7 +421,7 @@ public class SettingPresenter extends SettingContract.Presenter {
                     @Override
                     public void onError(Throwable e) {
                         LogUtils.e("2.更新书签数据到数据库异常", e);
-                        mView.hideLoading(false, "更新书签数据到数据库异常");
+                        mView.hideLoading(false, mContext.getString(R.string.bookmark_update_hint3));
                     }
 
                     @Override
