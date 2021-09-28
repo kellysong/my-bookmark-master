@@ -404,4 +404,5 @@
     <string name="share_app">Share application</string>
     <string name="language_auto">Auto</string>
     <string name="unknown">Unknown</string>
+    <string name="no_root_permission">No Root Permission</string>
 </resources>

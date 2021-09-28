@@ -250,8 +250,8 @@ public class ExpressDetailPresenter extends ExpressDetailContract.Presenter {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
                         LogUtils.e("搜索快递明细异常", throwable);
-//                        mView.showErrorInfo();
-                        aliCloudQuery(apiService,searchInfo);
+                        mView.showErrorInfo();
+//                        aliCloudQuery(apiService,searchInfo);
                     }
                 });
     }

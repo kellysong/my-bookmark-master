@@ -408,4 +408,5 @@
     <string name="share_app">分享應用</string>
     <string name="language_auto">跟隨系統</string>
     <string name="unknown">未知</string>
+    <string name="no_root_permission">無Root許可權</string>
 </resources>

@@ -5,8 +5,10 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
+import android.os.Build;
 import android.os.Handler;
 import android.text.TextUtils;
+import android.util.Xml;
 import android.widget.Toast;
 
 import com.sjl.bookmark.R;
@@ -16,12 +18,14 @@ import com.sjl.core.net.RxSchedulers;
 import com.sjl.core.util.log.LogUtils;
 
 import org.greenrobot.eventbus.EventBus;
+import org.xmlpull.v1.XmlPullParser;
 
 import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -105,16 +109,26 @@ public class WifiQueryPresenter extends WifiQueryContract.Presenter {
 
     }
 
-    private void readWifiInfo(ObservableEmitter<Object> e)  {
+    private void readWifiInfo(ObservableEmitter<Object> e) {
         Process process = null;
         DataOutputStream dataOutputStream = null;
         DataInputStream dataInputStream = null;
         StringBuffer wifiConf = new StringBuffer();
+        boolean wifiParseFlag = false;
+        boolean error = false;
         try {
             process = Runtime.getRuntime().exec("su");///(这里执行是系统已经开放了root权限，而不是说通过执行这句来获得root权限)
             dataOutputStream = new DataOutputStream(process.getOutputStream());
             dataInputStream = new DataInputStream(process.getInputStream());
-            dataOutputStream.writeBytes("cat /data/misc/wifi/wpa_supplicant.conf\n");
+            int sdkInt = Build.VERSION.SDK_INT;
+
+            if (sdkInt >= Build.VERSION_CODES.O) {
+                dataOutputStream.writeBytes("cat /data/misc/wifi/WifiConfigStore.xml\n");
+                wifiParseFlag = true;
+            } else {
+                dataOutputStream.writeBytes("cat /data/misc/wifi/wpa_supplicant.conf\n");
+
+            }
             dataOutputStream.writeBytes("exit\n");
             dataOutputStream.flush();
             InputStreamReader inputStreamReader = new InputStreamReader(dataInputStream, "UTF-8");
@@ -128,6 +142,7 @@ public class WifiQueryPresenter extends WifiQueryContract.Presenter {
             process.waitFor();
         } catch (Exception e1) {
             LogUtils.e("读取wifi配置文件异常", e1);
+            error = true;
         } finally {
             try {
                 if (dataOutputStream != null) {
@@ -143,38 +158,237 @@ public class WifiQueryPresenter extends WifiQueryContract.Presenter {
                 LogUtils.e("关闭读取wifi流异常", e2);
             }
         }
-        if (TextUtils.isEmpty(wifiConf.toString())) {
-            e.onComplete();
+        if (error) {
+            e.onNext(mContext.getString(R.string.no_root_permission));
             return;
         }
-        ArrayList<WifiInfo> mWifiInfoList = new ArrayList<>();
-        Pattern network = Pattern.compile("network=\\{([^\\}]+)\\}", Pattern.DOTALL);
-        Matcher networkMatcher = network.matcher(wifiConf.toString());
-        WifiInfo wifiInfo;
-        while (networkMatcher.find()) {
-            String networkBlock = networkMatcher.group();
-            LogUtils.i("wifi信息：" + networkBlock);
-            Matcher ssidMatcher = REGEX_SSID.matcher(networkBlock);
-            if (ssidMatcher.find()) {
-                wifiInfo = new WifiInfo();
-                wifiInfo.setName(ssidMatcher.group(1));
+        String wifiConfigStr = wifiConf.toString();
+        if (TextUtils.isEmpty(wifiConfigStr)) {
+            e.onNext(new ArrayList<WifiInfo>());
+            return;
+        }
+        LogUtils.i("wifiConf:" + wifiConfigStr);
+        ArrayList<WifiInfo> wifiInfoList = new ArrayList<>();
+        if (!wifiParseFlag) {
+            Pattern network = Pattern.compile("network=\\{([^\\}]+)\\}", Pattern.DOTALL);
+            Matcher networkMatcher = network.matcher(wifiConfigStr);
+            WifiInfo wifiInfo;
+            while (networkMatcher.find()) {
+                String networkBlock = networkMatcher.group();
+                LogUtils.i("wifi信息：" + networkBlock);
+                Matcher ssidMatcher = REGEX_SSID.matcher(networkBlock);
+                if (ssidMatcher.find()) {
+                    wifiInfo = new WifiInfo();
+                    wifiInfo.setName(ssidMatcher.group(1));
 
-                Matcher pskMatcher = REGEX_PSK.matcher(networkBlock);
-                if (pskMatcher.find()) {
-                    wifiInfo.setPassword(pskMatcher.group(1));
-                } else {
-                    wifiInfo.setPassword(mContext.getString(R.string.empty_password));
+                    Matcher pskMatcher = REGEX_PSK.matcher(networkBlock);
+                    if (pskMatcher.find()) {
+                        wifiInfo.setPassword(pskMatcher.group(1));
+                    } else {
+                        wifiInfo.setPassword(mContext.getString(R.string.empty_password));
+                    }
+                    Matcher keyMatcher = REGEX_KEY_MGMT.matcher(networkBlock);
+                    if (keyMatcher.find()) {
+                        wifiInfo.setEncryptType(keyMatcher.group(1));
+                    } else {
+                        wifiInfo.setEncryptType(mContext.getString(R.string.unknown));
+                    }
+                    wifiInfoList.add(wifiInfo);
                 }
-                Matcher keyMatcher = REGEX_KEY_MGMT.matcher(networkBlock);
-                if (keyMatcher.find()) {
-                    wifiInfo.setEncryptType(keyMatcher.group(1));
-                } else {
-                    wifiInfo.setEncryptType(mContext.getString(R.string.unknown));
+            }
+
+        } else {
+            try {
+                //https://blog.csdn.net/csdn_of_coder/article/details/73380495
+                XmlPullParser parser = Xml.newPullParser();
+                parser.setInput(new StringReader(wifiConfigStr));
+                int eventType = parser.getEventType();
+                WifiInfo wifiInfo = null;
+                while (eventType != XmlPullParser.END_DOCUMENT) {
+                    switch (eventType) {
+                        case XmlPullParser.START_DOCUMENT:
+
+                            break;
+                        case XmlPullParser.START_TAG:
+                            String name = parser.getName();
+                            if ("Network".equalsIgnoreCase(name)) {
+                                wifiInfo = new WifiInfo();
+                                wifiInfo.setPassword("--");
+                            }
+                            if ("WifiConfiguration".equalsIgnoreCase(name)) {
+                                parserWifiConfig(wifiInfo, parser);
+                            }
+                            if ("WifiEnterpriseConfiguration".equalsIgnoreCase(name)) {
+                                parserWifiEnterpriseConfiguration(wifiInfo, parser);
+                            }
+                            break;
+                        case XmlPullParser.END_TAG:
+                            if ("Network".equals(parser.getName())) {//一个person处理完毕，准备下一个节点
+                                if (!"null".equals(wifiInfo.getName())) {
+                                    wifiInfoList.add(wifiInfo);
+                                }
+                            }
+                            break;
+                    }
+                    eventType = parser.next();
                 }
-                mWifiInfoList.add(wifiInfo);
+            } catch (Exception e2) {
+                e2.printStackTrace();
+            }
+
+        }
+        e.onNext(wifiInfoList);
+    }
+
+    /**
+     * <WifiConfiguration>
+     * <string name="ConfigKey">&quot;AndroidWifi&quot;NONE</string>
+     * <string name="SSID">&quot;AndroidWifi&quot;</string>
+     * <null name="BSSID" />
+     * <null name="PreSharedKey" />
+     *
+     * //...
+     * </WifiConfiguration>
+     *
+     * @param wifiInfo
+     * @param parser
+     * @throws Exception
+     */
+    private void parserWifiConfig(WifiInfo wifiInfo, XmlPullParser parser) throws Exception {
+        int event;
+        int depth = parser.getDepth();
+
+        while ((event = parser.next()) != XmlPullParser.END_DOCUMENT
+                && (parser.getDepth() > depth || event != XmlPullParser.END_TAG)) {//只解析当前的标签内部的内容
+
+            if (event == XmlPullParser.TEXT || event == XmlPullParser.END_TAG) {
+                continue;
+            }
+
+            switch (event) {
+                case XmlPullParser.START_TAG:
+                    String name = parser.getName();
+                    String attr = parser.getAttributeValue(null, "name");
+                    if ("string".equalsIgnoreCase(name) && "ConfigKey".equalsIgnoreCase(attr)) {
+                        String ssidAndEncryptType = parser.nextText();
+                        int i = ssidAndEncryptType.lastIndexOf("\"");
+                        String ssid = ssidAndEncryptType.substring(1, i).replace("\"", "");
+                        String encryptType = ssidAndEncryptType.substring(i).replace("\"", "");
+                        wifiInfo.setName(ssid);
+                        wifiInfo.setEncryptType(encryptType);
+                    }
+
+                    if ("string".equalsIgnoreCase(name) && "PreSharedKey".equalsIgnoreCase(attr)) {
+                        String pwd = parser.nextText().replace("\"", "");
+                        if (!TextUtils.isEmpty(pwd)) {
+                            wifiInfo.setPassword(pwd);
+                        }
+                    }
+
+                    if ("string-array".equalsIgnoreCase(name) && "WEPKeys".equalsIgnoreCase(attr)) {
+                        parserStringArray(wifiInfo, parser);
+
+                    }
+                    break;
+                default:
+                    break;
             }
         }
-        e.onNext(mWifiInfoList);
+
+
+    }
+
+    /**
+     * <string-array name="WEPKeys" num="4">
+     * <item value="&quot;1333333&quot;" />
+     * <item value="" />
+     * <item value="" />
+     * <item value="" />
+     * </string-array>
+     *
+     * @param wifiInfo
+     * @param parser
+     * @throws Exception
+     */
+    private void parserStringArray(WifiInfo wifiInfo, XmlPullParser parser) throws Exception {
+        int event;
+        int depth = parser.getDepth();
+
+        while ((event = parser.next()) != XmlPullParser.END_DOCUMENT
+                && (parser.getDepth() > depth || event != XmlPullParser.END_TAG)) {//只解析当前的标签内部的内容
+
+            if (event == XmlPullParser.TEXT || event == XmlPullParser.END_TAG) {
+                continue;
+            }
+
+            switch (event) {
+                case XmlPullParser.START_TAG:
+                    String name = parser.getName();
+                    String pwd = parser.getAttributeValue(null, "value");
+                    if ("item".equalsIgnoreCase(name) && !TextUtils.isEmpty(pwd)) {
+                        pwd = pwd.replace("\"", "");
+                        wifiInfo.setPassword(pwd);
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+
+
+    }
+
+    /**
+     * <WifiEnterpriseConfiguration>
+     * <string name="Identity">111</string>
+     * <string name="AnonIdentity">11</string>
+     * <string name="Password">888888888888888888888</string>
+     * <string name="ClientCert"></string>
+     * <string name="CaCert"></string>
+     * <string name="SubjectMatch"></string>
+     * <string name="Engine">0</string>
+     * <string name="EngineId"></string>
+     * <string name="PrivateKeyId"></string>
+     * <string name="AltSubjectMatch"></string>
+     * <string name="DomSuffixMatch">18888811111</string>
+     * <string name="CaPath">/system/etc/security/cacerts</string>
+     * <int name="EapMethod" value="0" />
+     * <int name="Phase2Method" value="0" />
+     * <string name="PLMN"></string>
+     * <string name="Realm"></string>
+     * </WifiEnterpriseConfiguration>
+     *
+     * @param wifiInfo
+     * @param parser
+     * @throws Exception
+     */
+    private void parserWifiEnterpriseConfiguration(WifiInfo wifiInfo, XmlPullParser parser) throws Exception {
+        int event;
+        int depth = parser.getDepth();
+        while ((event = parser.next()) != XmlPullParser.END_DOCUMENT
+                && (parser.getDepth() > depth || event != XmlPullParser.END_TAG)) {//只解析当前的标签内部的内容
+
+            if (event == XmlPullParser.TEXT || event == XmlPullParser.END_TAG) {
+                continue;
+            }
+
+            switch (event) {
+                case XmlPullParser.START_TAG:
+                    String name = parser.getName();
+                    String attr = parser.getAttributeValue(null, "name");
+                    if ("string".equalsIgnoreCase(name) && "Password".equalsIgnoreCase(attr)) {
+                        String pwd = parser.nextText();
+                        if (!TextUtils.isEmpty(pwd)) {
+                            wifiInfo.setPassword(pwd);
+                        }
+
+                    }
+                default:
+                    break;
+            }
+        }
+
+
     }
 
     /**

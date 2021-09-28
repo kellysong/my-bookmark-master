@@ -1,11 +1,6 @@
 package com.sjl.bookmark.ui.activity;
 
 import android.content.Intent;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import androidx.recyclerview.widget.DefaultItemAnimator;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.appcompat.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,6 +19,11 @@ import com.sjl.core.util.log.LogUtils;
 
 import java.util.List;
 
+import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import butterknife.BindView;
 
 
@@ -130,6 +130,9 @@ public class BookmarkActivity extends BaseActivity<BookmarkPresenter> implements
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
                 //LogUtils.i("StateChanged = " + newState);
+                if (mSuspensionBar == null) {
+                    return;
+                }
                 mSuspensionHeight = mSuspensionBar.getHeight();
 
             }
@@ -138,7 +141,10 @@ public class BookmarkActivity extends BaseActivity<BookmarkPresenter> implements
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 //下面是悬浮标题
-                if (mBookmarkAdapter.getItemViewType(mCurrentPosition ) == BookmarkAdapter.TYPE_HEADER) {
+                if (mSuspensionBar == null || mCurrentPosition > mBookmarkAdapter.getItemCount()) {
+                    return;
+                }
+                if (mBookmarkAdapter.getItemViewType(mCurrentPosition) == BookmarkAdapter.TYPE_HEADER) {
                     View view = mLinearLayoutManager.findViewByPosition(mCurrentPosition);
                     if (view != null) {
                         if (view.getTop() <= mSuspensionHeight) {
@@ -212,15 +218,15 @@ public class BookmarkActivity extends BaseActivity<BookmarkPresenter> implements
        mRecyclerView.addItemDecoration(pinnedHeaderDecoration);*/
 
 
-        if (bookmarks.size() > 0){
+        if (bookmarks.size() > 0) {
             Bookmark bookmark = bookmarks.get(0);
             int type = bookmark.getType();
-            if (type == 1){//修复没有悬浮标题数据时吗，遮挡条目问题
-                bookmarks.add(0,new Bookmark(0,bookmark.getTitle()));//追加一条悬浮标题数据
+            if (type == 1) {//修复没有悬浮标题数据时吗，遮挡条目问题
+                bookmarks.add(0, new Bookmark(0, bookmark.getTitle()));//追加一条悬浮标题数据
             }
             mSuspensionBar.setVisibility(View.VISIBLE);//修复没有数据时显示悬浮条目问题
             updateSuspensionBar();
-        }else {
+        } else {
             mSuspensionBar.setVisibility(View.GONE);
         }
         mRecyclerView.setAdapter(mBookmarkAdapter);
