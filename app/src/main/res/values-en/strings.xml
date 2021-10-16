@@ -234,7 +234,7 @@
     <string name="skin_update_success">Update successful</string>
     <string name="skin_theme_change_success">Theme change successful</string>
     <string name="skin_theme_change_fail">Theme change failed</string>
-    <string name="person_center">个人中心</string>
+    <string name="person_center">Personal Center</string>
     <string name="person_head_portrait">Portrait</string>
     <string name="person_nickname">Nickname</string>
     <string name="person_sex">Sex</string>

@@ -15,17 +15,17 @@
         android:textSize="14sp" />
 
 
-    <com.sjl.bookmark.widget.MarqueeView
+    <com.sjl.bookmark.widget.TextScrollView
         android:id="@+id/tv_barrage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
-        android:ellipsize="end"
-        android:gravity="center"
-        android:maxLines="1"
-        android:singleLine="true"
-        android:textColor="@color/black"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:clickable="true"
         android:textSize="90sp"
+        android:background="@color/white"
+        android:textColor="@color/black"
         app:layout_constraintTop_toBottomOf="@id/et_content"
         tools:text="人类的终极问题" />
 </androidx.constraintlayout.widget.ConstraintLayout>

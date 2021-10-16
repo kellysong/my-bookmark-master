@@ -281,6 +281,7 @@
         <activity
             android:name=".ui.activity.BarrageShowActivity"
             android:configChanges="keyboardHidden"
+            android:hardwareAccelerated="true"
             android:screenOrientation="landscape"
             android:theme="@style/CommonNoActionBar" />
         <activity

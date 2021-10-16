@@ -8,7 +8,7 @@ import android.widget.EditText;
 
 import com.sjl.bookmark.R;
 import com.sjl.bookmark.kotlin.language.LanguageManager;
-import com.sjl.bookmark.widget.MarqueeView;
+import com.sjl.bookmark.widget.TextScrollView;
 import com.sjl.core.mvp.BaseActivity;
 
 import butterknife.BindView;
@@ -26,7 +26,7 @@ public class BarrageShowActivity extends BaseActivity {
     @BindView(R.id.et_content)
     EditText et_content;
     @BindView(R.id.tv_barrage)
-    MarqueeView tv_barrage;
+    TextScrollView tv_barrage;
 
     @Override
     protected int getLayoutId() {
@@ -35,6 +35,7 @@ public class BarrageShowActivity extends BaseActivity {
 
     @Override
     protected void initView() {
+
 
     }
 
@@ -57,7 +58,8 @@ public class BarrageShowActivity extends BaseActivity {
                 if (TextUtils.isEmpty(trim)){
                     return;
                 }
-                tv_barrage.setText(trim);
+                tv_barrage.initScrollTextView(getWindowManager(), trim, 10);
+                tv_barrage.starScroll();
             }
 
             @Override
@@ -65,6 +67,15 @@ public class BarrageShowActivity extends BaseActivity {
 
             }
         });
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (tv_barrage != null){
+            tv_barrage.stopScroll();
+        }
+        super.onDestroy();
+
     }
 
     @Override

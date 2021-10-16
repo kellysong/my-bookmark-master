@@ -6,7 +6,7 @@ apply plugin: 'kotlin-android-extensions'//简化fid
 //apply plugin: "kotlin-kapt"
 apply plugin: 'bugly'
 
-def releaseApkName = "bookmark_release.apk"
+
 
 def buglyAppID = "5342dfc505"
 
@@ -14,6 +14,12 @@ def buglyAppID = "5342dfc505"
  * 对发布成功的apk进行备份
  */
 final def TARGET_APP_RELEASE_DIR = 'D:/workspace_android/app_release/bookmark/'
+//自定义
+def releaseApkName = ""
+//注意bookmark
+final def APP_COPY_DIR = 'build/outputs/apk/bookmark/release/'
+
+
 
 MobSDK {
     appKey "2818f1a75f12c"
@@ -89,12 +95,12 @@ android {
 
     buildTypes {
         debug {
-          /* //不混淆
-            minifyEnabled true
-            // 移除无用的resource文件
-            shrinkResources true
-            //Zipalign优化
-            zipAlignEnabled true*/
+            /* //不混淆
+              minifyEnabled true
+              // 移除无用的resource文件
+              shrinkResources true
+              //Zipalign优化
+              zipAlignEnabled true*/
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
         }
@@ -123,9 +129,9 @@ android {
                             def apkName = "${variant.productFlavors[0].name}"
 
                             def fileName = "${apkName}_${version}_${buildTypeName}_${buildTime()}.apk"
-                            if("bookmark".equalsIgnoreCase(apkName)){
+                            if ("bookmark".equalsIgnoreCase(apkName)) {
                                 releaseApkName = fileName
-                                println("releaseApkName========================="+releaseApkName)
+                                println("releaseApkName=========================" + releaseApkName)
                             }
 
                             //output.outputFile = new File(outputFile.parent, fileName)
@@ -163,8 +169,8 @@ android {
             // 修改 AndroidManifest.xml 里渠道变量
             manifestPlaceholders = [
                     CHANNEL_VALUE: "bookmark",
-                    APP_ICON: "@mipmap/ic_launcher",
-                    PACKAGE_NAME: "${applicationId}"//应用包名${PACKAGE_NAME}
+                    APP_ICON     : "@mipmap/ic_launcher",
+                    PACKAGE_NAME : "${applicationId}"//应用包名${PACKAGE_NAME}
             ]
         }
         bookmark_test {
@@ -174,8 +180,8 @@ android {
 
             manifestPlaceholders = [
                     CHANNEL_VALUE: "bookmark_test",
-                    APP_ICON: "@mipmap/ic_launcher",
-                    PACKAGE_NAME: "${applicationId}"//应用包名${PACKAGE_NAME}
+                    APP_ICON     : "@mipmap/ic_launcher",
+                    PACKAGE_NAME : "${applicationId}"//应用包名${PACKAGE_NAME}
             ]
 
         }
@@ -186,20 +192,34 @@ android {
 
             manifestPlaceholders = [
                     CHANNEL_VALUE: "novel_reader",
-                    APP_ICON: "@mipmap/ic_book",
-                    PACKAGE_NAME: "${applicationId}"//应用包名${PACKAGE_NAME}
+                    APP_ICON     : "@mipmap/ic_book",
+                    PACKAGE_NAME : "${applicationId}"//应用包名${PACKAGE_NAME}
             ]
         }
     }
+    /**
+     * 配置阶段开始前回调监听
+     */
+    this.beforeEvaluate {
+    }
 
-    afterEvaluate {
-        println("=====================afterEvaluate========================="+project.hasProperty("assembleBookmark"))
+    /**
+     * 配置阶段完成后回调监听
+     */
+    this.afterEvaluate {
+        println '配置阶段完成...'
+    }
+
+    /**
+     * gradle执行完毕的回调监听
+     */
+    this.gradle.buildFinished {
+        println("=====================buildFinished=========================" + project.hasProperty("assembleBookmark"))
 //        def propertiesMap= project.getProperties()
 //        propertiesMap.each{entry ->
 //            println("键："+entry.key + "值："+entry.value)
 //        }
-        if (project.hasProperty("assembleBookmark") || project.hasProperty("assembleRelease") ) {
-            println("=====================assembleRelease.doLast.begin.=========================")
+        if (project.hasProperty("assembleBookmark") || project.hasProperty("assembleRelease")) {
             def dir = new File(TARGET_APP_RELEASE_DIR)
             if (!dir.exists()) {
                 dir.mkdirs()
@@ -211,13 +231,13 @@ android {
             }
 
             copy {
-                from('build/outputs/apk/bookmark/release/'+releaseApkName)
+                from(APP_COPY_DIR + releaseApkName)
                 into(TARGET_APP_RELEASE_DIR)
                 include '*.apk'
                 exclude '**/*-unaligned.apk'
             }
 
-            println("=====================assembleRelease.doLast success.=========================")
+            println("=====================assembleRelease copy success.=========================")
         }
     }
     //必须加,不加启动报错,由于AutoDispose依赖库需要java8
@@ -254,16 +274,16 @@ dependencies {
     /*基础库*/
     //implementation project(':my-common-lib:base-core')
     //implementation project(':my-common-lib:base-adapter')
-	implementation 'com.github.kellysong.my-common:base-adapter:2.1.2'
-	implementation 'com.github.kellysong.my-common:base-core:2.1.2'
-	annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.1'
-	annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
+    implementation 'com.github.kellysong.my-common:base-adapter:2.1.2'
+    implementation 'com.github.kellysong.my-common:base-core:2.1.2'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.1'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
 
     /*硬件相关*/
     /*implementation project (':my-hardware-lib:nfcard')
     implementation project (':my-hardware-lib:zxing')*/
-	implementation 'com.github.kellysong.my-hardware:nfcard:1.1.1'
-	implementation 'com.github.kellysong.my-hardware:zxing:1.1.1'
+    implementation 'com.github.kellysong.my-hardware:nfcard:1.1.1'
+    implementation 'com.github.kellysong.my-hardware:zxing:1.1.1'
 
     /*今日头条屏幕适配*/
     implementation 'me.jessyan:autosize:1.1.2'

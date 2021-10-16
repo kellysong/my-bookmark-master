@@ -1,32 +1,28 @@
-# my-bookmark-master（口袋书签）
+# my-bookmark-master (pocket bookmark)
 
-### 中文 | [English](README-en.md)
+### [中文](README.md) | English
 
-技术架构：基于 Material Design + MVP + RxJava + Retrofit + Glide等开源框架开发
-特点：
-集学习、便民、娱乐于一体的综合软件，适合初中级Android开发者，能学到：
-1. 各种不同第三方库的各种用法
-2. 同种类似功能不同实现方法,原始写法和基于框架的写法
-3. 常用方法封装和第三方库改造
-4. 各种类似功能的实际应用
-5. ### **能给你的项目开发带来灵感**
+Technical architecture: Based on Material Design + MVP + RxJava + Retrofit + Glide and other open source framework to develop
+Features:
+Set learning, convenience, entertainment in one of the comprehensive software, suitable for junior and intermediate Android developers, you can learn:
+1. Various uses of various third-party libraries
+2. Different implementation methods of the same similar function, original writing method and frame-based writing method
+3. Encapsulate common methods and transform third-party libraries
+4. Practical application of various similar functions
+5. ### ** can inspire your projects **
+# Function description
+- Google Browser bookmark parsing;
+- Implement part of wanAndroid interface;
+- Support uploading my collections to my own service
+- Personal account management, bus card balance query, WIFI password view (Root mobile phones below 8.0 only)
+- Realize part of zhihu news interface
+- Realize express query (integrate and modify the third party), novel reading (integrate and modify the third party)
+- Other functions: article backup and synchronization, theme change, language change, gesture password setting, etc
+# Apk Download
+[Installation Package](Pocket_bookmark.apk)
+[Update log](口袋书签app更新说明.md)
 
-# 功能说明
-- 实现Google浏览器收藏书签解析；
-- 实现wanandroid部分接口；
-- 支持我的收藏上传到自己的服务
-- 实现个人账户管理、公交卡余额查询、WIFI密码查看（仅支持8.0以下Root手机）
-- 实现知乎新闻部分接口
-- 实现快递查询（集成和修改第三方）、小说阅读（集成和修改第三方）
-- 其它功能：文章备份和同步、主题更换、语言更换、手势密码设置等
-
-# apk下载
-[安装包](pocket_bookmark.apk)
-
-[更新日志](口袋书签app更新说明.md)
-
-# 效果图
-
+# ScreenShot
 
 <img src="screenshot/img_1.png" width = "40%" /><img src="screenshot/img_2.png" width = "40%" />
 <img src="screenshot/img_3.png" width = "40%" /><img src="screenshot/img_4.png" width = "40%" />
