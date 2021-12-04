@@ -55,7 +55,7 @@ object LanguageManager {
      * @param languageType 语言种类
      */
     fun changeLanguage(context: Context, languageType: Int?) {
-        LogUtils.i("1.languageType:" + languageType + ",get LocaleString:" + getLocaleString(Locale.getDefault()))
+//        LogUtils.i("1.languageType:" + languageType + ",get LocaleString:" + getLocaleString(Locale.getDefault()))
         var locale: Locale
         if (languageType == null) {//如果没有指定语言使用系统首选语言
             locale = getSystemPreferredLanguage()
@@ -64,7 +64,7 @@ object LanguageManager {
         }
         val attachBaseContext = LanguageUtils.attachBaseContext(context, locale)
         LanguageManager.context = attachBaseContext
-        LogUtils.i("2.languageType:" + languageType + ",get LocaleString:" + getLocaleString(Locale.getDefault()))
+//        LogUtils.i("2.languageType:" + languageType + ",get LocaleString:" + getLocaleString(Locale.getDefault()))
         PreferencesHelper.getInstance(context).put(LANGUAGE_TYPE, languageType)
     }
 

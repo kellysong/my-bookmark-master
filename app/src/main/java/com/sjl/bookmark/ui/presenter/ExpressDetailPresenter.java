@@ -17,6 +17,7 @@ import com.sjl.core.util.datetime.TimeUtils;
 import com.sjl.core.util.log.LogUtils;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -313,8 +314,13 @@ public class ExpressDetailPresenter extends ExpressDetailContract.Presenter {
             if (data != null && !data.isEmpty()) {
                 history.setSignTime(data.get(0).getTime());
             }
-
+            Date startTime = TimeUtils.strToDate(history.getSignTime(), TimeUtils.DATE_FORMAT_1);
+            long l = TimeUtils.dateDiff(startTime, new Date());
+            if (l  > 30){//如果超过一个月没有发生签收状态改变（可能签收，也有可能没有签收），都强制更新为签收状态
+                history.setCheckStatus(String.valueOf(AppConstant.SignStatus.SIGNED));
+            }
         }
+
         //会导致loadAll顺序改变
         mHistoryExpressService.createOrUpdateHistoryExpress(history);
     }

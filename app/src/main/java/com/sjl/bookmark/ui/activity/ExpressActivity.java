@@ -1,10 +1,6 @@
 package com.sjl.bookmark.ui.activity;
 
 import android.content.Intent;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.appcompat.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,6 +18,10 @@ import com.sjl.core.util.AppUtils;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 
 /**
@@ -86,8 +86,6 @@ public class ExpressActivity extends BaseActivity<ExpressPresenter> implements E
     @Override
     protected void onResume() {
         super.onResume();
-        this.unCheckList.clear();
-        this.unCheckList.addAll(unCheckList);
         mPresenter.getUnCheckList();
     }
 
@@ -99,6 +97,7 @@ public class ExpressActivity extends BaseActivity<ExpressPresenter> implements E
         } else {
             rvUnCheck.setVisibility(View.VISIBLE);
             tvEmpty.setVisibility(View.GONE);
+            this.unCheckList.clear();
             this.unCheckList.addAll(historyExpresses);
             adapter.notifyDataSetChanged();
         }

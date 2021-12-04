@@ -1,6 +1,7 @@
 package com.sjl.bookmark.ui.activity;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
@@ -83,6 +84,7 @@ import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 import cn.feng.skin.manager.loader.SkinManager;
 import cn.feng.skin.manager.statusbar.StatusBarUtil;
+import cn.feng.skin.manager.util.ObjectUtils;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
@@ -556,28 +558,37 @@ public class MainActivity extends BaseActivity<BasePresenter>
 
 
     private void loadBookmark() {
+        String fileName = "bookmarks/bookmarks1_pc1_2020_12_6.html";
         sharedPreferences = this.getSharedPreferences("bookmark", Context.MODE_PRIVATE);
         boolean flag = sharedPreferences.getBoolean("readFlag", false);
+        String oldFileName = sharedPreferences.getString("fileName", "");
         if (!flag) {
-            initBookmarkData();
+            initBookmarkData(fileName);
         } else {
-            LogUtils.i("已经读取过书签");
+            if (!ObjectUtils.isEquals(fileName, oldFileName)) {//书签文本发生改变，重新解析
+                initBookmarkData(fileName);
+            } else {
+                LogUtils.i("已经读取过书签");
+            }
+
         }
     }
 
-    private void initBookmarkData() {
+    private void initBookmarkData(String fileName) {
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
                     long start = System.currentTimeMillis();
                     BookmarkParse bookmarkUtils = new BookmarkParse();
-                    bookmarkUtils.readBookmarkHtml(MainActivity.this, "bookmarks_2019_12_24.html");
+
+                    bookmarkUtils.readBookmarkHtml(MainActivity.this, fileName);
                     SharedPreferences.Editor editor = sharedPreferences.edit();
                     editor.putBoolean("readFlag", true);
+                    editor.putString("fileName,", fileName);
                     editor.apply();
                     long end = System.currentTimeMillis();
-                    LogUtils.i("读取书签文件耗时：" + (end - start));
+                    LogUtils.i("读取书签文件耗时：" + (end - start) / 1000.0 + "s");
                 } catch (IOException e) {
                     Logger.e(e, "读取书签文件异常");
                 }
@@ -689,11 +700,24 @@ public class MainActivity extends BaseActivity<BasePresenter>
                     String barCode = data.getStringExtra("barCode");
                     if (!TextUtils.isEmpty(barCode)) {
                         if (barCode.startsWith("http")) {
-                            Intent intent = new Intent(this, BrowserActivity.class);
-                            intent.putExtra(BrowserActivity.WEBVIEW_URL, barCode);
-                            startActivity(intent);
+                            scanResult(barCode, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                    Intent intent = new Intent(MainActivity.this, BrowserActivity.class);
+                                    intent.putExtra(BrowserActivity.WEBVIEW_URL, barCode);
+                                    startActivity(intent);
+
+                                }
+                            }, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            });
+
                         } else {
-                            scanResult(barCode);
+                            scanResult(barCode, null, null);
                         }
                     }
 
@@ -705,12 +729,15 @@ public class MainActivity extends BaseActivity<BasePresenter>
         }
     }
 
-    private void scanResult(String text) {
-        new AlertDialog.Builder(this)
+    private void scanResult(String text, final DialogInterface.OnClickListener okListener, final DialogInterface.OnClickListener cancelListener) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this)
                 .setTitle(R.string.nb_common_tip)
-                .setMessage(text)
-                .setPositiveButton(R.string.sure, null)
-                .show();
+                .setMessage(text);
+        builder.setPositiveButton(R.string.sure, okListener);
+        if (cancelListener != null) {
+            builder.setPositiveButton(R.string.cancel, cancelListener);
+        }
+        builder.show();
     }
 
 
@@ -810,7 +837,7 @@ public class MainActivity extends BaseActivity<BasePresenter>
             Field sServiceField = toastClass.getDeclaredField("sService");
             sServiceField.setAccessible(true);
             //获取sService原始对象
-            Method getServiceMethod = toastClass.getDeclaredMethod("getService", new  Class[ 0 ]);
+            Method getServiceMethod = toastClass.getDeclaredMethod("getService", new Class[0]);
             getServiceMethod.setAccessible(true);
             Object service = getServiceMethod.invoke(null);
             //动态代理替换

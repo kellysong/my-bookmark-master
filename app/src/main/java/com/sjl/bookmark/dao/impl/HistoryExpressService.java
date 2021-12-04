@@ -32,7 +32,7 @@ public class HistoryExpressService extends BaseDao<HistoryExpress> {
      * @return
      */
     public List<HistoryExpress> getUnCheckList() {
-        List<HistoryExpress> unCheckList = queryByParams(HistoryExpress.class, "where CHECK_STATUS = ? ", new String[]{String.valueOf("0")});
+        List<HistoryExpress> unCheckList = queryByParams(HistoryExpress.class, "where CHECK_STATUS = ? order by SIGN_TIME desc", new String[]{"0"});
         return unCheckList;
     }
 

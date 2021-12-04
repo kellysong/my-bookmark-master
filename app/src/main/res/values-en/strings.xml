@@ -405,4 +405,5 @@
     <string name="language_auto">Auto</string>
     <string name="unknown">Unknown</string>
     <string name="no_root_permission">No Root Permission</string>
+    <string name="max_char_10">You can input 10 characters.</string>
 </resources>

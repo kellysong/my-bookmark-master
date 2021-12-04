@@ -110,7 +110,7 @@ public class ExpressDetailActivity extends BaseActivity<ExpressDetailPresenter> 
                 if (TextUtils.equals(btnSave.getText().toString(), getString(R.string.waybill_note))) {
                     remark();
                 } else {//保存运单信息，当查询不到且本地没有缓存记录时触发该动作
-                    searchInfo.setIs_check("0");
+                    searchInfo.setIs_check(String.valueOf(AppConstant.SignStatus.NOT_SINGED));
                     mPresenter.updateExpressDetail(searchInfo, null);
                     View view = ExpressDetailActivity.this.getWindow().getDecorView().findViewById(android.R.id.content);
                     SnackbarUtils.makeShort(view, R.string.save_success).show();

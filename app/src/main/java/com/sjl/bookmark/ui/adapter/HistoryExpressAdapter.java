@@ -2,13 +2,13 @@ package com.sjl.bookmark.ui.adapter;
 
 import android.content.Context;
 import android.content.DialogInterface;
-import androidx.appcompat.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.sjl.bookmark.R;
+import com.sjl.bookmark.app.AppConstant;
 import com.sjl.bookmark.dao.impl.HistoryExpressService;
 import com.sjl.bookmark.entity.ExpressSearchInfo;
 import com.sjl.bookmark.entity.table.HistoryExpress;
@@ -19,6 +19,8 @@ import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import java.util.List;
+
+import androidx.appcompat.app.AlertDialog;
 
 /**
  * 历史快递适配器
@@ -49,7 +51,7 @@ public class HistoryExpressAdapter extends CommonAdapter<HistoryExpress> {
                 .into(imageView);
         String isCheck = historyExpress.getCheckStatus();
         int checkTextColor;
-        if (TextUtils.equals(isCheck, "0")) {
+        if (TextUtils.equals(isCheck, String.valueOf(AppConstant.SignStatus.NOT_SINGED))) {
             isCheck = context.getString(R.string.uncheck);
             checkTextColor = context.getResources().getColor(R.color.orange_700);
         } else {

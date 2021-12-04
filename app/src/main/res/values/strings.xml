@@ -410,4 +410,5 @@
     <string name="language_auto">跟随系统</string>
     <string name="unknown">未知</string>
     <string name="no_root_permission">无Root权限</string>
+    <string name="max_char_10">最多输入10个字符</string>
 </resources>

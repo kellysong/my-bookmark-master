@@ -409,4 +409,5 @@
     <string name="language_auto">跟隨系統</string>
     <string name="unknown">未知</string>
     <string name="no_root_permission">無Root許可權</string>
+    <string name="max_char_10">最多輸入10個字元</string>
 </resources>

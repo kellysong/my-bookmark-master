@@ -118,6 +118,11 @@ public class AppConstant {
         String SEARCH_INFO = "search_info";
     }
 
+
+    public interface SignStatus{
+        int NOT_SINGED = 0;
+        int SIGNED = 1;
+    }
     public interface RxBusFlag {
         /**
          * 刷新homeFragment

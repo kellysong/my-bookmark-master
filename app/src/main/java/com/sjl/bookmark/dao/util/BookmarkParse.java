@@ -52,6 +52,7 @@ public class BookmarkParse {
         SerializeUtils.serialize("bookmark", bookmarkList);
 
         BookmarkService bookmarkService = BookmarkService.getInstance(context);
+        bookmarkService.deleteAllBookmark();
         bookmarkService.saveBookmarkLists(bookmarkList);
     }
 

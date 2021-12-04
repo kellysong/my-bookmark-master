@@ -297,6 +297,7 @@ public class SplashActivity extends BaseActivity {
         }
     }
 
+    @RequiresApi(api = M)
     private Set<String> checkPermissionState(int[] grantResults, String[] permissions) {
         Set<String> denied = new HashSet<String>();
         for (int i = 0; i < grantResults.length; i++) {
