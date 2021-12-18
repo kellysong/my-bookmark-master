@@ -71,10 +71,10 @@ public class HistoryExpressAdapter extends CommonAdapter<HistoryExpress> {
         //签收时间或者更新时间
         String signTime = historyExpress.getSignTime();
         if (!TextUtils.isEmpty(signTime)){
-            holder.setVisible(R.id.tv_sign_time,true);
+            holder.setGone(R.id.tv_sign_time,false);
             holder.setText(R.id.tv_sign_time, signTime);
         }else {
-            holder.setVisible(R.id.tv_sign_time,false);
+            holder.setGone(R.id.tv_sign_time,true);
         }
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -100,7 +100,7 @@ public class HistoryExpressAdapter extends CommonAdapter<HistoryExpress> {
                                 public void onClick(DialogInterface dialog, int which) {
                                     HistoryExpressService historyExpressService = new HistoryExpressService(context);
                                     historyExpressService.deleteHistoryExpress(temp);
-                                    removeItem(position);
+                                    remove(position);
                                     dialog.dismiss();
                                 }
                             })

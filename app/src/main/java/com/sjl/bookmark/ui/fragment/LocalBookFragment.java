@@ -65,7 +65,7 @@ public class LocalBookFragment<BasePresenter> extends BaseFileFragment {
             @Override
             public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
                 //如果是已加载的文件，则点击事件无效。
-                String id = MD5Utils.strToMd5By16(mAdapter.getDataItem(position).getAbsolutePath());
+                String id = MD5Utils.strToMd5By16(mAdapter.getItem(position).getAbsolutePath());
                 if (DaoFactory.getCollectBookDao().getCollectBook(id) != null) {
                     return;
                 }

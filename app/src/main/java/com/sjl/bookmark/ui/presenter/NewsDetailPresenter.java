@@ -13,7 +13,6 @@ import com.sjl.bookmark.entity.zhihu.NewsExtraDto;
 import com.sjl.bookmark.ui.contract.NewsDetailContract;
 import com.sjl.core.net.RetrofitHelper;
 import com.sjl.core.net.RxSchedulers;
-import com.sjl.core.util.ToastUtils;
 import com.sjl.core.util.log.LogUtils;
 
 import java.io.InputStream;
@@ -67,7 +66,7 @@ public class NewsDetailPresenter extends NewsDetailContract.Presenter {
         }, new Consumer<Throwable>() {
             @Override
             public void accept(Throwable throwable) throws Exception {
-                ToastUtils.showShort(mContext, mContext.getString(R.string.ssdk_oks_share_failed));
+//                ToastUtils.showShort(mContext, mContext.getString(R.string.ssdk_oks_share_failed));
             }
         });
     }
