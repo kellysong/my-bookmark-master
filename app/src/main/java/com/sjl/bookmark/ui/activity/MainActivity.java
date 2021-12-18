@@ -7,6 +7,9 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
+import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -71,6 +74,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -124,11 +128,31 @@ public class MainActivity extends BaseActivity<BasePresenter>
      * 更换语言标志
      */
     public boolean executeChangeLanguage = false;
-
+    private static final List<String> MOURNING_DAYS = new ArrayList<>(Arrays.asList("04-04","05-12","09-03","12-13"));
 
     @Override
     protected int getLayoutId() {
+        setMourningDaysTheme();
         return R.layout.activity_main;
+    }
+
+    /**
+     * 主页设置公祭日和悼念日主题
+     */
+    private void setMourningDaysTheme() {
+        String currentDate = TimeUtils.formatDateToStr(new Date(),"MM-dd");
+//        MOURNING_DAYS.add(currentDate);//测试
+        for (String day:MOURNING_DAYS){
+            if (day.equals(currentDate)){
+                View view  = getWindow(). getDecorView();
+                Paint paint = new  Paint();
+                ColorMatrix cm = new  ColorMatrix();
+                cm.setSaturation(0);
+                paint.setColorFilter(new ColorMatrixColorFilter(cm));
+                view. setLayerType(View.LAYER_TYPE_HARDWARE, paint);
+                break;
+            }
+        }
     }
 
     @Override
@@ -558,7 +582,7 @@ public class MainActivity extends BaseActivity<BasePresenter>
 
 
     private void loadBookmark() {
-        String fileName = "bookmarks/bookmarks1_pc1_2020_12_6.html";
+        String fileName = "bookmarks/bookmarks_2021_12_12.html";
         sharedPreferences = this.getSharedPreferences("bookmark", Context.MODE_PRIVATE);
         boolean flag = sharedPreferences.getBoolean("readFlag", false);
         String oldFileName = sharedPreferences.getString("fileName", "");

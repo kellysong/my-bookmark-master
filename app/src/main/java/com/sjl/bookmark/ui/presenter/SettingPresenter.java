@@ -8,7 +8,6 @@ import android.preference.PreferenceFragment;
 import android.text.TextUtils;
 import android.widget.Toast;
 
-import com.mob.MobSDK;
 import com.sjl.bookmark.R;
 import com.sjl.bookmark.api.MyBookmarkService;
 import com.sjl.bookmark.app.AppConstant;
@@ -48,7 +47,6 @@ import java.io.File;
 import java.util.List;
 
 import androidx.appcompat.app.AlertDialog;
-import cn.sharesdk.onekeyshare.ShareSDKUtils;
 import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -155,8 +153,14 @@ public class SettingPresenter extends SettingContract.Presenter {
             checkAppUpdate();
         } else if (TextUtils.equals(key, "分享应用")) {
             //新规适配
-            MobSDK.submitPolicyGrantResult(true, null);
-            ShareSDKUtils.getInstance(mContext.getApplicationContext()).useDefaultGUI(mContext.getString(R.string.menu_share), mContext.getString(R.string.share_app), "https://csdnimg.cn/pubfooter/images/csdn_cs_qr.png", "https://blog.csdn.net/augfun/article/details/72618592", null);
+            //停用share sdk
+           /* MobSDK.submitPolicyGrantResult(true, null);
+            ShareSDKUtils.getInstance(mContext.getApplicationContext()).useDefaultGUI(mContext.getString(R.string.menu_share), mContext.getString(R.string.share_app), "https://avatars.githubusercontent.com/u/17974939?s=400&u=1399ed8c9ccfdeaff025a1ea71b22fffbf88a80e&v=4", "https://github.com/kellysong/my-bookmark-master/blob/master/pocket_bookmark.apk", null);
+            */
+            Intent intent = new Intent(Intent.ACTION_SEND);
+            intent.putExtra(Intent.EXTRA_TEXT, "https://github.com/kellysong/my-bookmark-master/blob/master/pocket_bookmark.apk");
+            intent.setType("text/plain");
+            mContext.startActivity(Intent.createChooser(intent,  mContext.getString(R.string.share_title)));
         } else if (TextUtils.equals(key, "关于")) {
             Intent intent = new Intent(mContext, AboutActivity.class);
             mContext.startActivity(intent);

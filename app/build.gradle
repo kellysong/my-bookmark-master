@@ -1,12 +1,10 @@
 apply plugin: 'com.android.application'
 apply plugin: 'org.greenrobot.greendao' // apply plugin
-apply plugin: 'com.mob.sdk'
+
 apply plugin: 'kotlin-android'//引入kotlin
 apply plugin: 'kotlin-android-extensions'//简化fid
 //apply plugin: "kotlin-kapt"
 apply plugin: 'bugly'
-
-
 
 def buglyAppID = "5342dfc505"
 
@@ -18,45 +16,6 @@ final def TARGET_APP_RELEASE_DIR = 'D:/workspace_android/app_release/bookmark/'
 def releaseApkName = ""
 //注意bookmark
 final def APP_COPY_DIR = 'build/outputs/apk/bookmark/release/'
-
-
-
-MobSDK {
-    appKey "2818f1a75f12c"
-    appSecret "80dcb4b2c4161fd00b3776bc0d180d40"
-    ShareSDK {
-//        version '3.2.1.2' //不支持了20190826，依赖下载出错
-//        version '3.6.6'
-        version '3.9.2' //2021.0810.1434
-        gui false//不添加OnekeyShare，自定义
-        devInfo {
-            SinaWeibo {//新浪微博
-                appKey "568898243"
-                appSecret "38a4f8204cc784f81f9f0daaf31e02e3"
-                callbackUri "http://www.sharesdk.cn"
-                shareByAppClient false
-            }
-            Wechat {//Wechat（微信好友）
-                appId "wx4868b35061f87885"
-                appSecret "64020361b8ec4c99936c0e3999a9f249"
-                bypassApproval false
-            }
-            WechatMoments {//Wechat（微信朋友圈）
-                appId "wx4868b35061f87885"
-                appSecret "64020361b8ec4c99936c0e3999a9f249"
-                bypassApproval false
-            }
-            QQ {//QQ（QQ好友）
-                appId "100371282"
-                appKey "aed9b0303e3ed1e27bae87c33761161d"
-                shareByAppClient true
-            }
-            Alipay {//Alipay（支付宝好友）
-                appId "2015072400185895"
-            }
-        }
-    }
-}
 
 android {
     compileSdkVersion rootProject.ext.android["compileSdkVersion"]
@@ -261,6 +220,7 @@ greendao {
 bugly {
     appId = "${buglyAppID}"
     appKey = "d130bcf1-2e50-465b-a213-e80fcc1f13f1"
+    upload = false
 }
 
 dependencies {
@@ -274,10 +234,22 @@ dependencies {
     /*基础库*/
     //implementation project(':my-common-lib:base-core')
     //implementation project(':my-common-lib:base-adapter')
-    implementation 'com.github.kellysong.my-common:base-adapter:2.1.2'
+
+ /*   implementation 'com.github.kellysong.my-common:base-adapter:2.1.2'
     implementation 'com.github.kellysong.my-common:base-core:2.1.2'
     annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.1'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
+*/
+    //基础库
+    implementation('com.github.kellysong.my-common:base-core:2.3.2') {
+        exclude group: 'com.github.CymChad', module: 'BaseRecyclerViewAdapterHelper'//最新版改变较大,使用本地版本
+    }
+    implementation 'com.github.kellysong.my-common:base-adapter:2.3.2'
+    implementation rootProject.ext.dependencies["baseRecyclerViewAdapterHelper"]
+
+    annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.1'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
+
 
     /*硬件相关*/
     /*implementation project (':my-hardware-lib:nfcard')
@@ -367,7 +339,7 @@ dependencies {
     implementation rootProject.ext.dependencies["bugly_nativecrashreport"]
 
     implementation project(':location')
-
+//    implementation project(':sharesdk')
 }
 
 repositories {

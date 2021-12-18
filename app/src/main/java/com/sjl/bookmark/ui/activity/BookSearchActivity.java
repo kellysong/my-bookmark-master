@@ -204,7 +204,7 @@ public class BookSearchActivity extends BaseActivity<BookSearchPresenter> implem
                 //显示正在加载
                 contentFlag = false;
                 mRefreshLayout.showLoading();
-                String book = mKeyWordAdapter.getDataItem(position);
+                String book = mKeyWordAdapter.getItem(position);
                 mPresenter.searchBook(book);
                 ViewUtils.toggleKeyboard(BookSearchActivity.this);
             }
@@ -219,7 +219,7 @@ public class BookSearchActivity extends BaseActivity<BookSearchPresenter> implem
         mSearchAdapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
-                SearchBookDto.BooksBean item = mSearchAdapter.getDataItem(position);
+                SearchBookDto.BooksBean item = mSearchAdapter.getItem(position);
                 String bookId = item.get_id();
                 BookDetailActivity.startActivity(BookSearchActivity.this, bookId);
             }

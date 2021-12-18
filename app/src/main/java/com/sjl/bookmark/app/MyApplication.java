@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 
-import com.mob.MobSDK;
 import com.sjl.bookmark.BuildConfig;
 import com.sjl.bookmark.kotlin.darkmode.DarkModeUtils;
 import com.sjl.bookmark.net.MyBaseUrlAdapter;
@@ -56,7 +55,7 @@ public class MyApplication extends BaseApplication {
         CachedThreadManager.getInstance().execute(new Runnable() {
             @Override
             public void run() {
-                MobSDK.init(MyApplication.this);
+//                MobSDK.init(MyApplication.this);
                 preInitX5Core();
             }
         });

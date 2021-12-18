@@ -359,7 +359,7 @@ public class BookDetailActivity extends BaseActivity<BookDetailPresenter> implem
         mBookListAdapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
-                RecommendBook dataItem = mBookListAdapter.getDataItem(position);
+                RecommendBook dataItem = mBookListAdapter.getItem(position);
                 BookDetailActivity.startActivity(BookDetailActivity.this, dataItem.getRecommendId());
             }
 

@@ -83,7 +83,7 @@ public class FileCategoryFragment<BasePresenter> extends BaseFileFragment {
         mAdapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
-                File file = mAdapter.getDataItem(position);
+                File file = mAdapter.getItem(position);
                 if (file.isDirectory()){
                     //保存当前信息。
                     FileStack.FileSnapshot snapshot = new FileStack.FileSnapshot();
@@ -97,7 +97,7 @@ public class FileCategoryFragment<BasePresenter> extends BaseFileFragment {
                 else {
 
                     //如果是已加载的文件，则点击事件无效。
-                    String id = mAdapter.getDataItem(position).getAbsolutePath();
+                    String id = mAdapter.getItem(position).getAbsolutePath();
                     if (DaoFactory.getCollectBookDao().getCollectBook(MD5Utils.strToMd5By16(id)) != null){
                         return;
                     }

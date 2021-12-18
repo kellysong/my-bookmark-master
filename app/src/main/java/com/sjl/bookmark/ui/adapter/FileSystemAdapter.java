@@ -109,12 +109,12 @@ public class FileSystemAdapter extends CommonAdapter<File> {
             --mCheckedCount;
         }
         //删除列表中的文件
-        batchRemoveItem(value);
+        remove(value);
     }
 
     //设置点击切换
     public void setCheckedItem(int pos) {
-        File file = getDataItem(pos);
+        File file = getItem(pos);
         if (isFileLoaded(file.getAbsolutePath())) return;
 
         boolean isSelected = mCheckMap.get(file);
@@ -167,7 +167,7 @@ public class FileSystemAdapter extends CommonAdapter<File> {
     }
 
     public boolean getItemIsChecked(int pos) {
-        File file = getDataItem(pos);
+        File file = getItem(pos);
         return mCheckMap.get(file);
     }
 
