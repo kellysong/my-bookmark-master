@@ -361,3 +361,9 @@
 
 1. 修复Android 8.0以上读取已存wifi密码（需要Root权限）
 2. 已知问题完善及修复一些历史bug
+
+**版本：V3.8.2**
+
+日期： 2022.1.8
+
+修复nfc、扫码module国际化失效bug（怀疑更新核心依赖导致，暂时调整Activity为AppCompatActivity来解决）

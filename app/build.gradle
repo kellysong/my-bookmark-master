@@ -252,10 +252,13 @@ dependencies {
 
 
     /*硬件相关*/
-    /*implementation project (':my-hardware-lib:nfcard')
+/*    implementation project (':my-hardware-lib:nfcard')
     implementation project (':my-hardware-lib:zxing')*/
-    implementation 'com.github.kellysong.my-hardware:nfcard:1.1.1'
-    implementation 'com.github.kellysong.my-hardware:zxing:1.1.1'
+/*    implementation 'com.github.kellysong.my-hardware:nfcard:1.1.1'
+    implementation 'com.github.kellysong.my-hardware:zxing:1.1.1'*/
+
+    implementation 'com.github.kellysong.my-hardware:nfcard:1.1.2'
+    implementation 'com.github.kellysong.my-hardware:zxing:1.1.2'
 
     /*今日头条屏幕适配*/
     implementation 'me.jessyan:autosize:1.1.2'
@@ -268,8 +271,8 @@ dependencies {
 
 
     /*数据库orm*/
-    implementation 'org.greenrobot:greendao:3.2.2'
-    implementation 'org.greenrobot:greendao-generator:3.2.2'
+    implementation 'org.greenrobot:greendao:3.3.0'
+    implementation 'org.greenrobot:greendao-generator:3.3.0'
     implementation 'com.github.yuweiguocn:GreenDaoUpgradeHelper:v2.1.0'
 
     //下面框架是用来提高开发效率

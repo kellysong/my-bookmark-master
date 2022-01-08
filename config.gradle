@@ -14,8 +14,10 @@ ext {
             support                 : "28.0.0",
             baseRecyclerViewAdapterHelper: "2.9.49",
             leakcanary              : "1.6.1",
-            androidxAppcompat       : "1.1.0",
-            androidxConstraintLayout: "1.1.3",
+//            androidxAppcompat       : "1.1.0",
+//            androidxConstraintLayout: "1.1.3",
+            androidxAppcompat       : "1.2.0",
+            androidxConstraintLayout: "2.0.4",
             buglySDK                : "3.2.422",
             buglyNDK                : "3.7.5"
     ]
