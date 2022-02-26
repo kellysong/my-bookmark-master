@@ -1,11 +1,9 @@
-package com.sjl.bookmark.ui.contract;
+package com.sjl.bookmark.ui.contract
 
-import com.sjl.bookmark.entity.zhuishu.table.BookChapter;
-import com.sjl.bookmark.widget.reader.bean.TxtChapter;
-import com.sjl.core.mvp.BaseContract;
-import com.sjl.core.mvp.BasePresenter;
-
-import java.util.List;
+import com.sjl.bookmark.entity.zhuishu.table.BookChapter
+import com.sjl.bookmark.widget.reader.bean.TxtChapter
+import com.sjl.core.mvp.BaseContract.IBaseView
+import com.sjl.core.mvp.BasePresenter
 
 /**
  * TODO
@@ -16,27 +14,25 @@ import java.util.List;
  * @time 2018/12/4 15:51
  * @copyright(C) 2018 song
  */
-public interface BookReadContract {
-    interface View extends BaseContract.IBaseView {
-        void showCategory(List<BookChapter> bookChapterList);
-
-        void finishChapter();
-
-        void errorChapter();
+interface BookReadContract {
+    interface View : IBaseView {
+        fun showCategory(bookChapterList: List<BookChapter>)
+        fun finishChapter()
+        fun errorChapter()
     }
 
-    abstract class Presenter extends BasePresenter<View> {
+    abstract class Presenter : BasePresenter<View>() {
         /**
          * 加载书籍章节目录
          * @param bookId
          */
-        public abstract void loadCategory(String bookId);
+        abstract fun loadCategory(bookId: String)
 
         /**
          * 加载章节内容
          * @param bookId
          * @param bookChapterList
          */
-        public abstract void loadChapter(String bookId, List<TxtChapter> bookChapterList);
+        abstract fun loadChapter(bookId: String, bookChapterList: List<TxtChapter>)
     }
 }

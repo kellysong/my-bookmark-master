@@ -1,10 +1,8 @@
-package com.sjl.bookmark.app;
+package com.sjl.bookmark.app
 
-import android.os.Environment;
-
-import com.sjl.core.util.file.FileUtils;
-
-import java.io.File;
+import android.os.Environment
+import com.sjl.core.util.file.FileUtils
+import java.io.File
 
 /**
  * TODO
@@ -15,127 +13,136 @@ import java.io.File;
  * @time 2018/2/18 21:48
  * @copyright(C) 2018 song
  */
-public class AppConstant {
-    public static final String DES_ENCRYPTKEY = "ab11223344556677";//8字节密钥
-
-    public static final String ROOT_PATH = Environment.getExternalStorageDirectory() + File.separator;// sd路径
+object AppConstant {
+    const val DES_ENCRYPTKEY = "ab11223344556677" //8字节密钥
+    val ROOT_PATH = Environment.getExternalStorageDirectory().toString() + File.separator // sd路径
 
     /**
      * 头像sd路径
      */
-    public static final String USER_HEAD_PATH = ROOT_PATH + MyApplication.getContext().getPackageName() + File.separator + "head";
+    val USER_HEAD_PATH =
+        ROOT_PATH + MyApplication.getContext().packageName + File.separator + "head"
 
     /**
      * 书签文件路径
      */
-    public static final String BOOKMARK_PATH = ROOT_PATH + MyApplication.getContext().getPackageName() + File.separator + "bookmarkTemp";
+    val BOOKMARK_PATH =
+        ROOT_PATH + MyApplication.getContext().packageName + File.separator + "bookmarkTemp"
 
     /**
      * 更新apk 路径
      */
-    public static final String UPDATE_APK_PATH = ROOT_PATH + MyApplication.getContext().getPackageName() + File.separator + "update";
+    @JvmField
+    val UPDATE_APK_PATH =
+        ROOT_PATH + MyApplication.getContext().packageName + File.separator + "update"
 
     /**
      * 小说书籍缓存路径
      */
-    public static final String BOOK_CACHE_PATH = FileUtils.getCachePath() + File.separator + "book_cache" + File.separator;
+    @JvmField
+    val BOOK_CACHE_PATH = FileUtils.getCachePath() + File.separator + "book_cache" + File.separator
+
     /**
      * 推荐书籍默认有效时间7天
      */
-    public static final int RECOMMEND_BOOK_VALID_TIME = 7;
-
-
-
-    public static final int ACCOUNT_REFRESH_EVENT_CODE = 1;
-
-    public final static class SETTING {
-        public static final int VIEW_MODE = 0;//查询
-        public static final int CREATE_MODE = 1;//新增
-        public static final String CREATE_LOCK_SUCCESS = "CREATE_LOCK_SUCCESS";
-
-        public static final int CREATE_GESTURE = 1;
-        public static final int UPDATE_GESTURE = 2;
-        public static int CHANGE_PASS_WORD_SHOW = 3;
-
-        public static final String OPEN_GESTURE = "OPEN_GESTURE";
-        public static final String OPEN_PASS_WORD_SHOW = "OPEN_PASS_WORD_SHOW";
-        /**
-         * 自动备份收藏标志
-         */
-        public static final String AUTO_BACKUP_COLLECTION = "auto_backup_collection";
-        public static final String AUTO_BACKUP_COLLECTION_TIME = "auto_backup_collection_time";
-
-        /**
-         * 小说字体转换类型
-         */
-        public static final String SHARED_READ_CONVERT_TYPE = "shared_read_convert_type";
-        /**
-         * 记录第一条新闻id,用于判断今天的日报是否最新获取的
-         */
-        public static final String FIRST_STORY_ID = "first_news_id";
-
-        /**
-         * 当前选择的皮肤主题
-         */
-        public static final String CURRENT_SELECT_SKIN = "current_select_skin";
-
-        /**
-         * 暗黑模式
-         */
-        public static final String DARK_THEME = "dark_theme";
-
-        /**
-         * 登录日期
-         */
-        public static final String LOGIN_DATE = "login_date";
-    }
+    const val RECOMMEND_BOOK_VALID_TIME = 7
+    const val ACCOUNT_REFRESH_EVENT_CODE = 1
 
     /**
      * 订单号扫描请求码
      */
-    public static final int REQUEST_CAPTURE = 0;
+    const val REQUEST_CAPTURE = 0
 
     /**
      * 快递公司请求码
      */
-    public static final int REQUEST_COMPANY = 1;
+    const val REQUEST_COMPANY = 1
 
     /**
      *
-     *通用请求码
+     * 通用请求码
      */
-    public static final int REQUEST_CODE= 100;
+    const val REQUEST_CODE = 100
+
     /**
      * 通用结果码
      */
-    public static final int RESULT_CODE= 200;
+    const val RESULT_CODE = 200
 
+    object SETTING {
+        const val VIEW_MODE = 0 //查询
+        const val CREATE_MODE = 1 //新增
+        const val CREATE_LOCK_SUCCESS = "CREATE_LOCK_SUCCESS"
+        const val CREATE_GESTURE = 1
+        const val UPDATE_GESTURE = 2
+        var CHANGE_PASS_WORD_SHOW = 3
+        const val OPEN_GESTURE = "OPEN_GESTURE"
+        const val OPEN_PASS_WORD_SHOW = "OPEN_PASS_WORD_SHOW"
+
+        /**
+         * 自动备份收藏标志
+         */
+        const val AUTO_BACKUP_COLLECTION = "auto_backup_collection"
+        const val AUTO_BACKUP_COLLECTION_TIME = "auto_backup_collection_time"
+
+        /**
+         * 小说字体转换类型
+         */
+        const val SHARED_READ_CONVERT_TYPE = "shared_read_convert_type"
+
+        /**
+         * 记录第一条新闻id,用于判断今天的日报是否最新获取的
+         */
+        const val FIRST_STORY_ID = "first_news_id"
+
+        /**
+         * 当前选择的皮肤主题
+         */
+        const val CURRENT_SELECT_SKIN = "current_select_skin"
+
+        /**
+         * 暗黑模式
+         */
+        const val DARK_THEME = "dark_theme"
+
+        /**
+         * 登录日期
+         */
+        const val LOGIN_DATE = "login_date"
+    }
 
     /**
      * 页面传递参数标志
      */
-    public interface Extras {
-        String SEARCH_INFO = "search_info";
+    interface Extras {
+        companion object {
+            const val SEARCH_INFO = "search_info"
+        }
     }
 
-
-    public interface SignStatus{
-        int NOT_SINGED = 0;
-        int SIGNED = 1;
+    interface SignStatus {
+        companion object {
+            const val NOT_SINGED = 0
+            const val SIGNED = 1
+        }
     }
-    public interface RxBusFlag {
-        /**
-         * 刷新homeFragment
-         */
-        int FLAG_1 = 1;
-        /**
-         * 刷新头像
-         */
-        int FLAG_2 = 2;
-        /**
-         * 刷新书架
-         */
-        int FLAG_3 = 3;
 
+    interface RxBusFlag {
+        companion object {
+            /**
+             * 刷新homeFragment
+             */
+            const val FLAG_1 = 1
+
+            /**
+             * 刷新头像
+             */
+            const val FLAG_2 = 2
+
+            /**
+             * 刷新书架
+             */
+            const val FLAG_3 = 3
+        }
     }
 }

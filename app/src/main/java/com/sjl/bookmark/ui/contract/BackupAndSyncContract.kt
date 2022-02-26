@@ -1,8 +1,7 @@
-package com.sjl.bookmark.ui.contract;
+package com.sjl.bookmark.ui.contract
 
-
-import com.sjl.core.mvp.BaseContract;
-import com.sjl.core.mvp.BasePresenter;
+import com.sjl.core.mvp.BaseContract.IBaseView
+import com.sjl.core.mvp.BasePresenter
 
 /**
  * TODO
@@ -13,29 +12,28 @@ import com.sjl.core.mvp.BasePresenter;
  * @time 2018/11/26 16:13
  * @copyright(C) 2018 song
  */
-public interface BackupAndSyncContract {
+interface BackupAndSyncContract {
     /**
      * 备份与同步view
      *
      *
      */
-    interface View extends BaseContract.IBaseView {
+    interface View : IBaseView {
         /**
          * 显示加载框
          * @param msg 提示信息
          */
-        void showLoading(String msg);
+        fun showLoading(msg: String)
 
         /**
          * 隐藏加载框
          * @param errorMsg
          */
-        void hideLoading(String errorMsg);
+        fun hideLoading(errorMsg: String)
     }
 
-    abstract class Presenter extends BasePresenter<View> {
-        public abstract void setClickPreferenceKey(String key);
-
-        public abstract void init();
+    abstract class Presenter : BasePresenter<View>() {
+        abstract fun setClickPreferenceKey(key: String)
+        abstract override fun init()
     }
 }

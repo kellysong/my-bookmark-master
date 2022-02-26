@@ -1,49 +1,39 @@
-package com.sjl.bookmark.ui.activity;
+package com.sjl.bookmark.ui.activity
 
-import android.content.DialogInterface;
-import android.text.Editable;
-import android.text.TextUtils;
-import android.text.TextWatcher;
-import android.text.method.HideReturnsTransformationMethod;
-import android.text.method.PasswordTransformationMethod;
-import android.util.ArrayMap;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.ScrollView;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import com.rengwuxian.materialedittext.MaterialEditText;
-import com.sjl.bookmark.R;
-import com.sjl.bookmark.app.AppConstant;
-import com.sjl.bookmark.entity.table.Account;
-import com.sjl.bookmark.kotlin.language.I18nUtils;
-import com.sjl.bookmark.ui.contract.AccountEditContract;
-import com.sjl.bookmark.ui.fragment.AccountListFragment;
-import com.sjl.bookmark.ui.presenter.AccountEditPresenter;
-import com.sjl.core.mvp.BaseActivity;
-import com.sjl.core.util.ValidatorUtils;
-import com.sjl.core.util.ViewUtils;
-import com.sjl.core.util.datetime.TimeUtils;
-import com.sjl.core.util.log.LogUtils;
-import com.sjl.core.util.security.DESUtils;
-
-import org.angmarch.views.NiceSpinner;
-
-import java.util.Date;
-import java.util.List;
-
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.widget.Toolbar;
-import butterknife.BindView;
-
+import android.content.DialogInterface
+import android.os.Build
+import android.text.Editable
+import android.text.TextUtils
+import android.text.TextWatcher
+import android.text.method.HideReturnsTransformationMethod
+import android.text.method.PasswordTransformationMethod
+import android.util.ArrayMap
+import android.view.*
+import android.view.View.OnFocusChangeListener
+import android.view.View.OnTouchListener
+import android.widget.AdapterView
+import android.widget.AdapterView.OnItemSelectedListener
+import android.widget.CompoundButton
+import android.widget.Toast
+import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AlertDialog
+import com.sjl.bookmark.R
+import com.sjl.bookmark.app.AppConstant
+import com.sjl.bookmark.entity.table.Account
+import com.sjl.bookmark.kotlin.language.I18nUtils
+import com.sjl.bookmark.ui.activity.AccountIndexActivity
+import com.sjl.bookmark.ui.contract.AccountEditContract
+import com.sjl.bookmark.ui.fragment.AccountListFragment
+import com.sjl.bookmark.ui.presenter.AccountEditPresenter
+import com.sjl.core.mvp.BaseActivity
+import com.sjl.core.util.ValidatorUtils
+import com.sjl.core.util.ViewUtils
+import com.sjl.core.util.datetime.TimeUtils
+import com.sjl.core.util.log.LogUtils
+import com.sjl.core.util.security.DESUtils
+import kotlinx.android.synthetic.main.account_edit_activity.*
+import kotlinx.android.synthetic.main.toolbar_scroll.*
+import java.util.*
 
 /**
  * 账号保存、修改和删除Activity
@@ -54,310 +44,282 @@ import butterknife.BindView;
  * @time 2018/3/7 10:42
  * @copyright(C) 2018 song
  */
-public class AccountEditActivity extends BaseActivity<AccountEditPresenter> implements AccountEditContract.View,TextWatcher,View.OnFocusChangeListener,View.OnClickListener {
-    @BindView(R.id.common_toolbar)
-    Toolbar mToolBar;
-    @BindView(R.id.sv_content)
-    ScrollView mScrollView;
+class AccountEditActivity : BaseActivity<AccountEditPresenter>(),
+    AccountEditContract.View, TextWatcher, OnFocusChangeListener, View.OnClickListener {
 
-    @BindView(R.id.met_title)
-    MaterialEditText mTitle;
-    @BindView(R.id.met_userName)
-    MaterialEditText mUserName;
-    @BindView(R.id.met_password)
-    MaterialEditText mPassword;
-    @BindView(R.id.cb_eye)
-    CheckBox mEye;
-    @BindView(R.id.met_userEmail)
-    MaterialEditText mUserEmail;
-    @BindView(R.id.met_userPhone)
-    MaterialEditText mUserPhone;
-    @BindView(R.id.met_remark)
-    MaterialEditText mRemark;
-    @BindView(R.id.np_type)
-    NiceSpinner mAccountType;//账号类别
-    @BindView(R.id.np_state)
-    NiceSpinner mAccountState;//账号状态
+    private var menuItem: MenuItem? = null
+    private var mAccountTypePosition: Int = 0
+    private var mAccountStatePosition //账号状态索引
+            : Int = 0
 
-    @BindView(R.id.timeTextView)
-    TextView mTimeTextView;
-    @BindView(R.id.btn_delete)
-    Button mDelete;
-    private MenuItem menuItem;
-    private int mAccountTypePosition;
-    private int mAccountStatePosition;//账号状态索引
-
-
-    @Override
-    protected int getLayoutId() {
-        return R.layout.account_edit_activity;
+    override fun getLayoutId(): Int {
+        return R.layout.account_edit_activity
     }
 
-    @Override
-    protected void initView() {
-
-    }
-
-
-    @Override
-    protected void initListener() {
-        bindingToolbar(mToolBar, I18nUtils.getString(R.string.text_add));
+    override fun initView() {}
+    override fun initListener() {
+        bindingToolbar(common_toolbar, I18nUtils.getString(R.string.text_add))
         //修复ScrollView中EditText导致自动滚动问题
-        mScrollView.setDescendantFocusability(ViewGroup.FOCUS_BEFORE_DESCENDANTS);
-        mScrollView.setFocusable(true);
-        mScrollView.setFocusableInTouchMode(true);
-        mScrollView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                v.requestFocusFromTouch();
-                return false;
+        sv_content.descendantFocusability = ViewGroup.FOCUS_BEFORE_DESCENDANTS
+        sv_content.isFocusable = true
+        sv_content.isFocusableInTouchMode = true
+        sv_content.setOnTouchListener(object : OnTouchListener {
+            override fun onTouch(v: View, event: MotionEvent): Boolean {
+                v.requestFocusFromTouch()
+                return false
             }
-        });
-
-        mAccountType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                mAccountTypePosition = position;
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-
-        mAccountState.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                mAccountStatePosition = position;
+        })
+        np_type.setOnItemSelectedListener(object : OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View,
+                position: Int,
+                id: Long
+            ) {
+                mAccountTypePosition = position
             }
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
+        })
+        np_state.setOnItemSelectedListener(object : OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View,
+                position: Int,
+                id: Long
+            ) {
+                mAccountStatePosition = position
             }
-        });
-        mEye.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
+        })
+        cb_eye.setOnCheckedChangeListener(object : CompoundButton.OnCheckedChangeListener {
+            override fun onCheckedChanged(buttonView: CompoundButton, isChecked: Boolean) {
                 if (isChecked) {
-                    mPassword.setTransformationMethod(PasswordTransformationMethod
-                            .getInstance());
+                    met_password.transformationMethod = PasswordTransformationMethod
+                        .getInstance()
                 } else {
-                    mPassword.setTransformationMethod(HideReturnsTransformationMethod
-                            .getInstance());
+                    met_password.transformationMethod = HideReturnsTransformationMethod
+                        .getInstance()
                 }
-                mPassword.setSelection(mPassword.getText().toString().length());
+                met_password.setSelection(met_password.text.toString().length)
             }
-        });
+        })
     }
 
-    @Override
-    protected void initData() {
-        mPresenter.init(getIntent());
+    @RequiresApi(Build.VERSION_CODES.KITKAT)
+    override fun initData() {
+        mPresenter.init(intent)
     }
-
 
     /**
      * 每次在display Menu之前，都会去调用，只要按一次Menu按鍵，就会调用一次。所以可以在这里动态的改变menu。
      * @param menu
      * @return
      */
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        menuItem = menu.getItem(0);
-
-        setItemMenuVisible(false);
-        return super.onPrepareOptionsMenu(menu);
+    override fun onPrepareOptionsMenu(menu: Menu): Boolean {
+        menuItem = menu.getItem(0)
+        setItemMenuVisible(false)
+        return super.onPrepareOptionsMenu(menu)
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_edit, menu);
-        return true;
+        menuInflater.inflate(R.menu.menu_edit, menu)
+        return true
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.done://新增或修改
-                String titleName = mTitle.getText().toString().trim();
-                String userName = mUserName.getText().toString().trim();
-                String passWord = mPassword.getText().toString().trim();
-
-                String userEmail = mUserEmail.getText().toString().trim();
-                String userPhone = mUserPhone.getText().toString().trim();
-                String remark = mRemark.getText().toString().trim();
-                if (!TextUtils.isEmpty(userEmail) && !ValidatorUtils.isEmail(userEmail)){
-                    Toast.makeText(this, R.string.mailbox_format_error,Toast.LENGTH_SHORT).show();
-                    return false;
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.done -> {
+                val titleName: String = met_title.text.toString().trim { it <= ' ' }
+                val userName: String = met_userName.text.toString().trim { it <= ' ' }
+                val passWord: String = met_password.text.toString().trim { it <= ' ' }
+                val userEmail: String = met_userEmail.text.toString().trim { it <= ' ' }
+                val userPhone: String = met_userPhone.text.toString().trim { it <= ' ' }
+                val remark: String = met_remark.text.toString().trim { it <= ' ' }
+                if (!TextUtils.isEmpty(userEmail) && !ValidatorUtils.isEmail(userEmail)) {
+                    Toast.makeText(this, R.string.mailbox_format_error, Toast.LENGTH_SHORT).show()
+                    return false
                 }
-                if (!TextUtils.isEmpty(userPhone) && !ValidatorUtils.isMobile(userPhone)){
-                    Toast.makeText(this, R.string.phone_format_error,Toast.LENGTH_SHORT).show();
-                    return false;
+                if (!TextUtils.isEmpty(userPhone) && !ValidatorUtils.isMobile(userPhone)) {
+                    Toast.makeText(this, R.string.phone_format_error, Toast.LENGTH_SHORT).show()
+                    return false
                 }
-                long result = mPresenter.saveAccount(new Account(null, mAccountTypePosition, mAccountStatePosition, titleName, userName, passWord, userEmail, userPhone, remark, new Date()));
-                if (result == 0){
-                    ViewUtils.hideKeyBoard(this,mTitle);
-                    closeActivity(AccountListFragment.EDIT_SUCCESS);//触发fragment里面的onActivityResult
-                }else if(result == 1){//触发activity里面的onActivityResult
-                    ViewUtils.hideKeyBoard(this,mTitle);
-                    closeActivity(AccountIndexActivity.ADD_SUCCESS);
-                }else{
-                    String error = getString(R.string.unknown_error);
-                    Toast.makeText(this,error+",result="+result,Toast.LENGTH_SHORT).show();
+                val result: Long = mPresenter!!.saveAccount(
+                    Account(
+                        null,
+                        mAccountTypePosition,
+                        mAccountStatePosition,
+                        titleName,
+                        userName,
+                        passWord,
+                        userEmail,
+                        userPhone,
+                        remark,
+                        Date()
+                    )
+                )
+                if (result == 0L) {
+                    ViewUtils.hideKeyBoard(this, met_title)
+                    closeActivity(AccountListFragment.EDIT_SUCCESS) //触发fragment里面的onActivityResult
+                } else if (result == 1L) { //触发activity里面的onActivityResult
+                    ViewUtils.hideKeyBoard(this, met_title)
+                    closeActivity(AccountIndexActivity.Companion.ADD_SUCCESS)
+                } else {
+                    val error: String = getString(R.string.unknown_error)
+                    Toast.makeText(this, error + ",result=" + result, Toast.LENGTH_SHORT).show()
                 }
-
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+                return true
+            }
+            else -> return super.onOptionsItemSelected(item)
         }
-
     }
 
-
-    @Override
-    public void initSpinner(ArrayMap<String, List<String>> data) {
-        mAccountType.attachDataSource(data.get("accountType"));
-        mAccountState.attachDataSource(data.get("accountState"));
+    override fun initSpinner(data: ArrayMap<String, List<String>>) {
+        np_type!!.attachDataSource(data.get("accountType"))
+        np_state!!.attachDataSource(data.get("accountState"))
     }
 
-    @Override
-    public void initCreateModel(int position) {
-        mAccountStatePosition = position;
-        LogUtils.i("mAccountStatePosition="+mAccountStatePosition);
-        mAccountState.setBackgroundColor(getResources().getColor(R.color.cl_ns_forbid_bg));
-        mAccountState.setSelectedIndex(mAccountStatePosition);
-        mAccountState.setEnabled(false);
-        addTextChangedListener();
+    override fun initCreateModel(position: Int) {
+        mAccountStatePosition = position
+        LogUtils.i("mAccountStatePosition=" + mAccountStatePosition)
+        np_state.setBackgroundColor(resources.getColor(R.color.cl_ns_forbid_bg))
+        np_state.selectedIndex = mAccountStatePosition
+        np_state.isEnabled = false
+        addTextChangedListener()
     }
 
-    @Override
-    public void initViewModel(Account account) {
-        if (account == null){
-            LogUtils.w("account为空,初始化账号信息失败");
-            return;
+    override fun initViewModel(account: Account?) {
+        if (account == null) {
+            LogUtils.w("account为空,初始化账号信息失败")
+            return
         }
-        mToolBar.setTitle(I18nUtils.getString(R.string.text_detail));
-        mTimeTextView.setVisibility(View.VISIBLE);
-        mTimeTextView.setText(getString(R.string.last_update_date)+ TimeUtils.formatDateToStr(account.getDate(),TimeUtils.DATE_FORMAT_1));
-        ViewUtils.hideKeyBoard(this,mTitle);
-        mTitle.setText(DESUtils.decryptBase64DES(AppConstant.DES_ENCRYPTKEY,account.getAccountTitle()));
-        mUserName.setText(DESUtils.decryptBase64DES(AppConstant.DES_ENCRYPTKEY,account.getUsername()));
-        mPassword.setText(DESUtils.decryptBase64DES(AppConstant.DES_ENCRYPTKEY,account.getPassword()));
-
-        if (!TextUtils.isEmpty(account.getEmail())){
-            mUserEmail.setText(DESUtils.decryptBase64DES(AppConstant.DES_ENCRYPTKEY,account.getEmail()));
+        common_toolbar.title = I18nUtils.getString(R.string.text_detail)
+        timeTextView.visibility = View.VISIBLE
+        timeTextView.text = getString(R.string.last_update_date) + TimeUtils.formatDateToStr(
+            account.date,
+            TimeUtils.DATE_FORMAT_1
+        )
+        ViewUtils.hideKeyBoard(this, met_title)
+        met_title.setText(
+            DESUtils.decryptBase64DES(
+                AppConstant.DES_ENCRYPTKEY,
+                account.accountTitle
+            )
+        )
+        met_userName.setText(
+            DESUtils.decryptBase64DES(
+                AppConstant.DES_ENCRYPTKEY,
+                account.username
+            )
+        )
+        met_password.setText(
+            DESUtils.decryptBase64DES(
+                AppConstant.DES_ENCRYPTKEY,
+                account.password
+            )
+        )
+        if (!TextUtils.isEmpty(account.email)) {
+            met_userEmail.setText(
+                DESUtils.decryptBase64DES(
+                    AppConstant.DES_ENCRYPTKEY,
+                    account.email
+                )
+            )
         }
-        if (!TextUtils.isEmpty(account.getPhone())){
-            mUserPhone.setText(DESUtils.decryptBase64DES(AppConstant.DES_ENCRYPTKEY,account.getPhone()));
+        if (!TextUtils.isEmpty(account.phone)) {
+            met_userPhone.setText(
+                DESUtils.decryptBase64DES(
+                    AppConstant.DES_ENCRYPTKEY,
+                    account.phone
+                )
+            )
         }
-
-
-        mAccountType.setSelectedIndex(account.getAccountType());
-        mAccountStatePosition = account.getAccountState();
-        mAccountState.setSelectedIndex(account.getAccountState());
-
-
-        mPassword.setTransformationMethod(HideReturnsTransformationMethod
-                .getInstance());
-        mEye.setChecked(false);
-        addFocusChangeListener();
-        addTextChangedListener();
-        mDelete.setVisibility(View.VISIBLE);
-        mDelete.setOnClickListener(this);
+        np_type.selectedIndex = account.accountType
+        mAccountStatePosition = account.accountState
+        np_state.selectedIndex = account.accountState
+        met_password.transformationMethod = HideReturnsTransformationMethod
+            .getInstance()
+        cb_eye.isChecked = false
+        addFocusChangeListener()
+        addTextChangedListener()
+        btn_delete.visibility = View.VISIBLE
+        btn_delete.setOnClickListener(this)
     }
 
-    private void addTextChangedListener() {
-        mTitle.addTextChangedListener(this);
-        mUserName.addTextChangedListener(this);
-        mPassword.addTextChangedListener(this);
-        mUserEmail.addTextChangedListener(this);
-        mUserPhone.addTextChangedListener(this);
-        mAccountType.addTextChangedListener(this);
-        mAccountState.addTextChangedListener(this);
-
+    private fun addTextChangedListener() {
+        met_title.addTextChangedListener(this)
+        met_userName.addTextChangedListener(this)
+        met_password.addTextChangedListener(this)
+        met_userEmail.addTextChangedListener(this)
+        met_userPhone.addTextChangedListener(this)
+        np_type.addTextChangedListener(this)
+        np_state.addTextChangedListener(this)
     }
 
-    private void addFocusChangeListener() {
-        mTitle.setOnFocusChangeListener(this);
-        mUserName.setOnFocusChangeListener(this);
-        mPassword.setOnFocusChangeListener(this);
-        mUserEmail.setOnFocusChangeListener(this);
-        mUserPhone.setOnFocusChangeListener(this);
-        mAccountType.setOnFocusChangeListener(this);
-        mAccountState.setOnFocusChangeListener(this);
-
+    private fun addFocusChangeListener() {
+        met_title.onFocusChangeListener = this
+        met_userName.onFocusChangeListener = this
+        met_password.onFocusChangeListener = this
+        met_userEmail.onFocusChangeListener = this
+        met_userPhone.onFocusChangeListener = this
+        np_type.onFocusChangeListener = this
+        np_state.onFocusChangeListener = this
     }
 
-
-
-    @Override
-    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-    }
-
-    @Override
-    public void onTextChanged(CharSequence s, int start, int before, int count) {
-        String titleName = mTitle.getText().toString().trim();
-        String userName = mUserName.getText().toString().trim();
-        String passWord = mPassword.getText().toString().trim();
-        if (!TextUtils.isEmpty(passWord) && !TextUtils.isEmpty(titleName) && !TextUtils.isEmpty(userName)) {
-            setItemMenuVisible(true);
+    override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
+    override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+        val titleName: String = met_title.text.toString().trim { it <= ' ' }
+        val userName: String = met_userName.text.toString().trim { it <= ' ' }
+        val passWord: String = met_password.text.toString().trim { it <= ' ' }
+        if (!TextUtils.isEmpty(passWord) && !TextUtils.isEmpty(titleName) && !TextUtils.isEmpty(
+                userName
+            )
+        ) {
+            setItemMenuVisible(true)
         } else {
-            setItemMenuVisible(false);
+            setItemMenuVisible(false)
         }
     }
 
-    @Override
-    public void afterTextChanged(Editable s) {
-
-    }
-
-    @Override
-    public void onFocusChange(View v, boolean hasFocus) {
+    override fun afterTextChanged(s: Editable) {}
+    override fun onFocusChange(v: View, hasFocus: Boolean) {
         if (hasFocus) {
-            mToolBar.setTitle(R.string.edit);
+            common_toolbar!!.setTitle(R.string.edit)
         }
     }
 
-    private void setItemMenuVisible(boolean visible) {
-       if (menuItem != null){
-           menuItem.setVisible(visible);
-       }else{
-           LogUtils.i("menuItem为空");
-       }
+    private fun setItemMenuVisible(visible: Boolean) {
+        if (menuItem != null) {
+            menuItem!!.isVisible = visible
+        } else {
+            LogUtils.i("menuItem为空")
+        }
     }
 
-
-    @Override
-    public void onClick(View v) {
-        int id = v.getId();
+    override fun onClick(v: View) {
+        val id: Int = v.id
         if (id == R.id.btn_delete) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle(R.string.nb_common_tip);
-            builder.setMessage(R.string.account_delete_hint);
-            builder.setPositiveButton(R.string.sure, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    mPresenter.deleteAccount();
-                    setResult(AccountIndexActivity.ADD_SUCCESS);
-                    finish();
+            val builder: AlertDialog.Builder = AlertDialog.Builder(this)
+            builder.setTitle(R.string.nb_common_tip)
+            builder.setMessage(R.string.account_delete_hint)
+            builder.setPositiveButton(R.string.sure, object : DialogInterface.OnClickListener {
+                override fun onClick(dialog: DialogInterface, which: Int) {
+                    mPresenter!!.deleteAccount()
+                    setResult(AccountIndexActivity.Companion.ADD_SUCCESS)
+                    finish()
                 }
-            });
-            builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-
-                }
-            });
-            builder.show();
+            })
+            builder.setNegativeButton(R.string.cancel, object : DialogInterface.OnClickListener {
+                override fun onClick(dialog: DialogInterface, which: Int) {}
+            })
+            builder.show()
         }
     }
 
-    private void closeActivity(int resultCode) {
-        setResult(resultCode);
-        finish();
+    private fun closeActivity(resultCode: Int) {
+        setResult(resultCode)
+        finish()
     }
 }

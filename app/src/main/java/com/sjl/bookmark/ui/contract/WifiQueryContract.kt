@@ -1,10 +1,8 @@
-package com.sjl.bookmark.ui.contract;
+package com.sjl.bookmark.ui.contract
 
-import com.sjl.bookmark.entity.WifiInfo;
-import com.sjl.core.mvp.BaseContract;
-import com.sjl.core.mvp.BasePresenter;
-
-import java.util.List;
+import com.sjl.bookmark.entity.WifiInfo
+import com.sjl.core.mvp.BaseContract.IBaseView
+import com.sjl.core.mvp.BasePresenter
 
 /**
  * TODO
@@ -15,33 +13,31 @@ import java.util.List;
  * @time 2018/11/26 10:41
  * @copyright(C) 2018 song
  */
-public interface WifiQueryContract {
-    interface View extends BaseContract.IBaseView {
+interface WifiQueryContract {
+    interface View : IBaseView {
         /**
          * 显示wifi信息
          * @param wifiInfos
          */
-        void showWifiInfo(List<WifiInfo> wifiInfos);
+        fun showWifiInfo(wifiInfos: List<WifiInfo>)
     }
 
-    abstract class Presenter extends BasePresenter<View> {
-
+    abstract class Presenter : BasePresenter<View>() {
         /**
          * 初始化wifi信息
          */
-        public abstract void initWifiInfo();
+        abstract fun initWifiInfo()
 
         /**
          * 复制wifi密码到粘贴板
          * @param password
          */
-        public abstract void copyWifiPassword(String password) ;
+        abstract fun copyWifiPassword(password: String)
 
         /**
          * 连接wifi信息
          * @param wifiInfo
          */
-        public abstract void connectWifi(WifiInfo wifiInfo);
-
+        abstract fun connectWifi(wifiInfo: WifiInfo)
     }
 }

@@ -1,11 +1,9 @@
-package com.sjl.bookmark.ui.contract;
+package com.sjl.bookmark.ui.contract
 
-import com.sjl.bookmark.entity.Article;
-import com.sjl.bookmark.entity.HotKey;
-import com.sjl.core.mvp.BaseContract;
-import com.sjl.core.mvp.BasePresenter;
-
-import java.util.List;
+import com.sjl.bookmark.entity.Article.DatasBean
+import com.sjl.bookmark.entity.HotKey
+import com.sjl.core.mvp.BaseContract.IBaseView
+import com.sjl.core.mvp.BasePresenter
 
 /**
  * TODO
@@ -16,33 +14,30 @@ import java.util.List;
  * @time 2018/11/26 15:16
  * @copyright(C) 2018 song
  */
-public interface ArticleSearchContract {
-    interface View extends BaseContract.IBaseView {
-        void getHotKeySuccess(List<HotKey> data);
-
-        void searchDataSuccess(List<Article.DatasBean> data);
-
-        void loadMoreDataSuccess(List<Article.DatasBean> data);
-
-        void showFailMsg(String message);
+interface ArticleSearchContract {
+    interface View : IBaseView {
+        fun getHotKeySuccess(data: List<HotKey>)
+        fun searchDataSuccess(data: List<DatasBean>)
+        fun loadMoreDataSuccess(data: List<DatasBean>)
+        fun showFailMsg(message: String)
     }
 
-    abstract class Presenter extends BasePresenter<View> {
+    abstract class Presenter : BasePresenter<View>() {
         /**
          * 获取热门搜索关键字
          */
-        public abstract void getHotKeyData();
+        abstract fun getHotKeyData()
 
         /**
          * 根据关键字搜索
          * @param key
          */
-        public abstract void searchData(String key);
+        abstract fun searchData(key: String)
 
         /**
          * 上拉加载更多数据
          * @param keyWord
          */
-        public abstract void getMoreData(String keyWord);
+        abstract fun getMoreData(keyWord: String)
     }
 }

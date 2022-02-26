@@ -1,12 +1,13 @@
-package com.sjl.bookmark.ui.activity;
+package com.sjl.bookmark.ui.activity
 
-import android.content.Context;
-import android.content.Intent;
-import android.os.Bundle;
+import android.content.Context
+import android.content.Intent
+import android.os.Bundle
+import com.sjl.bookmark.R
+import com.sjl.core.mvp.BaseActivity
+import com.sjl.core.mvp.NoPresenter
+import kotlinx.android.synthetic.main.doc_browser_activity.*
 
-import com.sjl.bookmark.R;
-import com.sjl.bookmark.widget.FileReaderView;
-import com.sjl.core.mvp.BaseActivity;
 
 /**
  * 文件浏览
@@ -17,44 +18,33 @@ import com.sjl.core.mvp.BaseActivity;
  * @time 2019/8/5 9:23
  * @copyright(C) 2019 song
  */
-public class DocBrowserActivity extends BaseActivity {
-    private FileReaderView mDocumentReaderView;
-
-    @Override
-    protected int getLayoutId() {
-        return R.layout.doc_browser_activity;
+class DocBrowserActivity : BaseActivity<NoPresenter>() {
+    override fun getLayoutId(): Int {
+        return R.layout.doc_browser_activity
     }
 
-    @Override
-    protected void initView() {
-        mDocumentReaderView = findViewById(R.id.documentReaderView);
-
+    override fun initView() {
     }
 
-    @Override
-    protected void initListener() {
-
+    override fun initListener() {}
+    override fun initData() {
+        documentReaderView.show(intent.getStringExtra("path"))
     }
 
-    @Override
-    protected void initData() {
-        mDocumentReaderView.show(getIntent().getStringExtra("path"));
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        if (mDocumentReaderView != null) {
-            mDocumentReaderView.stop();
+    public override fun onDestroy() {
+        super.onDestroy()
+        if (documentReaderView != null) {
+            documentReaderView.stop()
         }
     }
 
-    public static void show(Context context, String url) {
-        Intent intent = new Intent(context, DocBrowserActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("path", url);
-        intent.putExtras(bundle);
-        context.startActivity(intent);
-
+    companion object {
+        fun show(context: Context, url: String?) {
+            val intent: Intent = Intent(context, DocBrowserActivity::class.java)
+            val bundle: Bundle = Bundle()
+            bundle.putSerializable("path", url)
+            intent.putExtras(bundle)
+            context.startActivity(intent)
+        }
     }
 }

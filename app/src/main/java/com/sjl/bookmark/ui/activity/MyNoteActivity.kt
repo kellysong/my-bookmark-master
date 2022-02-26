@@ -1,28 +1,25 @@
-package com.sjl.bookmark.ui.activity;
+package com.sjl.bookmark.ui.activity
 
-import android.app.Activity;
-import android.content.Intent;
-import android.os.Bundle;
-import com.google.android.material.textfield.TextInputEditText;
-import androidx.appcompat.widget.Toolbar;
-import android.text.Editable;
-import android.text.TextUtils;
-import android.text.TextWatcher;
-import android.view.KeyEvent;
-import android.view.View;
-import android.widget.Button;
-
-import com.sjl.bookmark.R;
-import com.sjl.bookmark.app.AppConstant;
-import com.sjl.bookmark.dao.impl.DaoFactory;
-import com.sjl.bookmark.entity.table.Collection;
-import com.sjl.bookmark.kotlin.language.I18nUtils;
-import com.sjl.core.mvp.BaseActivity;
-
-import java.util.Date;
-
-import butterknife.BindView;
-import butterknife.OnClick;
+import android.app.Activity
+import android.content.Intent
+import android.os.Bundle
+import android.text.Editable
+import android.text.TextUtils
+import android.text.TextWatcher
+import android.view.KeyEvent
+import android.view.View
+import butterknife.OnClick
+import com.sjl.bookmark.R
+import com.sjl.bookmark.app.AppConstant
+import com.sjl.bookmark.dao.impl.DaoFactory
+import com.sjl.bookmark.entity.table.Collection
+import com.sjl.bookmark.kotlin.language.I18nUtils
+import com.sjl.bookmark.ui.activity.MyNoteActivity
+import com.sjl.core.mvp.BaseActivity
+import com.sjl.core.mvp.NoPresenter
+import kotlinx.android.synthetic.main.my_note_activity.*
+import kotlinx.android.synthetic.main.toolbar_default.*
+import java.util.*
 
 /**
  * 笔记添加
@@ -33,132 +30,98 @@ import butterknife.OnClick;
  * @time 2018/12/26 14:04
  * @copyright(C) 2018 song
  */
-public class MyNoteActivity extends BaseActivity implements TextWatcher {
-    @BindView(R.id.common_toolbar)
-    Toolbar mToolBar;
-    @BindView(R.id.et_title)
-    TextInputEditText mTitle;
-    @BindView(R.id.et_content)
-    TextInputEditText mContent;
-    @BindView(R.id.btn_save_note)
-    Button mSaveNote;
-    private boolean noteFlag = false;
-    private Collection tempCollection;
+class MyNoteActivity : BaseActivity<NoPresenter>(), TextWatcher {
 
-    @Override
-    protected int getLayoutId() {
-        return R.layout.my_note_activity;
+    private var noteFlag = false
+    private var tempCollection: Collection? = null
+    override fun getLayoutId(): Int {
+        return R.layout.my_note_activity
     }
 
-    @Override
-    protected void initView() {
-
+    override fun initView() {}
+    override fun initListener() {
+        bindingToolbar(common_toolbar, I18nUtils.getString(R.string.title_note))
+        et_title.addTextChangedListener(this)
+        et_content.addTextChangedListener(this)
     }
 
-    @Override
-    protected void initListener() {
-        bindingToolbar(mToolBar, I18nUtils.getString(R.string.title_note));
-        mTitle.addTextChangedListener(this);
-        mContent.addTextChangedListener(this);
-    }
-
-    @Override
-    protected void initData() {
-        Intent intent = getIntent();
+    override fun initData() {
+        val intent = intent
         if (intent != null) {
-            tempCollection = (Collection) intent.getSerializableExtra("collection");
-            if (tempCollection != null) {
-                mTitle.setText(tempCollection.getTitle());
-                mContent.setText(tempCollection.getHref());
-                noteFlag = true;//修改
+            tempCollection = intent.getSerializableExtra("collection") as Collection
+            noteFlag = if (tempCollection != null) {
+                et_title.setText(tempCollection!!.title)
+                et_content.setText(tempCollection!!.href)
+                true //修改
             } else {
-                noteFlag = false;//添加
-
+                false //添加
             }
         }
-
     }
 
-    @OnClick({R.id.btn_save_note})
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.btn_save_note:
-                saveNote();
-
-                break;
-            default:
-                break;
+    @OnClick(R.id.btn_save_note)
+    fun onClick(view: View) {
+        when (view.id) {
+            R.id.btn_save_note -> saveNote()
+            else -> {}
         }
     }
 
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
+    override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            if (noteFlag){//修改
-                saveNote();
+            if (noteFlag) { //修改
+                saveNote()
             }
         }
-        return super.onKeyDown(keyCode, event);
+        return super.onKeyDown(keyCode, event)
     }
 
-
-
-    private void saveNote() {
-        String title = mTitle.getText().toString();
-        String content = mContent.getText().toString();
-        Collection collection;
-        if (noteFlag) {//修改
-            if (tempCollection.getTitle().equals(title) && tempCollection.getHref().equals(content)) {//没有发生改变
-                finish();
-                return;
+    private fun saveNote() {
+        val title = et_title!!.text.toString()
+        val content = et_content!!.text.toString()
+        val collection: Collection?
+        if (noteFlag) { //修改
+            if (tempCollection!!.title == title && tempCollection!!.href == content) { //没有发生改变
+                finish()
+                return
             } else {
-                tempCollection.setTitle(title);
-                tempCollection.setHref(content);
-                collection = tempCollection;
-                DaoFactory.getCollectDao().updateCollection(collection);
+                tempCollection!!.title = title
+                tempCollection!!.href = content
+                collection = tempCollection
+                DaoFactory.getCollectDao().updateCollection(collection)
             }
-        } else {//新增
-            collection = new Collection(null, title, 1, content, new Date(),0,0);
-            DaoFactory.getCollectDao().saveCollection(collection);
+        } else { //新增
+            collection = Collection(null, title, 1, content, Date(), 0, 0)
+            DaoFactory.getCollectDao().saveCollection(collection)
         }
-        Intent intent = new Intent();
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("collection", collection);
-        bundle.putBoolean("noteFlag", noteFlag);
-        intent.putExtras(bundle);
-        setResult(AppConstant.RESULT_CODE, intent);
-        finish();
+        val intent = Intent()
+        val bundle = Bundle()
+        bundle.putSerializable("collection", collection)
+        bundle.putBoolean("noteFlag", noteFlag)
+        intent.putExtras(bundle)
+        setResult(AppConstant.RESULT_CODE, intent)
+        finish()
     }
 
-    @Override
-    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
+    override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
+    override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+        val title = et_title!!.text.toString().trim { it <= ' ' }
+        val content = et_content!!.text.toString().trim { it <= ' ' }
+        btn_save_note!!.isEnabled = !TextUtils.isEmpty(title) && !TextUtils.isEmpty(content)
     }
 
-    @Override
-    public void onTextChanged(CharSequence s, int start, int before, int count) {
-        String title = mTitle.getText().toString().trim();
-        String content = mContent.getText().toString().trim();
-        if (!TextUtils.isEmpty(title) && !TextUtils.isEmpty(content)) {
-            mSaveNote.setEnabled(true);
-        } else {
-            mSaveNote.setEnabled(false);
+    override fun afterTextChanged(s: Editable) {}
+
+    companion object {
+        /**
+         * 查看我的笔记
+         *
+         * @param activity 上下文
+         */
+        fun startWithParams(activity: Activity, collection: Collection?) {
+            val intent = Intent(activity, MyNoteActivity::class.java)
+            intent.putExtra("collection", collection)
+            activity.startActivityForResult(intent, AppConstant.REQUEST_CODE)
         }
-    }
-
-    @Override
-    public void afterTextChanged(Editable s) {
-
-    }
-
-    /**
-     * 查看我的笔记
-     *
-     * @param activity 上下文
-     */
-    public static void startWithParams(Activity activity, Collection collection) {
-        Intent intent = new Intent(activity, MyNoteActivity.class);
-        intent.putExtra("collection", collection);
-        activity.startActivityForResult(intent, AppConstant.REQUEST_CODE);
     }
 }

@@ -1,8 +1,8 @@
-package com.sjl.bookmark.ui.contract;
+package com.sjl.bookmark.ui.contract
 
-import com.sjl.bookmark.entity.Article;
-import com.sjl.core.mvp.BaseContract;
-import com.sjl.core.mvp.BasePresenter;
+import com.sjl.bookmark.entity.Article
+import com.sjl.core.mvp.BaseContract.IBaseView
+import com.sjl.core.mvp.BasePresenter
 
 /**
  * TODO
@@ -13,15 +13,13 @@ import com.sjl.core.mvp.BasePresenter;
  * @time 2018/11/26 15:32
  * @copyright(C) 2018 song
  */
-public interface ArticleListContract {
-    interface View extends BaseContract.IBaseView {
-        void setCategoryArticles(Article article, int loadType);
+interface ArticleListContract {
+    interface View : IBaseView {
+        fun setCategoryArticles(article: Article, loadType: Int)
     }
 
-    abstract class Presenter extends BasePresenter<View> {
-
-        public abstract void loadMore();
-
-        public abstract void refresh();
+    abstract class Presenter : BasePresenter<View>() {
+        abstract fun loadMore()
+        abstract fun refresh()
     }
 }

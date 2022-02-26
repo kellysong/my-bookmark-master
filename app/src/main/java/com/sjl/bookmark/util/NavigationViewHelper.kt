@@ -1,14 +1,12 @@
-package com.sjl.bookmark.util;
+package com.sjl.bookmark.util
 
-import android.util.Log;
-
-import com.google.android.material.bottomnavigation.BottomNavigationItemView;
-import com.google.android.material.bottomnavigation.BottomNavigationMenuView;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.internal.NavigationMenuView;
-import com.google.android.material.navigation.NavigationView;
-
-import java.lang.reflect.Field;
+import android.annotation.SuppressLint
+import android.util.Log
+import com.google.android.material.bottomnavigation.BottomNavigationItemView
+import com.google.android.material.bottomnavigation.BottomNavigationMenuView
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.internal.NavigationMenuView
+import com.google.android.material.navigation.NavigationView
 
 /**
  * TODO
@@ -19,35 +17,33 @@ import java.lang.reflect.Field;
  * @time 2018/3/21 10:54
  * @copyright(C) 2018 song
  */
-public class NavigationViewHelper {
-    public static void disableShiftMode(BottomNavigationView view) {
-        BottomNavigationMenuView menuView = (BottomNavigationMenuView) view.getChildAt(0);
+object NavigationViewHelper {
+    @SuppressLint("RestrictedApi")
+    fun disableShiftMode(view: BottomNavigationView) {
+        val menuView = view.getChildAt(0) as BottomNavigationMenuView
         try {
-            Field shiftingMode = menuView.getClass().getDeclaredField("mShiftingMode");
-            shiftingMode.setAccessible(true);
-            shiftingMode.setBoolean(menuView, false);
-            shiftingMode.setAccessible(false);
-
-            for (int i = 0; i < menuView.getChildCount(); i++) {
-                BottomNavigationItemView item = (BottomNavigationItemView) menuView.getChildAt(i);
-                //noinspection RestrictedApi
-                item.setShifting(false);
+            val shiftingMode = menuView.javaClass.getDeclaredField("mShiftingMode")
+            shiftingMode.isAccessible = true
+            shiftingMode.setBoolean(menuView, false)
+            shiftingMode.isAccessible = false
+            for (i in 0 until menuView.childCount) {
+                val item = menuView.getChildAt(i) as BottomNavigationItemView
+                item.setShifting(false)
                 // set once again checked value, so view will be updated
-                //noinspection RestrictedApi
-                item.setChecked(item.getItemData().isChecked());
+                item.setChecked(item.itemData.isChecked)
             }
-        } catch (NoSuchFieldException e) {
-            Log.e("BNVHelper", "Unable to get shift mode field", e);
-        } catch (IllegalAccessException e) {
-            Log.e("BNVHelper", "Unable to change value of shift mode", e);
+        } catch (e: NoSuchFieldException) {
+            Log.e("BNVHelper", "Unable to get shift mode field", e)
+        } catch (e: IllegalAccessException) {
+            Log.e("BNVHelper", "Unable to change value of shift mode", e)
         }
     }
 
-    public static void disableNavigationViewScrollbars(NavigationView navigationView) {
+    fun disableNavigationViewScrollbars(navigationView: NavigationView?) {
         if (navigationView != null) {
-            NavigationMenuView navigationMenuView = (NavigationMenuView) navigationView.getChildAt(0);
+            val navigationMenuView = navigationView.getChildAt(0) as NavigationMenuView
             if (navigationMenuView != null) {
-                navigationMenuView.setVerticalScrollBarEnabled(false);
+                navigationMenuView.isVerticalScrollBarEnabled = false
             }
         }
     }

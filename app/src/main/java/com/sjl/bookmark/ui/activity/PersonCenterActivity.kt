@@ -1,49 +1,35 @@
-package com.sjl.bookmark.ui.activity;
+package com.sjl.bookmark.ui.activity
 
-import android.animation.ObjectAnimator;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.net.Uri;
-import android.os.Build;
-import android.provider.MediaStore;
-import android.text.TextUtils;
-import android.view.Gravity;
-import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import com.bm.library.Info;
-import com.bm.library.PhotoView;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.sjl.bookmark.BuildConfig;
-import com.sjl.bookmark.R;
-import com.sjl.bookmark.app.AppConstant;
-import com.sjl.bookmark.entity.UserInfo;
-import com.sjl.bookmark.ui.base.extend.BaseSwipeBackActivity;
-import com.sjl.core.entity.EventBusDto;
-import com.sjl.core.net.GlideCircleTransform;
-import com.sjl.core.net.RxBus;
-import com.sjl.core.util.SerializeUtils;
-import com.sjl.core.util.UriUtils;
-import com.sjl.core.util.ViewUtils;
-import com.sjl.core.util.log.LogUtils;
-import com.yalantis.ucrop.UCrop;
-
-import java.io.File;
-
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.content.FileProvider;
-import butterknife.BindView;
-import butterknife.OnClick;
+import android.animation.ObjectAnimator
+import android.content.*
+import android.graphics.Bitmap
+import android.net.Uri
+import android.os.Build
+import android.os.Build.VERSION_CODES
+import android.provider.MediaStore
+import android.text.TextUtils
+import android.view.*
+import android.widget.*
+import androidx.appcompat.app.AlertDialog
+import androidx.core.content.FileProvider
+import butterknife.OnClick
+import com.bm.library.Info
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.sjl.bookmark.BuildConfig
+import com.sjl.bookmark.R
+import com.sjl.bookmark.app.AppConstant
+import com.sjl.bookmark.entity.UserInfo
+import com.sjl.bookmark.ui.base.extend.BaseSwipeBackActivity
+import com.sjl.core.entity.EventBusDto
+import com.sjl.core.net.GlideCircleTransform
+import com.sjl.core.net.RxBus
+import com.sjl.core.util.*
+import com.sjl.core.util.log.LogUtils
+import com.yalantis.ucrop.UCrop
+import kotlinx.android.synthetic.main.person_activity.*
+import kotlinx.android.synthetic.main.toolbar_default.*
+import java.io.File
 
 /**
  * 个人中心
@@ -54,204 +40,158 @@ import butterknife.OnClick;
  * @time 2018/11/29 9:16
  * @copyright(C) 2018 song
  */
-public class PersonCenterActivity extends BaseSwipeBackActivity {
-    private static final int REQUEST_PERSONALITY = 300;
+class PersonCenterActivity : BaseSwipeBackActivity() {
 
-    @BindView(R.id.common_toolbar)
-    Toolbar mToolBar;
-    @BindView(R.id.rl_avatar)
-    RelativeLayout rlAvatar;
-    @BindView(R.id.rl_nickname)
-    RelativeLayout rlNickname;
-    @BindView(R.id.rl_sex)
-    RelativeLayout rlSex;
-    @BindView(R.id.rl_phone)
-    RelativeLayout rlPhone;
-    @BindView(R.id.rl_personality)
-    RelativeLayout rlPersonality;
-
-    @BindView(R.id.iv_avatar)
-    ImageView ivAvatar;
-    @BindView(R.id.zoom_photo_view)
-    PhotoView zoomView;
-
-    @BindView(R.id.tv_nickname)
-    TextView tvNickname;
-    @BindView(R.id.tv_sex)
-    TextView tvSex;
-    @BindView(R.id.tv_phone)
-    TextView tvPhone;
-    @BindView(R.id.tv_personality)
-    TextView tvPersonality;
-    @BindView(R.id.fab_save)
-    FloatingActionButton fabSave;
-
-    private boolean changeAvatar;
-    private String oldName;
-    private String oldSex;
-    private String oldPersonality;
-    private Bitmap head = null;
-    private String headPath;
-
-    private UserInfo userInfo;
-    private Info zoomViewInfo;
-
-    @Override
-    protected int getLayoutId() {
-        return R.layout.person_activity;
+    private var changeAvatar: Boolean = false
+    private var oldName: String? = null
+    private var oldSex: String? = null
+    private var oldPersonality: String? = null
+    private var head: Bitmap? = null
+    private var headPath: String? = null
+    private var userInfo: UserInfo? = null
+    private var zoomViewInfo: Info? = null
+    override fun getLayoutId(): Int {
+        return R.layout.person_activity
     }
 
-    @Override
-    protected void initView() {
-
+    override fun initView() {}
+    override fun initListener() {
+        bindingToolbar(common_toolbar, getString(R.string.person_center))
     }
 
-    @Override
-    protected void initListener() {
-        bindingToolbar(mToolBar, getString(R.string.person_center));
-    }
-
-    @Override
-    protected void initData() {
-        userInfo = SerializeUtils.deserialize("userInfo", UserInfo.class);
-        if (userInfo != null) {
-            oldName = userInfo.getName();
-            oldSex = userInfo.getSex();
-            oldPersonality = userInfo.getPersonality();
-            if (!TextUtils.isEmpty(userInfo.getAvatar())) {
-                LogUtils.i("avatar:" + userInfo.getAvatar());
-                Glide.with(this)
-                        .load(userInfo.getAvatar())
-                        .placeholder(R.mipmap.default_avatar)
-                        .transform(new GlideCircleTransform())
-                        .diskCacheStrategy(DiskCacheStrategy.NONE)//磁盘缓存
-                        .skipMemoryCache(true)//跳过内存缓存，否则会显示上次内存中的图片
-                        .into(ivAvatar);
-
-
-                zoomView.enable();// 需要启动缩放需要手动开启
-
+    override fun initData() {
+        userInfo = SerializeUtils.deserialize<UserInfo>("userInfo", UserInfo::class.java)
+        userInfo?.apply {
+            oldName = name
+            oldSex = sex
+            oldPersonality = personality
+            if (!TextUtils.isEmpty(avatar)) {
+                LogUtils.i("avatar:$avatar")
+                Glide.with(this@PersonCenterActivity)
+                    .load(avatar)
+                    .placeholder(R.mipmap.default_avatar)
+                    .transform(GlideCircleTransform())
+                    .diskCacheStrategy(DiskCacheStrategy.NONE) //磁盘缓存
+                    .skipMemoryCache(true) //跳过内存缓存，否则会显示上次内存中的图片
+                    .into(iv_avatar)
+                zoom_photo_view.enable() // 需要启动缩放需要手动开启
             }
-            oldPersonality = userInfo.getPersonality();
-            tvNickname.setText(oldName);
-            tvSex.setText(oldSex);
-            tvPhone.setText("135****2914");//以后注册显示
+            tv_nickname.text = oldName
+            tv_sex.text = oldSex
+            tv_phone.text = "135****2914" //以后注册显示
             if (!TextUtils.isEmpty(oldPersonality)) {
-                tvPersonality.setText(oldPersonality);
+                tv_personality.text = oldPersonality
             } else {
-                oldPersonality = getResources().getString(R.string.personality);
+                oldPersonality = resources.getString(R.string.personality)
             }
         }
-
     }
 
-    @OnClick({R.id.rl_avatar, R.id.rl_nickname, R.id.rl_sex, R.id.rl_personality, R.id.fab_save, R.id.iv_avatar, R.id.zoom_photo_view})
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.rl_avatar:
-                //选择图片并裁剪
-                showTypeDialog();
-                break;
-            case R.id.iv_avatar://头像图片
-                ivAvatar.setVisibility(View.GONE);
-                zoomView.setVisibility(View.VISIBLE);
+    @OnClick(
+        R.id.rl_avatar,
+        R.id.rl_nickname,
+        R.id.rl_sex,
+        R.id.rl_personality,
+        R.id.fab_save,
+        R.id.iv_avatar,
+        R.id.zoom_photo_view
+    )
+    fun onClick(view: View) {
+        when (view.id) {
+            R.id.rl_avatar ->                 //选择图片并裁剪
+                showTypeDialog()
+            R.id.iv_avatar -> {
+                iv_avatar.visibility = View.GONE
+                zoom_photo_view.visibility = View.VISIBLE
                 //获取img的信息
-                zoomView.setImageDrawable(ivAvatar.getDrawable());
-//                        Info info = PhotoView.getImageViewInfo(ImageView);//有bug
-
-                zoomViewInfo = zoomView.getInfo();
+                zoom_photo_view.setImageDrawable(iv_avatar.drawable)
+                //                        Info info = PhotoView.getImageViewInfo(ImageView);//有bug
+                zoomViewInfo = zoom_photo_view.info
                 //zoomPhotoView 从ivAvatar变换到当前位置
-                zoomView.animaFrom(zoomViewInfo);
-                break;
-            case R.id.zoom_photo_view://缩放图片
-                //从当前位置变回到img的位置
-                zoomView.animaTo(zoomViewInfo, new Runnable() {
-                    @Override
-                    public void run() {
-                        zoomView.setVisibility(View.GONE);
-                        ivAvatar.setVisibility(View.VISIBLE);
+                zoom_photo_view.animaFrom(zoomViewInfo)
+            }
+            R.id.zoom_photo_view ->                 //从当前位置变回到img的位置
+                zoom_photo_view.animaTo(zoomViewInfo, object : Runnable {
+                    override fun run() {
+                        zoom_photo_view.visibility = View.GONE
+                        iv_avatar.visibility = View.VISIBLE
                     }
-                });
-
-                break;
-            case R.id.rl_nickname:
+                })
+            R.id.rl_nickname -> {
                 //修改昵称
-                View inflate = View.inflate(this, R.layout.dialog_nickname, null);
-                final EditText etNickname = (EditText) inflate.findViewById(R.id.et_nickname);
-                etNickname.setText(tvNickname.getText());
-                etNickname.selectAll();
-                AlertDialog dialog = new AlertDialog.Builder(this)
-                        .setView(inflate)
-                        .setPositiveButton(R.string.sure, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                tvNickname.setText(etNickname.getText());
-                                if (!etNickname.getText().toString().equals(oldName)) {
-                                    tvNickname.setTextColor(getResources().getColor(R.color.colorPrimary));
-                                } else {
-                                    tvNickname.setTextColor(getResources().getColor(R.color.gray));
-                                }
-                                showSaveButton();
+                val inflate: View = View.inflate(this, R.layout.dialog_nickname, null)
+                val etNickname: EditText = inflate.findViewById<View>(R.id.et_nickname) as EditText
+                etNickname.setText(tv_nickname.text)
+                etNickname.selectAll()
+                val dialog: AlertDialog = AlertDialog.Builder(this)
+                    .setView(inflate)
+                    .setPositiveButton(R.string.sure, object : DialogInterface.OnClickListener {
+                        override fun onClick(dialog: DialogInterface, which: Int) {
+                            tv_nickname.text = etNickname.text
+                            if (!(etNickname.text.toString() == oldName)) {
+                                tv_nickname.setTextColor(resources.getColor(R.color.colorPrimary))
+                            } else {
+                                tv_nickname.setTextColor(resources.getColor(R.color.gray))
                             }
-                        })
-                        .setNegativeButton(R.string.cancel, null)
-                        .create();
-                final Window window = dialog.getWindow();
-                final WindowManager.LayoutParams params = window.getAttributes();
-                params.gravity = Gravity.TOP;
-                params.y = ViewUtils.getScreenHeight(this) / 4;
-                window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
-                dialog.show();
-                //修复dialog自适应软键盘的问题
-                break;
-            case R.id.rl_sex:
+                            showSaveButton()
+                        }
+                    })
+                    .setNegativeButton(R.string.cancel, null)
+                    .create()
+                val window: Window = dialog.window
+                val params: WindowManager.LayoutParams = window.attributes
+                params.gravity = Gravity.TOP
+                params.y = ViewUtils.getScreenHeight(this) / 4
+                window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
+                dialog.show()
+            }
+            R.id.rl_sex -> {
                 //修改性别
-                final String[] sexArr = new String[]{getString(R.string.man), getString(R.string.woman)};
-                String sex = tvSex.getText().toString();
-                int index = 0;
-                for (int i = 0; i < sexArr.length; i++) {
-                    if (sexArr[i].equals(sex)) {
-                        index = i;
-                        break;
+                val sexArr: Array<String> =
+                    arrayOf(getString(R.string.man), getString(R.string.woman))
+                val sex: String = tv_sex.text.toString()
+                var index: Int = 0
+                var i: Int = 0
+                while (i < sexArr.size) {
+                    if ((sexArr.get(i) == sex)) {
+                        index = i
+                        break
                     }
+                    i++
                 }
-                new AlertDialog.Builder(this)
-                        .setSingleChoiceItems(sexArr, index, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                tvSex.setText(sexArr[which]);
-                                if (!sexArr[which].equals(oldSex)) {
-                                    tvSex.setTextColor(getResources().getColor(R.color.colorPrimary));
-                                } else {
-                                    tvSex.setTextColor(getResources().getColor(R.color.gray));
-                                }
-                                showSaveButton();
-                                dialog.dismiss();
+                AlertDialog.Builder(this)
+                    .setSingleChoiceItems(sexArr, index, object : DialogInterface.OnClickListener {
+                        override fun onClick(dialog: DialogInterface, which: Int) {
+                            tv_sex.text = sexArr.get(which)
+                            if (!(sexArr.get(which) == oldSex)) {
+                                tv_sex.setTextColor(resources.getColor(R.color.colorPrimary))
+                            } else {
+                                tv_sex.setTextColor(resources.getColor(R.color.gray))
                             }
-                        }).setNegativeButton(R.string.cancel, null).show();
-                break;
-            case R.id.rl_personality:
+                            showSaveButton()
+                            dialog.dismiss()
+                        }
+                    }).setNegativeButton(R.string.cancel, null).show()
+            }
+            R.id.rl_personality -> {
                 //修改个性签名
-                Intent intent = new Intent(this, PersonalityActivity.class);
-                intent.putExtra("personality", tvPersonality.getText().toString());
-                startActivityForResult(intent, REQUEST_PERSONALITY);
-                break;
-            case R.id.fab_save:
-                //提交修改
-                new AlertDialog.Builder(this)
-                        .setMessage(R.string.save_user_info_hint)
-                        .setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                String nickname = tvNickname.getText().toString();
-                                String sex = tvSex.getText().toString();
-                                String personality = tvPersonality.getText().toString();
-                                updateUser(changeAvatar, nickname, sex, personality);
-                            }
-                        })
-                        .setNegativeButton(R.string.cancel, null)
-                        .show();
-                break;
+                val intent: Intent = Intent(this, PersonalityActivity::class.java)
+                intent.putExtra("personality", tv_personality!!.text.toString())
+                startActivityForResult(intent, REQUEST_PERSONALITY)
+            }
+            R.id.fab_save ->                 //提交修改
+                AlertDialog.Builder(this)
+                    .setMessage(R.string.save_user_info_hint)
+                    .setPositiveButton(R.string.save, object : DialogInterface.OnClickListener {
+                        override fun onClick(dialog: DialogInterface, which: Int) {
+                            val nickname: String = tv_nickname.text.toString()
+                            val sex: String = tv_sex.text.toString()
+                            val personality: String = tv_personality!!.text.toString()
+                            updateUser(changeAvatar, nickname, sex, personality)
+                        }
+                    })
+                    .setNegativeButton(R.string.cancel, null)
+                    .show()
         }
     }
 
@@ -263,154 +203,164 @@ public class PersonCenterActivity extends BaseSwipeBackActivity {
      * @param sex
      * @param personality
      */
-    private void updateUser(boolean changeAvatar, String nickname, String sex, String personality) {
-        UserInfo temp = new UserInfo();
+    private fun updateUser(
+        changeAvatar: Boolean,
+        nickname: String,
+        sex: String,
+        personality: String
+    ) {
+        val temp: UserInfo = UserInfo()
         if (changeAvatar) {
-            temp.setAvatar(headPath);
+            temp.avatar = headPath
         } else {
             if (userInfo != null) {
-                temp.setAvatar(userInfo.getAvatar());
+                temp.avatar = userInfo!!.avatar
             }
         }
-        temp.setName(nickname);
-        temp.setSex(sex);
-        temp.setPersonality(personality);
-        SerializeUtils.serialize("userInfo", temp);
-        EventBusDto<String> eventBusDto = new EventBusDto<String>(0, "更新首页头像：" + headPath);
-        RxBus.getInstance().post(AppConstant.RxBusFlag.FLAG_2, eventBusDto);//更新侧滑菜单头像
-        hideSaveButton();
-        tvNickname.setTextColor(getResources().getColor(R.color.gray));
-        tvSex.setTextColor(getResources().getColor(R.color.gray));
-        tvPersonality.setTextColor(getResources().getColor(R.color.gray));
-        this.changeAvatar = false;
-        if (userInfo == null) {//第一次
-            Toast.makeText(this, R.string.save_success, Toast.LENGTH_SHORT).show();
+        temp.name = nickname
+        temp.sex = sex
+        temp.personality = personality
+        SerializeUtils.serialize("userInfo", temp)
+        val eventBusDto: EventBusDto<String> = EventBusDto(0, "更新首页头像：" + headPath)
+        RxBus.getInstance().post(AppConstant.RxBusFlag.FLAG_2, eventBusDto) //更新侧滑菜单头像
+        hideSaveButton()
+        tv_nickname!!.setTextColor(resources.getColor(R.color.gray))
+        tv_sex!!.setTextColor(resources.getColor(R.color.gray))
+        tv_personality!!.setTextColor(resources.getColor(R.color.gray))
+        this.changeAvatar = false
+        if (userInfo == null) { //第一次
+            Toast.makeText(this, R.string.save_success, Toast.LENGTH_SHORT).show()
         } else {
-            Toast.makeText(this, R.string.update_success, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.update_success, Toast.LENGTH_SHORT).show()
         }
-
     }
 
-    private void showSaveButton() {
+    private fun showSaveButton() {
         //弹出保存按钮
-        if (fabSave.getVisibility() == View.GONE) {
-            String personality = tvPersonality.getText().toString();
+        if (fab_save.visibility == View.GONE) {
+            val personality: String = tv_personality!!.text.toString()
             if (userInfo == null) {
-                fabSave.setVisibility(View.VISIBLE);
-                ObjectAnimator.ofFloat(fabSave, "translationY", -150).start();
-                return;
+                fab_save.visibility = View.VISIBLE
+                ObjectAnimator.ofFloat(fab_save, "translationY", -150f).start()
+                return
             }
-            if (!tvNickname.getText().toString().equals(userInfo.getName()) || !tvSex.getText().toString().equals(userInfo.getSex())
-                    || (!personality.equals(userInfo.getPersonality()) && !personality.equals(this.getResources().getString(R.string.personality))) || changeAvatar) {
-                fabSave.setVisibility(View.VISIBLE);
-                ObjectAnimator.ofFloat(fabSave, "translationY", -150).start();
+            if ((!(tv_nickname!!.text
+                    .toString() == userInfo!!.name) || !(tv_sex!!.text
+                    .toString() == userInfo!!.sex)
+                        || (!(personality == userInfo!!.personality) && !(personality == resources.getString(
+                    R.string.personality
+                ))) || changeAvatar)
+            ) {
+                fab_save.visibility = View.VISIBLE
+                ObjectAnimator.ofFloat(fab_save, "translationY", -150f).start()
             } else {
-                hideSaveButton();
+                hideSaveButton()
             }
         }
     }
 
-    private void hideSaveButton() {
-        if (fabSave.getVisibility() == View.VISIBLE) {
-            ObjectAnimator.ofFloat(fabSave, "translationY", 200).start();
-            fabSave.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    fabSave.setVisibility(View.GONE);
+    private fun hideSaveButton() {
+        if (fab_save.visibility == View.VISIBLE) {
+            ObjectAnimator.ofFloat(fab_save, "translationY", 200f).start()
+            fab_save!!.postDelayed(object : Runnable {
+                override fun run() {
+                    fab_save.visibility = View.GONE
                 }
-            }, 1000);
+            }, 1000)
         }
     }
 
-    private void showTypeDialog() {
-        final String[] items = new String[]{getString(R.string.take_photo), getString(R.string.choose_album)};
+    private fun showTypeDialog() {
+        val items: Array<String> =
+            arrayOf(getString(R.string.take_photo), getString(R.string.choose_album))
         // 创建对话框构建器
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        val builder: AlertDialog.Builder = AlertDialog.Builder(this)
         // 设置参数
-        builder.setSingleChoiceItems(items, 0, new DialogInterface.OnClickListener() {
-
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                switch (which) {
-                    case 0://调用照相机
+        builder.setSingleChoiceItems(items, 0, object : DialogInterface.OnClickListener {
+            override fun onClick(dialog: DialogInterface, which: Int) {
+                when (which) {
+                    0 -> {
                         try {
-                            Intent intent1 = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                            File dir = new File(AppConstant.USER_HEAD_PATH);
+                            val intent1: Intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+                            val dir: File = File(AppConstant.USER_HEAD_PATH)
                             if (!dir.exists()) {
-                                dir.mkdirs();
+                                dir.mkdirs()
                             }
-                            File file = new File(dir, "head.jpg");//指定拍照输出路径
+                            val file: File = File(dir, "head.jpg") //指定拍照输出路径
                             //判断是否是AndroidN以及更高的版本
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                                intent1.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                                Uri contentUri = FileProvider.getUriForFile(PersonCenterActivity.this, BuildConfig.APPLICATION_ID + ".fileProvider", file);
-                                intent1.putExtra(MediaStore.EXTRA_OUTPUT, contentUri);
-                            } else {//android 7.0以下
-                                intent1.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(file));
+                            if (Build.VERSION.SDK_INT >= VERSION_CODES.N) {
+                                intent1.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+                                val contentUri: Uri = FileProvider.getUriForFile(
+                                    this@PersonCenterActivity,
+                                    BuildConfig.APPLICATION_ID + ".fileProvider",
+                                    file
+                                )
+                                intent1.putExtra(MediaStore.EXTRA_OUTPUT, contentUri)
+                            } else { //android 7.0以下
+                                intent1.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(file))
                             }
-                            startActivityForResult(intent1, 100);
-                        } catch (Exception e) {
-                            LogUtils.e("打开相机异常", e);
+                            startActivityForResult(intent1, 100)
+                        } catch (e: Exception) {
+                            LogUtils.e("打开相机异常", e)
                         }
-                        dialog.dismiss();
-                        break;
-                    case 1:// 在相册中选取
-                        Intent intent2 = new Intent(Intent.ACTION_PICK, null);
+                        dialog.dismiss()
+                    }
+                    1 -> {
+                        val intent2: Intent = Intent(Intent.ACTION_PICK, null)
                         //打开文件
-                        intent2.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
-                        startActivityForResult(intent2, 200);
-                        dialog.dismiss();
-                        break;
-                    default:
-                        break;
+                        intent2.setDataAndType(
+                            MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                            "image/*"
+                        )
+                        startActivityForResult(intent2, 200)
+                        dialog.dismiss()
+                    }
+                    else -> {}
                 }
             }
-        });
-        builder.create().show();
+        })
+        builder.create().show()
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        LogUtils.i("requestCode=" + requestCode + ",resultCode=" + resultCode);
-        switch (requestCode) {
-            case 100:
-                if (resultCode == RESULT_OK) {
-                    File temp = new File(AppConstant.USER_HEAD_PATH + "/head.jpg");
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                        Uri contentUri = FileProvider.getUriForFile(PersonCenterActivity.this, BuildConfig.APPLICATION_ID + ".fileProvider", temp);
-                        //content://com.sjl.bookmark.fileProvider/head_external_files/head.jpg
-                        cropPhotoNew(contentUri);// 裁剪图片
-                    } else {//android 7.0以下
-                        cropPhotoNew(Uri.fromFile(temp));// 裁剪图片
-                    }
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        LogUtils.i("requestCode=$requestCode,resultCode=$resultCode")
+        when (requestCode) {
+            100 -> if (resultCode == RESULT_OK) {
+                val temp: File = File(AppConstant.USER_HEAD_PATH + "/head.jpg")
+                if (Build.VERSION.SDK_INT >= VERSION_CODES.N) {
+                    val contentUri: Uri = FileProvider.getUriForFile(
+                        this@PersonCenterActivity,
+                        BuildConfig.APPLICATION_ID + ".fileProvider",
+                        temp
+                    )
+                    //content://com.sjl.bookmark.fileProvider/head_external_files/head.jpg
+                    cropPhotoNew(contentUri) // 裁剪图片
+                } else { //android 7.0以下
+                    cropPhotoNew(Uri.fromFile(temp)) // 裁剪图片
                 }
-                break;
-            case 200:
-                if (resultCode == RESULT_OK) {
-                    cropPhotoNew(data.getData());// 裁剪图片
-                }
-                break;
-            case UCrop.REQUEST_CROP:
-                if (resultCode == RESULT_OK) {
-                    final Uri resultUri = UCrop.getOutput(data);
-                    LogUtils.i("裁剪结果:" + resultUri.getPath());
-                    /**
-                     * 开发中遇到的问题，使用glide加载网络图片，每次更换头像后返回页面要同步显示已改过的头像。
-
-                     我们服务端是每次上传的个人头像只是替换原图，路径并不变。
-
-                     这就导致glide加载时会使用缓存的图片，导致页面图片显示不同步。
-                     */
-                    Glide.with(this)
-                            .load(resultUri)
-                            .transform(new GlideCircleTransform())
-                            .diskCacheStrategy(DiskCacheStrategy.NONE)//磁盘缓存
-                            .skipMemoryCache(true)//跳过内存缓存，否则会显示上次内存中的图片
-                            .into(ivAvatar);
-                    changeAvatar = true;
-                    headPath = UriUtils.fileUriToPath(this, resultUri);
+            }
+            200 -> if (resultCode == RESULT_OK) {
+                cropPhotoNew(data!!.data) // 裁剪图片
+            }
+            UCrop.REQUEST_CROP -> if (resultCode == RESULT_OK) {
+                val resultUri: Uri? = UCrop.getOutput((data)!!)
+                LogUtils.i("裁剪结果:" + resultUri!!.path)
+                /**
+                 * 开发中遇到的问题，使用glide加载网络图片，每次更换头像后返回页面要同步显示已改过的头像。
+                 *
+                 * 我们服务端是每次上传的个人头像只是替换原图，路径并不变。
+                 *
+                 * 这就导致glide加载时会使用缓存的图片，导致页面图片显示不同步。
+                 */
+                Glide.with(this)
+                    .load(resultUri)
+                    .transform(GlideCircleTransform())
+                    .diskCacheStrategy(DiskCacheStrategy.NONE) //磁盘缓存
+                    .skipMemoryCache(true) //跳过内存缓存，否则会显示上次内存中的图片
+                    .into((iv_avatar)!!)
+                changeAvatar = true
+                headPath = UriUtils.fileUriToPath(this, resultUri)
 
 //                    try {
 //                        InputStream input = this.getContentResolver().openInputStream(resultUri);
@@ -422,86 +372,81 @@ public class PersonCenterActivity extends BaseSwipeBackActivity {
 //                    } catch (IOException e) {
 //                        LogUtils.w(e);
 //                    }
-                } else if (resultCode == UCrop.RESULT_ERROR) {
-                    final Throwable cropError = UCrop.getError(data);
-                    LogUtils.e("裁切图片失败", cropError);
-                }
-                break;
-            case REQUEST_PERSONALITY:
+            } else if (resultCode == UCrop.RESULT_ERROR) {
+                val cropError: Throwable? = UCrop.getError((data)!!)
+                LogUtils.e("裁切图片失败", cropError)
+            }
+            REQUEST_PERSONALITY -> {
                 if (resultCode != RESULT_OK) {
-                    return;
+                    return
                 }
-                String personality = data.getStringExtra("personality");
-                tvPersonality.setText(personality);
-                if (!personality.equals(oldPersonality)) {
-                    tvPersonality.setTextColor(getResources().getColor(R.color.colorPrimary));
+                val personality: String = data!!.getStringExtra("personality")
+                tv_personality.text = personality
+                if (!(personality == oldPersonality)) {
+                    tv_personality.setTextColor(resources.getColor(R.color.colorPrimary))
                 } else {
-                    tvPersonality.setTextColor(getResources().getColor(R.color.gray));
+                    tv_personality.setTextColor(resources.getColor(R.color.gray))
                 }
-                break;
-            default:
-                break;
+            }
+            else -> {}
         }
         if (resultCode == RESULT_OK) {
-            showSaveButton();
+            showSaveButton()
         }
-
     }
 
     /**
      * @param sourceUri 原uri
      */
-    private void cropPhotoNew(Uri sourceUri) {
-        File dir = new File(AppConstant.USER_HEAD_PATH);
+    private fun cropPhotoNew(sourceUri: Uri) {
+        val dir: File = File(AppConstant.USER_HEAD_PATH)
         if (!dir.exists()) {
-            dir.mkdirs();
+            dir.mkdirs()
         }
-        File file = new File(dir, "head_crop.jpg");
-        Uri destinationUri = Uri.fromFile(file);// 裁剪图片
+        val file: File = File(dir, "head_crop.jpg")
+        val destinationUri: Uri = Uri.fromFile(file) // 裁剪图片
         //裁剪后保存到文件中,sourceUri和destinationUri的文件路径不能相同
-        UCrop.Options options = new UCrop.Options();
-        options.setCompressionQuality(80);
-        options.setCompressionFormat(Bitmap.CompressFormat.JPEG);
+        val options: UCrop.Options = UCrop.Options()
+        options.setCompressionQuality(80)
+        options.setCompressionFormat(Bitmap.CompressFormat.JPEG)
         // 隐藏底部工具
-        options.setHideBottomControls(true);
+        options.setHideBottomControls(true)
         //设置裁剪图片可操作的手势
 //        options.setAllowedGestures(UCropActivity.SCALE, UCropActivity.ROTATE, UCropActivity.ALL);
-        options.setToolbarTitle(getString(R.string.tailor));//设置标题栏文字
-        options.setMaxScaleMultiplier(3);//设置最大缩放比例300%
-        options.setHideBottomControls(false);//隐藏下边控制栏
-        options.setShowCropGrid(false);  //设置是否显示裁剪网格
-
-
-        UCrop.of(sourceUri, destinationUri).withAspectRatio(1, 1).withOptions(options).withMaxResultSize(640, 640).start(this);
+        options.setToolbarTitle(getString(R.string.tailor)) //设置标题栏文字
+        options.setMaxScaleMultiplier(3f) //设置最大缩放比例300%
+        options.setHideBottomControls(false) //隐藏下边控制栏
+        options.setShowCropGrid(false) //设置是否显示裁剪网格
+        UCrop.of(sourceUri, destinationUri).withAspectRatio(1f, 1f).withOptions(options)
+            .withMaxResultSize(640, 640).start(this)
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (head != null && !head.isRecycled()) {
-            head.recycle();
-            head = null;
+    override fun onDestroy() {
+        super.onDestroy()
+        head?.apply {
+            if (!isRecycled) {
+                recycle()
+                head = null
+            }
         }
-
     }
 
-
-    @Override
-    public void onBackPressed() {
-        if (zoomView.getVisibility() == View.VISIBLE) {
+    override fun onBackPressed() {
+        if (zoom_photo_view.visibility == View.VISIBLE) {
             if (zoomViewInfo != null) {
-                zoomView.animaTo(zoomViewInfo, new Runnable() {
-                    @Override
-                    public void run() {
-                        zoomView.setVisibility(View.GONE);
-                        ivAvatar.setVisibility(View.VISIBLE);
+                zoom_photo_view.animaTo(zoomViewInfo, object : Runnable {
+                    override fun run() {
+                        zoom_photo_view.visibility = View.GONE
+                        iv_avatar.visibility = View.VISIBLE
                     }
-                });
+                })
             }
         } else {
-            super.onBackPressed();
+            super.onBackPressed()
         }
     }
 
-
+    companion object {
+        private val REQUEST_PERSONALITY: Int = 300
+    }
 }

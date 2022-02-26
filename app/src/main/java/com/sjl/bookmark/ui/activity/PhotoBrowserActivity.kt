@@ -1,288 +1,266 @@
-package com.sjl.bookmark.ui.activity;
+package com.sjl.bookmark.ui.activity
 
-import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
-import android.app.Activity;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.os.Build;
-import android.os.Bundle;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.DataSource;
-import com.bumptech.glide.load.engine.GlideException;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.target.Target;
-import com.github.chrisbanes.photoview.PhotoView;
-import com.sjl.bookmark.R;
-import com.sjl.core.util.file.FileUtils;
-
-import androidx.annotation.Nullable;
-import androidx.viewpager.widget.PagerAdapter;
-import androidx.viewpager.widget.ViewPager;
+import android.animation.ObjectAnimator
+import android.animation.ValueAnimator
+import android.app.Activity
+import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
+import android.os.Build
+import android.os.Build.VERSION_CODES
+import android.os.Bundle
+import android.view.*
+import android.widget.*
+import androidx.viewpager.widget.PagerAdapter
+import androidx.viewpager.widget.ViewPager
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
+import com.github.chrisbanes.photoview.PhotoView
+import com.sjl.bookmark.R
+import com.sjl.core.util.file.FileUtils
+import com.sjl.core.util.file.FileUtils.SaveResultCallback
+import kotlinx.android.synthetic.main.activity_photo_browser.*
 
 /**
  * webview图片浏览
  */
-public class PhotoBrowserActivity extends Activity implements View.OnClickListener {
-    private ImageView crossIv;
-    private ViewPager mPager;
-    private ImageView centerIv;
-    private TextView photoOrderTv;
-    private TextView saveTv;
-    private String curImageUrl = "";
-    private String[] imageUrls = new String[]{};
+class PhotoBrowserActivity : Activity(), View.OnClickListener {
 
-    private int curPosition = -1;
-    private int[] initialedPositions = null;
-    private ObjectAnimator objectAnimator;
-    private View curPage;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(R.layout.activity_photo_browser);
-        imageUrls = getIntent().getStringArrayExtra("imageUrls");
-        curImageUrl = getIntent().getStringExtra("curImageUrl");
-        initialedPositions = new int[imageUrls.length];
-        initInitialedPositions();
-
-        photoOrderTv = (TextView) findViewById(R.id.photoOrderTv);
-        saveTv = (TextView) findViewById(R.id.saveTv);
-        saveTv.setOnClickListener(this);
-        centerIv = (ImageView) findViewById(R.id.centerIv);
-        crossIv = (ImageView) findViewById(R.id.crossIv);
-        crossIv.setOnClickListener(this);
-
-        mPager = (ViewPager) findViewById(R.id.pager);
-        mPager.setPageMargin((int) (getResources().getDisplayMetrics().density * 15));
-        mPager.setAdapter(new PagerAdapter() {
-            @Override
-            public int getCount() {
-                return imageUrls.length;
+    private var curImageUrl: String? = ""
+    private lateinit var imageUrls: ArrayList<String>
+    private var curPosition: Int = -1
+    private lateinit var initialedPositions: IntArray
+    private var objectAnimator: ObjectAnimator? = null
+    private var curPage: View? = null
+    override fun onCreate(savedInstanceState: Bundle) {
+        super.onCreate(savedInstanceState)
+        requestWindowFeature(Window.FEATURE_NO_TITLE)
+        setContentView(R.layout.activity_photo_browser)
+        imageUrls = intent.getStringArrayExtra("imageUrls") as ArrayList<String>
+        curImageUrl = intent.getStringExtra("curImageUrl")
+        initialedPositions = IntArray(imageUrls.size)
+        initInitialedPositions()
+        saveTv.setOnClickListener(this)
+        crossIv.setOnClickListener(this)
+        pager.pageMargin = (resources.displayMetrics.density * 15).toInt()
+        pager.adapter = object : PagerAdapter() {
+            override fun getCount(): Int {
+                return imageUrls.size
             }
 
-
-            @Override
-            public boolean isViewFromObject(View view, Object object) {
-                return view == object;
+            override fun isViewFromObject(view: View, `object`: Any): Boolean {
+                return view === `object`
             }
 
-            @Override
-            public Object instantiateItem(ViewGroup container, final int position) {
-                if (imageUrls[position] != null && !"".equals(imageUrls[position])) {
-                    final PhotoView view = new PhotoView(PhotoBrowserActivity.this);
-                    view.setScaleType(ImageView.ScaleType.FIT_CENTER);
-                    Glide.with(PhotoBrowserActivity.this)
-                            .load(imageUrls[position])
-                            .override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
-                            .fitCenter()
-                            .listener(new RequestListener<Drawable>() {
-                                @Override
-                                public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                                    if (position == curPosition) {
-                                        hideLoadingAnimation();
-                                    }
-                                    showErrorLoading();
-                                    return false;
+            override fun instantiateItem(container: ViewGroup, position: Int): Any {
+                val view: PhotoView = PhotoView(this@PhotoBrowserActivity)
+                if (imageUrls[position] != null && "" != imageUrls[position]) {
+                    view.scaleType = ImageView.ScaleType.FIT_CENTER
+                    Glide.with(this@PhotoBrowserActivity)
+                        .load(imageUrls.get(position))
+                        .override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
+                        .fitCenter()
+                        .listener(object : RequestListener<Drawable?> {
+                            override fun onLoadFailed(
+                                e: GlideException?,
+                                model: Any,
+                                target: Target<Drawable?>,
+                                isFirstResource: Boolean
+                            ): Boolean {
+                                if (position == curPosition) {
+                                    hideLoadingAnimation()
                                 }
+                                showErrorLoading()
+                                return false
+                            }
 
-                                @Override
-                                public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                                    occupyOnePosition(position);
-                                    if (position == curPosition) {
-                                        hideLoadingAnimation();
-                                    }
-                                    return false;
+                            override fun onResourceReady(
+                                resource: Drawable?,
+                                model: Any,
+                                target: Target<Drawable?>,
+                                dataSource: DataSource,
+                                isFirstResource: Boolean
+                            ): Boolean {
+                                occupyOnePosition(position)
+                                if (position == curPosition) {
+                                    hideLoadingAnimation()
                                 }
-                            }).into(view);
-                    container.addView(view);
-                    return view;
+                                return false
+                            }
+                        }).into(view)
+                    container.addView(view)
                 }
-                return null;
+                return view
             }
 
-
-            @Override
-            public void destroyItem(ViewGroup container, int position, Object object) {
-                releaseOnePosition(position);
-                container.removeView((View) object);
+            override fun destroyItem(container: ViewGroup, position: Int, `object`: Any) {
+                releaseOnePosition(position)
+                container.removeView(`object` as View?)
             }
 
-            @Override
-            public void setPrimaryItem(ViewGroup container, int position, Object object) {
-                curPage = (View) object;
+            override fun setPrimaryItem(container: ViewGroup, position: Int, `object`: Any) {
+                curPage = `object` as View?
             }
-        });
-
-        curPosition = returnClickedPosition() == -1 ? 0 : returnClickedPosition();
-        mPager.setCurrentItem(curPosition);
-        mPager.setTag(curPosition);
-        if (initialedPositions[curPosition] != curPosition) {//如果当前页面未加载完毕，则显示加载动画，反之相反；
-            showLoadingAnimation();
         }
-        photoOrderTv.setText((curPosition + 1) + "/" + imageUrls.length);//设置页面的编号
+        curPosition = if (returnClickedPosition() == -1) 0 else returnClickedPosition()
+        pager.currentItem = curPosition
+        pager.tag = curPosition
+        if (initialedPositions[curPosition] != curPosition) { //如果当前页面未加载完毕，则显示加载动画，反之相反；
+            showLoadingAnimation()
+        }
+        photoOrderTv.text = (curPosition + 1).toString() + "/" + imageUrls.size //设置页面的编号
         //实现对页面滑动事件的监听——>此处主要用来处理设置当前页面的position、动画、页面序号显示的逻辑
-        mPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
+        pager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+            override fun onPageScrolled(
+                position: Int,
+                positionOffset: Float,
+                positionOffsetPixels: Int
+            ) {
             }
 
-            @Override
-            public void onPageSelected(int position) {
-                if (initialedPositions[position] != position) {//如果当前页面未加载完毕，则显示加载动画，反之相反；
-                    showLoadingAnimation();
+            override fun onPageSelected(position: Int) {
+                if (initialedPositions[position] != position) { //如果当前页面未加载完毕，则显示加载动画，反之相反；
+                    showLoadingAnimation()
                 } else {
-                    hideLoadingAnimation();
+                    hideLoadingAnimation()
                 }
-                curPosition = position;
-                photoOrderTv.setText((position + 1) + "/" + imageUrls.length);//设置页面的编号
-                mPager.setTag(position);//为当前view设置tag
+                curPosition = position
+                photoOrderTv.text = (position + 1).toString() + "/" + imageUrls.size //设置页面的编号
+                pager.tag = position //为当前view设置tag
             }
 
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });
+            override fun onPageScrollStateChanged(state: Int) {}
+        })
     }
 
     /**
      * 获得用户点击的是哪一张图片的位置并设置当前是哪一个page
      * @return
      */
-    private int returnClickedPosition() {
+    private fun returnClickedPosition(): Int {
         if (imageUrls == null || curImageUrl == null) {
-            return -1;
+            return -1
         }
         //通过遍历当前url与所有url来匹配获取索引
-        for (int i = 0; i < imageUrls.length; i++) {
-            if (curImageUrl.equals(imageUrls[i])) {
-                return i;
+        for (i in imageUrls.indices) {
+            if ((curImageUrl == imageUrls.get(i))) {
+                return i
             }
         }
-        return -1;
+        return -1
     }
 
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.crossIv:
-                finish();
-                break;
-            case R.id.saveTv:
-                savePhotoToLocal();
-                break;
-            default:
-                break;
+    override fun onClick(view: View) {
+        when (view.id) {
+            R.id.crossIv -> finish()
+            R.id.saveTv -> savePhotoToLocal()
+            else -> {}
         }
     }
 
-    private void showLoadingAnimation() {
-        centerIv.setVisibility(View.VISIBLE);
-        centerIv.setImageResource(R.mipmap.loading);
+    private fun showLoadingAnimation() {
+        centerIv.visibility = View.VISIBLE
+        centerIv.setImageResource(R.mipmap.loading)
         if (objectAnimator == null) {
-            objectAnimator = ObjectAnimator.ofFloat(centerIv, "rotation", 0f, 360f);
-            objectAnimator.setDuration(2000);
-            objectAnimator.setRepeatCount(ValueAnimator.INFINITE);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-                objectAnimator.setAutoCancel(true);
+            objectAnimator = ObjectAnimator.ofFloat(centerIv, "rotation", 0f, 360f)
+            objectAnimator?.run {
+                duration = 2000
+                repeatCount = ValueAnimator.INFINITE
+                if (Build.VERSION.SDK_INT >= VERSION_CODES.JELLY_BEAN_MR2) {
+                    setAutoCancel(true)
+                }
             }
+
         }
-        objectAnimator.start();
+        objectAnimator?.start()
     }
 
-    private void hideLoadingAnimation() {
-        releaseResource();
-        centerIv.setVisibility(View.GONE);
+    private fun hideLoadingAnimation() {
+        releaseResource()
+        centerIv.visibility = View.GONE
     }
 
-    private void showErrorLoading() {
-        centerIv.setVisibility(View.VISIBLE);
-        releaseResource();
-        centerIv.setImageResource(R.mipmap.load_error);
+    private fun showErrorLoading() {
+        centerIv.visibility = View.VISIBLE
+        releaseResource()
+        centerIv.setImageResource(R.mipmap.load_error)
     }
 
-    private void releaseResource() {
-        if (objectAnimator != null) {
-            objectAnimator.cancel();
-        }
-        if (centerIv.getAnimation() != null) {
-            centerIv.getAnimation().cancel();
-        }
-    }
-
-    private void occupyOnePosition(int position) {
-        initialedPositions[position] = position;
-    }
-
-    private void releaseOnePosition(int position) {
-        initialedPositions[position] = -1;
-    }
-
-    private void initInitialedPositions() {
-        for (int i = 0; i < initialedPositions.length; i++) {
-            initialedPositions[i] = -1;
+    private fun releaseResource() {
+        objectAnimator?.cancel()
+        if (centerIv.animation != null) {
+            centerIv.animation.cancel()
         }
     }
 
-    private void savePhotoToLocal() {
+    private fun occupyOnePosition(position: Int) {
+        initialedPositions[position] = position
+    }
+
+    private fun releaseOnePosition(position: Int) {
+        initialedPositions[position] = -1
+    }
+
+    private fun initInitialedPositions() {
+        for (i in initialedPositions.indices) {
+            initialedPositions[i] = -1
+        }
+    }
+
+    private fun savePhotoToLocal() {
 //        ViewGroup containerTemp = (ViewGroup) mPager.findViewWithTag(mPager.getCurrentItem());
 //        if (containerTemp == null) {
 //            return;
 //        }
 //        PhotoView photoViewTemp = (PhotoView) containerTemp.getChildAt(0);
-        PhotoView photoViewTemp = (PhotoView) curPage;
+        val photoViewTemp: PhotoView? = curPage as PhotoView?
         if (photoViewTemp != null) {
-            BitmapDrawable glideBitmapDrawable = (BitmapDrawable ) photoViewTemp.getDrawable();
+            val glideBitmapDrawable: BitmapDrawable? =
+                photoViewTemp.drawable as BitmapDrawable?
             if (glideBitmapDrawable == null) {
-                return;
+                return
             }
-            Bitmap bitmap = glideBitmapDrawable.getBitmap();
+            val bitmap: Bitmap? = glideBitmapDrawable.bitmap
             if (bitmap == null) {
-                return;
+                return
             }
-            FileUtils.savePhoto(this, bitmap, new FileUtils.SaveResultCallback() {
-                @Override
-                public void onSavedSuccess() {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(PhotoBrowserActivity.this, R.string.save_success, Toast.LENGTH_SHORT).show();
+            FileUtils.savePhoto(this, bitmap, object : SaveResultCallback {
+                override fun onSavedSuccess() {
+                    runOnUiThread(object : Runnable {
+                        override fun run() {
+                            Toast.makeText(
+                                this@PhotoBrowserActivity,
+                                R.string.save_success,
+                                Toast.LENGTH_SHORT
+                            ).show()
                         }
-                    });
+                    })
                 }
 
-                @Override
-                public void onSavedFailed() {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(PhotoBrowserActivity.this, R.string.save_failed, Toast.LENGTH_SHORT).show();
+                override fun onSavedFailed() {
+                    runOnUiThread(object : Runnable {
+                        override fun run() {
+                            Toast.makeText(
+                                this@PhotoBrowserActivity,
+                                R.string.save_failed,
+                                Toast.LENGTH_SHORT
+                            ).show()
                         }
-                    });
+                    })
                 }
-            });
+            })
         }
     }
 
-    @Override
-    protected void onDestroy() {
-        releaseResource();
-        curPage = null;
-        if (mPager != null) {
-            mPager.removeAllViews();
-            mPager = null;
+    override fun onDestroy() {
+        releaseResource()
+        curPage = null
+        if (pager != null) {
+            pager.removeAllViews()
         }
-        super.onDestroy();
+        super.onDestroy()
     }
 }

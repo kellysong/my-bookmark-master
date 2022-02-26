@@ -3,7 +3,7 @@ apply plugin: 'org.greenrobot.greendao' // apply plugin
 
 apply plugin: 'kotlin-android'//引入kotlin
 apply plugin: 'kotlin-android-extensions'//简化fid
-//apply plugin: "kotlin-kapt"
+apply plugin: "kotlin-kapt"
 apply plugin: 'bugly'
 
 def buglyAppID = "5342dfc505"
@@ -247,8 +247,8 @@ dependencies {
     implementation 'com.github.kellysong.my-common:base-adapter:2.3.2'
     implementation rootProject.ext.dependencies["baseRecyclerViewAdapterHelper"]
 
-    annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.1'
-    annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
+    kapt 'com.jakewharton:butterknife-compiler:10.2.1'
+    kapt 'com.github.bumptech.glide:compiler:4.11.0'
 
 
     /*硬件相关*/
@@ -263,8 +263,6 @@ dependencies {
     /*今日头条屏幕适配*/
     implementation 'me.jessyan:autosize:1.1.2'
     //以下是第三方库
-    annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.1'
-
 
     /*对View点击事件的Rx形式监听*/
     implementation 'com.jakewharton.rxbinding2:rxbinding:2.1.1'

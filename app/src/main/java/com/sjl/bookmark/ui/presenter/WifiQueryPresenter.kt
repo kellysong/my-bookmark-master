@@ -1,41 +1,31 @@
-package com.sjl.bookmark.ui.presenter;
+package com.sjl.bookmark.ui.presenter
 
-import android.content.ClipData;
-import android.content.ClipboardManager;
-import android.content.Context;
-import android.net.wifi.WifiConfiguration;
-import android.net.wifi.WifiManager;
-import android.os.Build;
-import android.os.Handler;
-import android.text.TextUtils;
-import android.util.Xml;
-import android.widget.Toast;
-
-import com.sjl.bookmark.R;
-import com.sjl.bookmark.entity.WifiInfo;
-import com.sjl.bookmark.ui.contract.WifiQueryContract;
-import com.sjl.core.net.RxSchedulers;
-import com.sjl.core.util.log.LogUtils;
-
-import org.greenrobot.eventbus.EventBus;
-import org.xmlpull.v1.XmlPullParser;
-
-import java.io.BufferedReader;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import io.reactivex.Observable;
-import io.reactivex.ObservableEmitter;
-import io.reactivex.ObservableOnSubscribe;
-import io.reactivex.Observer;
-import io.reactivex.disposables.Disposable;
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
+import android.net.wifi.WifiConfiguration
+import android.net.wifi.WifiManager
+import android.os.Build
+import android.os.Handler
+import android.text.TextUtils
+import android.util.Xml
+import android.widget.Toast
+import com.sjl.bookmark.R
+import com.sjl.bookmark.entity.WifiInfo
+import com.sjl.bookmark.ui.contract.WifiQueryContract
+import com.sjl.core.net.RxSchedulers
+import com.sjl.core.util.log.LogUtils
+import io.reactivex.Observable
+import io.reactivex.ObservableEmitter
+import io.reactivex.ObservableOnSubscribe
+import io.reactivex.Observer
+import io.reactivex.disposables.Disposable
+import org.greenrobot.eventbus.EventBus
+import org.xmlpull.v1.XmlPullParser
+import java.io.*
+import java.util.*
+import java.util.regex.Matcher
+import java.util.regex.Pattern
 
 /**
  * TODO
@@ -46,296 +36,260 @@ import io.reactivex.disposables.Disposable;
  * @time 2018/3/3 15:58
  * @copyright(C) 2018 song
  */
-public class WifiQueryPresenter extends WifiQueryContract.Presenter {
-    private WifiManager mWifiManager;
-    private Handler mHandler;
-    private OpenWifiRunnable mOpenWifiRunnable;
-    /**
-     * 正则预编译
-     */
-    /**
-     * SSID
-     */
-    private static final Pattern REGEX_SSID = Pattern.compile("ssid=\"([^\"]+)\"");
-    /**
-     * 密码
-     */
-    private static final Pattern REGEX_PSK = Pattern.compile("psk=\"([^\"]+)\"");
-    /**
-     * 加密类型
-     */
-    private static final Pattern REGEX_KEY_MGMT = Pattern.compile("key_mgmt=(.*?)\t");
-
+class WifiQueryPresenter : WifiQueryContract.Presenter() {
+    private var mWifiManager: WifiManager? = null
+    private var mHandler: Handler? = null
+    private var mOpenWifiRunnable: OpenWifiRunnable? = null
 
     /**
      * 读取wifi信息
      */
-    @Override
-    public void initWifiInfo() {
-        Observable.create(new ObservableOnSubscribe<Object>() { // 第一步：初始化Observable
-            @Override
-            public void subscribe(ObservableEmitter<Object> e) throws Exception {
-                readWifiInfo(e);
-                e.onComplete();
+    override fun initWifiInfo() {
+        Observable.create(object : ObservableOnSubscribe<Any> {
+            // 第一步：初始化Observable
+            @Throws(Exception::class)
+            override fun subscribe(e: ObservableEmitter<Any>) {
+                readWifiInfo(e)
+                e.onComplete()
             }
-        }).compose(RxSchedulers.<Object>applySchedulers()).as(this.<Object>bindLifecycle())
-                .subscribe(new Observer<Object>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-
+        }).compose(RxSchedulers.applySchedulers()).`as`(bindLifecycle())
+            .subscribe(object : Observer<Any> {
+                override fun onSubscribe(d: Disposable) {}
+                override fun onNext(s: Any) {
+                    if (s is String) {
+                        EventBus.getDefault().post(s.toString())
+                    } else if (s is List<*>) {
+                        EventBus.getDefault().post(s as List<WifiInfo?>?)
                     }
+                }
 
-                    @Override
-                    public void onNext(Object s) {
-                        if (s instanceof String) {
-                            EventBus.getDefault().post(s.toString());
-                        } else if (s instanceof List) {
-                            EventBus.getDefault().post((List<WifiInfo>) s);
-                        }
+                override fun onError(e: Throwable) {
+                    LogUtils.e("读取wifi密码异常", e)
+                }
 
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        LogUtils.e("读取wifi密码异常", e);
-                    }
-
-                    @Override
-                    public void onComplete() {
-
-                    } // 第三步：订阅
-
-                });
-
+                override fun onComplete() {} // 第三步：订阅
+            })
     }
 
-    private void readWifiInfo(ObservableEmitter<Object> e) {
-        Process process = null;
-        DataOutputStream dataOutputStream = null;
-        DataInputStream dataInputStream = null;
-        StringBuffer wifiConf = new StringBuffer();
-        boolean wifiParseFlag = false;
-        boolean error = false;
+    private fun readWifiInfo(e: ObservableEmitter<Any>) {
+        var process: Process? = null
+        var dataOutputStream: DataOutputStream? = null
+        var dataInputStream: DataInputStream? = null
+        val wifiConf: StringBuffer = StringBuffer()
+        var wifiParseFlag: Boolean = false
+        var error: Boolean = false
         try {
-            process = Runtime.getRuntime().exec("su");///(这里执行是系统已经开放了root权限，而不是说通过执行这句来获得root权限)
-            dataOutputStream = new DataOutputStream(process.getOutputStream());
-            dataInputStream = new DataInputStream(process.getInputStream());
-            int sdkInt = Build.VERSION.SDK_INT;
-
+            process = Runtime.getRuntime().exec("su") ///(这里执行是系统已经开放了root权限，而不是说通过执行这句来获得root权限)
+            dataOutputStream = DataOutputStream(process.getOutputStream())
+            dataInputStream = DataInputStream(process.getInputStream())
+            val sdkInt: Int = Build.VERSION.SDK_INT
             if (sdkInt >= Build.VERSION_CODES.O) {
-                dataOutputStream.writeBytes("cat /data/misc/wifi/WifiConfigStore.xml\n");
-                wifiParseFlag = true;
+                dataOutputStream.writeBytes("cat /data/misc/wifi/WifiConfigStore.xml\n")
+                wifiParseFlag = true
             } else {
-                dataOutputStream.writeBytes("cat /data/misc/wifi/wpa_supplicant.conf\n");
-
+                dataOutputStream.writeBytes("cat /data/misc/wifi/wpa_supplicant.conf\n")
             }
-            dataOutputStream.writeBytes("exit\n");
-            dataOutputStream.flush();
-            InputStreamReader inputStreamReader = new InputStreamReader(dataInputStream, "UTF-8");
-            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-            String line = null;
-            while ((line = bufferedReader.readLine()) != null) {
-                wifiConf.append(line);
+            dataOutputStream.writeBytes("exit\n")
+            dataOutputStream.flush()
+            val inputStreamReader: InputStreamReader = InputStreamReader(dataInputStream, "UTF-8")
+            val bufferedReader: BufferedReader = BufferedReader(inputStreamReader)
+            var line: String? = null
+            while ((bufferedReader.readLine().also({ line = it })) != null) {
+                wifiConf.append(line)
             }
-            bufferedReader.close();
-            inputStreamReader.close();
-            process.waitFor();
-        } catch (Exception e1) {
-            LogUtils.e("读取wifi配置文件异常", e1);
-            error = true;
+            bufferedReader.close()
+            inputStreamReader.close()
+            process.waitFor()
+        } catch (e1: Exception) {
+            LogUtils.e("读取wifi配置文件异常", e1)
+            error = true
         } finally {
             try {
                 if (dataOutputStream != null) {
-                    dataOutputStream.close();
+                    dataOutputStream.close()
                 }
                 if (dataInputStream != null) {
-                    dataInputStream.close();
+                    dataInputStream.close()
                 }
                 if (process != null) {
-                    process.destroy();
+                    process.destroy()
                 }
-            } catch (IOException e2) {
-                LogUtils.e("关闭读取wifi流异常", e2);
+            } catch (e2: IOException) {
+                LogUtils.e("关闭读取wifi流异常", e2)
             }
         }
         if (error) {
-            e.onNext(mContext.getString(R.string.no_root_permission));
-            return;
+            e.onNext(mContext.getString(R.string.no_root_permission))
+            return
         }
-        String wifiConfigStr = wifiConf.toString();
+        val wifiConfigStr: String = wifiConf.toString()
         if (TextUtils.isEmpty(wifiConfigStr)) {
-            e.onNext(new ArrayList<WifiInfo>());
-            return;
+            e.onNext(ArrayList<WifiInfo>())
+            return
         }
-        LogUtils.i("wifiConf:" + wifiConfigStr);
-        ArrayList<WifiInfo> wifiInfoList = new ArrayList<>();
+        LogUtils.i("wifiConf:" + wifiConfigStr)
+        val wifiInfoList: ArrayList<WifiInfo?> = ArrayList()
         if (!wifiParseFlag) {
-            Pattern network = Pattern.compile("network=\\{([^\\}]+)\\}", Pattern.DOTALL);
-            Matcher networkMatcher = network.matcher(wifiConfigStr);
-            WifiInfo wifiInfo;
+            val network: Pattern = Pattern.compile("network=\\{([^\\}]+)\\}", Pattern.DOTALL)
+            val networkMatcher: Matcher = network.matcher(wifiConfigStr)
+            var wifiInfo: WifiInfo
             while (networkMatcher.find()) {
-                String networkBlock = networkMatcher.group();
-                LogUtils.i("wifi信息：" + networkBlock);
-                Matcher ssidMatcher = REGEX_SSID.matcher(networkBlock);
+                val networkBlock: String = networkMatcher.group()
+                LogUtils.i("wifi信息：" + networkBlock)
+                val ssidMatcher: Matcher = REGEX_SSID.matcher(networkBlock)
                 if (ssidMatcher.find()) {
-                    wifiInfo = new WifiInfo();
-                    wifiInfo.setName(ssidMatcher.group(1));
-
-                    Matcher pskMatcher = REGEX_PSK.matcher(networkBlock);
+                    wifiInfo = WifiInfo()
+                    wifiInfo.name = ssidMatcher.group(1)
+                    val pskMatcher: Matcher = REGEX_PSK.matcher(networkBlock)
                     if (pskMatcher.find()) {
-                        wifiInfo.setPassword(pskMatcher.group(1));
+                        wifiInfo.password = pskMatcher.group(1)
                     } else {
-                        wifiInfo.setPassword(mContext.getString(R.string.empty_password));
+                        wifiInfo.password = mContext.getString(R.string.empty_password)
                     }
-                    Matcher keyMatcher = REGEX_KEY_MGMT.matcher(networkBlock);
+                    val keyMatcher: Matcher = REGEX_KEY_MGMT.matcher(networkBlock)
                     if (keyMatcher.find()) {
-                        wifiInfo.setEncryptType(keyMatcher.group(1));
+                        wifiInfo.encryptType = keyMatcher.group(1)
                     } else {
-                        wifiInfo.setEncryptType(mContext.getString(R.string.unknown));
+                        wifiInfo.encryptType = mContext.getString(R.string.unknown)
                     }
-                    wifiInfoList.add(wifiInfo);
+                    wifiInfoList.add(wifiInfo)
                 }
             }
-
         } else {
             try {
                 //https://blog.csdn.net/csdn_of_coder/article/details/73380495
-                XmlPullParser parser = Xml.newPullParser();
-                parser.setInput(new StringReader(wifiConfigStr));
-                int eventType = parser.getEventType();
-                WifiInfo wifiInfo = null;
+                val parser: XmlPullParser = Xml.newPullParser()
+                parser.setInput(StringReader(wifiConfigStr))
+                var eventType: Int = parser.eventType
+                var wifiInfo: WifiInfo? = null
                 while (eventType != XmlPullParser.END_DOCUMENT) {
-                    switch (eventType) {
-                        case XmlPullParser.START_DOCUMENT:
-
-                            break;
-                        case XmlPullParser.START_TAG:
-                            String name = parser.getName();
-                            if ("Network".equalsIgnoreCase(name)) {
-                                wifiInfo = new WifiInfo();
-                                wifiInfo.setPassword("--");
+                    when (eventType) {
+                        XmlPullParser.START_DOCUMENT -> {}
+                        XmlPullParser.START_TAG -> {
+                            val name: String = parser.name
+                            if ("Network".equals(name, ignoreCase = true)) {
+                                wifiInfo = WifiInfo()
+                                wifiInfo.setPassword("--")
                             }
-                            if ("WifiConfiguration".equalsIgnoreCase(name)) {
-                                parserWifiConfig(wifiInfo, parser);
+                            if ("WifiConfiguration".equals(name, ignoreCase = true)) {
+                                parserWifiConfig(wifiInfo, parser)
                             }
-                            if ("WifiEnterpriseConfiguration".equalsIgnoreCase(name)) {
-                                parserWifiEnterpriseConfiguration(wifiInfo, parser);
+                            if ("WifiEnterpriseConfiguration".equals(name, ignoreCase = true)) {
+                                parserWifiEnterpriseConfiguration(wifiInfo, parser)
                             }
-                            break;
-                        case XmlPullParser.END_TAG:
-                            if ("Network".equals(parser.getName())) {//一个person处理完毕，准备下一个节点
-                                if (!"null".equals(wifiInfo.getName())) {
-                                    wifiInfoList.add(wifiInfo);
-                                }
+                        }
+                        XmlPullParser.END_TAG -> if (("Network" == parser.name)) { //一个person处理完毕，准备下一个节点
+                            if (!("null" == wifiInfo!!.name)) {
+                                wifiInfoList.add(wifiInfo)
                             }
-                            break;
+                        }
                     }
-                    eventType = parser.next();
+                    eventType = parser.next()
                 }
-            } catch (Exception e2) {
-                e2.printStackTrace();
+            } catch (e2: Exception) {
+                e2.printStackTrace()
             }
-
         }
-        e.onNext(wifiInfoList);
+        e.onNext(wifiInfoList)
     }
 
     /**
      * <WifiConfiguration>
      * <string name="ConfigKey">&quot;AndroidWifi&quot;NONE</string>
      * <string name="SSID">&quot;AndroidWifi&quot;</string>
-     * <null name="BSSID" />
-     * <null name="PreSharedKey" />
+     * <null name="BSSID"></null>
+     * <null name="PreSharedKey"></null>
      *
      * //...
-     * </WifiConfiguration>
+    </WifiConfiguration> *
      *
      * @param wifiInfo
      * @param parser
      * @throws Exception
      */
-    private void parserWifiConfig(WifiInfo wifiInfo, XmlPullParser parser) throws Exception {
-        int event;
-        int depth = parser.getDepth();
-
-        while ((event = parser.next()) != XmlPullParser.END_DOCUMENT
-                && (parser.getDepth() > depth || event != XmlPullParser.END_TAG)) {//只解析当前的标签内部的内容
-
+    @Throws(Exception::class)
+    private fun parserWifiConfig(wifiInfo: WifiInfo?, parser: XmlPullParser) {
+        var event: Int
+        val depth: Int = parser.depth
+        while (((parser.next().also { event = it }) != XmlPullParser.END_DOCUMENT
+                    && (parser.depth > depth || event != XmlPullParser.END_TAG))
+        ) { //只解析当前的标签内部的内容
             if (event == XmlPullParser.TEXT || event == XmlPullParser.END_TAG) {
-                continue;
+                continue
             }
-
-            switch (event) {
-                case XmlPullParser.START_TAG:
-                    String name = parser.getName();
-                    String attr = parser.getAttributeValue(null, "name");
-                    if ("string".equalsIgnoreCase(name) && "ConfigKey".equalsIgnoreCase(attr)) {
-                        String ssidAndEncryptType = parser.nextText();
-                        int i = ssidAndEncryptType.lastIndexOf("\"");
-                        String ssid = ssidAndEncryptType.substring(1, i).replace("\"", "");
-                        String encryptType = ssidAndEncryptType.substring(i).replace("\"", "");
-                        wifiInfo.setName(ssid);
-                        wifiInfo.setEncryptType(encryptType);
+            when (event) {
+                XmlPullParser.START_TAG -> {
+                    val name: String = parser.name
+                    val attr: String = parser.getAttributeValue(null, "name")
+                    if ("string".equals(name, ignoreCase = true) && "ConfigKey".equals(
+                            attr,
+                            ignoreCase = true
+                        )
+                    ) {
+                        val ssidAndEncryptType: String = parser.nextText()
+                        val i: Int = ssidAndEncryptType.lastIndexOf("\"")
+                        val ssid: String = ssidAndEncryptType.substring(1, i).replace("\"", "")
+                        val encryptType: String = ssidAndEncryptType.substring(i).replace("\"", "")
+                        wifiInfo!!.name = ssid
+                        wifiInfo.encryptType = encryptType
                     }
-
-                    if ("string".equalsIgnoreCase(name) && "PreSharedKey".equalsIgnoreCase(attr)) {
-                        String pwd = parser.nextText().replace("\"", "");
+                    if ("string".equals(name, ignoreCase = true) && "PreSharedKey".equals(
+                            attr,
+                            ignoreCase = true
+                        )
+                    ) {
+                        val pwd: String = parser.nextText().replace("\"", "")
                         if (!TextUtils.isEmpty(pwd)) {
-                            wifiInfo.setPassword(pwd);
+                            wifiInfo!!.password = pwd
                         }
                     }
-
-                    if ("string-array".equalsIgnoreCase(name) && "WEPKeys".equalsIgnoreCase(attr)) {
-                        parserStringArray(wifiInfo, parser);
-
+                    if ("string-array".equals(name, ignoreCase = true) && "WEPKeys".equals(
+                            attr,
+                            ignoreCase = true
+                        )
+                    ) {
+                        parserStringArray(wifiInfo, parser)
                     }
-                    break;
-                default:
-                    break;
+                }
+                else -> {}
             }
         }
-
-
     }
 
     /**
      * <string-array name="WEPKeys" num="4">
-     * <item value="&quot;1333333&quot;" />
-     * <item value="" />
-     * <item value="" />
-     * <item value="" />
-     * </string-array>
+     * <item value="&quot;1333333&quot;">&quot;&quot;</item>
+     * <item value=""></item>
+     * <item value=""></item>
+     * <item value=""></item>
+    </string-array> *
      *
      * @param wifiInfo
      * @param parser
      * @throws Exception
      */
-    private void parserStringArray(WifiInfo wifiInfo, XmlPullParser parser) throws Exception {
-        int event;
-        int depth = parser.getDepth();
-
-        while ((event = parser.next()) != XmlPullParser.END_DOCUMENT
-                && (parser.getDepth() > depth || event != XmlPullParser.END_TAG)) {//只解析当前的标签内部的内容
-
+    @Throws(Exception::class)
+    private fun parserStringArray(wifiInfo: WifiInfo?, parser: XmlPullParser) {
+        var event: Int
+        val depth: Int = parser.depth
+        while (((parser.next().also { event = it }) != XmlPullParser.END_DOCUMENT
+                    && (parser.depth > depth || event != XmlPullParser.END_TAG))
+        ) { //只解析当前的标签内部的内容
             if (event == XmlPullParser.TEXT || event == XmlPullParser.END_TAG) {
-                continue;
+                continue
             }
-
-            switch (event) {
-                case XmlPullParser.START_TAG:
-                    String name = parser.getName();
-                    String pwd = parser.getAttributeValue(null, "value");
-                    if ("item".equalsIgnoreCase(name) && !TextUtils.isEmpty(pwd)) {
-                        pwd = pwd.replace("\"", "");
-                        wifiInfo.setPassword(pwd);
+            when (event) {
+                XmlPullParser.START_TAG -> {
+                    val name: String = parser.name
+                    var pwd: String = parser.getAttributeValue(null, "value")
+                    if ("item".equals(name, ignoreCase = true) && !TextUtils.isEmpty(pwd)) {
+                        pwd = pwd.replace("\"", "")
+                        wifiInfo!!.password = pwd
                     }
-                    break;
-                default:
-                    break;
+                }
+                else -> {}
             }
         }
-
-
     }
 
     /**
@@ -352,43 +306,44 @@ public class WifiQueryPresenter extends WifiQueryContract.Presenter {
      * <string name="AltSubjectMatch"></string>
      * <string name="DomSuffixMatch">18888811111</string>
      * <string name="CaPath">/system/etc/security/cacerts</string>
-     * <int name="EapMethod" value="0" />
-     * <int name="Phase2Method" value="0" />
+     * <int name="EapMethod" value="0"></int>
+     * <int name="Phase2Method" value="0"></int>
      * <string name="PLMN"></string>
      * <string name="Realm"></string>
-     * </WifiEnterpriseConfiguration>
+    </WifiEnterpriseConfiguration> *
      *
      * @param wifiInfo
      * @param parser
      * @throws Exception
      */
-    private void parserWifiEnterpriseConfiguration(WifiInfo wifiInfo, XmlPullParser parser) throws Exception {
-        int event;
-        int depth = parser.getDepth();
-        while ((event = parser.next()) != XmlPullParser.END_DOCUMENT
-                && (parser.getDepth() > depth || event != XmlPullParser.END_TAG)) {//只解析当前的标签内部的内容
-
+    @Throws(Exception::class)
+    private fun parserWifiEnterpriseConfiguration(wifiInfo: WifiInfo?, parser: XmlPullParser) {
+        var event: Int
+        val depth: Int = parser.depth
+        while (((parser.next().also { event = it }) != XmlPullParser.END_DOCUMENT
+                    && (parser.depth > depth || event != XmlPullParser.END_TAG))
+        ) { //只解析当前的标签内部的内容
             if (event == XmlPullParser.TEXT || event == XmlPullParser.END_TAG) {
-                continue;
+                continue
             }
-
-            switch (event) {
-                case XmlPullParser.START_TAG:
-                    String name = parser.getName();
-                    String attr = parser.getAttributeValue(null, "name");
-                    if ("string".equalsIgnoreCase(name) && "Password".equalsIgnoreCase(attr)) {
-                        String pwd = parser.nextText();
+            when (event) {
+                XmlPullParser.START_TAG -> {
+                    val name: String = parser.name
+                    val attr: String = parser.getAttributeValue(null, "name")
+                    if ("string".equals(name, ignoreCase = true) && "Password".equals(
+                            attr,
+                            ignoreCase = true
+                        )
+                    ) {
+                        val pwd: String = parser.nextText()
                         if (!TextUtils.isEmpty(pwd)) {
-                            wifiInfo.setPassword(pwd);
+                            wifiInfo!!.password = pwd
                         }
-
                     }
-                default:
-                    break;
+                }
+                else -> {}
             }
         }
-
-
     }
 
     /**
@@ -396,11 +351,14 @@ public class WifiQueryPresenter extends WifiQueryContract.Presenter {
      *
      * @param password
      */
-    @Override
-    public void copyWifiPassword(String password) {
-        ClipboardManager cmb = (ClipboardManager) mContext.getSystemService(Context.CLIPBOARD_SERVICE);
-        cmb.setPrimaryClip(ClipData.newPlainText(mContext.getString(R.string.item_pasword_hint), password));
-        Toast.makeText(mContext, R.string.copy_success, Toast.LENGTH_SHORT).show();
+    override fun copyWifiPassword(password: String) {
+        val cmb: ClipboardManager =
+            mContext.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        cmb.primaryClip = ClipData.newPlainText(
+            mContext.getString(R.string.item_pasword_hint),
+            password
+        )
+        Toast.makeText(mContext, R.string.copy_success, Toast.LENGTH_SHORT).show()
     }
 
     /**
@@ -408,44 +366,34 @@ public class WifiQueryPresenter extends WifiQueryContract.Presenter {
      *
      * @param wifiInfo
      */
-    @Override
-    public void connectWifi(WifiInfo wifiInfo) {
-        mWifiManager = (WifiManager) mContext.getSystemService(Context.WIFI_SERVICE);
-        if (!mWifiManager.isWifiEnabled()) {//未打开wifi
-            mWifiManager.setWifiEnabled(true);
-            mHandler = new Handler();
-            mOpenWifiRunnable = new OpenWifiRunnable(wifiInfo);
-            mHandler.post(mOpenWifiRunnable);
+    override fun connectWifi(wifiInfo: WifiInfo) {
+        mWifiManager = mContext.getSystemService(Context.WIFI_SERVICE) as WifiManager?
+        if (!mWifiManager!!.isWifiEnabled) { //未打开wifi
+            mWifiManager!!.isWifiEnabled = true
+            mHandler = Handler()
+            mOpenWifiRunnable = OpenWifiRunnable(wifiInfo)
+            mHandler!!.post(mOpenWifiRunnable)
         } else {
-            startConnectWifi(wifiInfo);
+            startConnectWifi(wifiInfo)
         }
     }
 
     /**
      * 判断Wifi是否开启成功
      */
-    private class OpenWifiRunnable implements Runnable {
-        private WifiInfo wifiInfo;
-
-        public OpenWifiRunnable(WifiInfo wifiInfo) {
-            this.wifiInfo = wifiInfo;
-        }
-
-        @Override
-        public void run() {
-            if (mWifiManager.isWifiEnabled()) {
-                LogUtils.i("wifi已经打开");
+    private inner class OpenWifiRunnable constructor(private val wifiInfo: WifiInfo) : Runnable {
+        override fun run() {
+            if (mWifiManager!!.isWifiEnabled) {
+                LogUtils.i("wifi已经打开")
                 try {
-                    startConnectWifi(wifiInfo);
-                } catch (Exception e) {
-                    LogUtils.e("连接wifi异常", e);
+                    startConnectWifi(wifiInfo)
+                } catch (e: Exception) {
+                    LogUtils.e("连接wifi异常", e)
                 }
             } else {
-                mHandler.postDelayed(mOpenWifiRunnable, 1000);
+                mHandler!!.postDelayed(mOpenWifiRunnable, 1000)
             }
         }
-
-
     }
 
     /**
@@ -453,75 +401,91 @@ public class WifiQueryPresenter extends WifiQueryContract.Presenter {
      *
      * @param wifiInfo
      */
-    private void startConnectWifi(WifiInfo wifiInfo) {
+    private fun startConnectWifi(wifiInfo: WifiInfo) {
         //createWifiConfig主要用于构建一个WifiConfiguration，代码中的例子主要用于连接不需要密码的Wifi
         //WifiManager的addNetwork接口，传入WifiConfiguration后，得到对应的NetworkId
-        int netId = mWifiManager.addNetwork(createWifiConfig(wifiInfo));
+        val netId: Int = mWifiManager!!.addNetwork(createWifiConfig(wifiInfo))
 
         //WifiManager的enableNetwork接口，就可以连接到netId对应的wifi了
         //其中boolean参数，主要用于指定是否需要断开其它Wifi网络
-        boolean enable = mWifiManager.enableNetwork(netId, true);
-        LogUtils.i("连接标志enable: " + enable);
+        val enable: Boolean = mWifiManager!!.enableNetwork(netId, true)
+        LogUtils.i("连接标志enable: " + enable)
 
         //可选操作，让Wifi重新连接最近使用过的接入点
         //如果上文的enableNetwork成功，那么reconnect同样连接netId对应的网络
         //若失败，则连接之前成功过的网络
-        boolean reconnect = mWifiManager.reconnect();
-        LogUtils.i("重连接标志reconnect: " + reconnect);
+        val reconnect: Boolean = mWifiManager!!.reconnect()
+        LogUtils.i("重连接标志reconnect: " + reconnect)
     }
 
-
-    private WifiConfiguration createWifiConfig(WifiInfo wifiInfo) {
-        WifiConfiguration config = isExist(wifiInfo.getName());
+    private fun createWifiConfig(wifiInfo: WifiInfo): WifiConfiguration {
+        var config: WifiConfiguration? = isExist(wifiInfo.name)
         if (config != null) {
-            LogUtils.i("使用默认WifiConfiguration");
-            return config;
+            LogUtils.i("使用默认WifiConfiguration")
+            return config
         }
         //初始化WifiConfiguration
-        config = new WifiConfiguration();
+        config = WifiConfiguration()
         //指定对应的SSID
-        config.SSID = "\"" + wifiInfo.getName() + "\"";
+        config.SSID = "\"" + wifiInfo.name + "\""
         //不需要密码的场景
-        if (TextUtils.isEmpty(wifiInfo.getPassword())) {
-            config.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
+        if (TextUtils.isEmpty(wifiInfo.password)) {
+            config.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE)
             //以WEP加密的场景
         } else {
-            if (wifiInfo.getEncryptType().contains("WEP")) {// WIFICIPHER_WEP WEP加密
-
-                config.hiddenSSID = true;
-                config.wepKeys[0] = "\"" + wifiInfo.getPassword() + "\"";
-                config.allowedAuthAlgorithms.set(WifiConfiguration.AuthAlgorithm.SHARED);
-                config.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.CCMP);
-                config.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.TKIP);
-                config.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.WEP40);
+            if (wifiInfo.encryptType.contains("WEP")) { // WIFICIPHER_WEP WEP加密
+                config.hiddenSSID = true
+                config.wepKeys[0] = "\"" + wifiInfo.password + "\""
+                config.allowedAuthAlgorithms.set(WifiConfiguration.AuthAlgorithm.SHARED)
+                config.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.CCMP)
+                config.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.TKIP)
+                config.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.WEP40)
                 config.allowedGroupCiphers
-                        .set(WifiConfiguration.GroupCipher.WEP104);
-                config.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
-                config.wepTxKeyIndex = 0;
-            } else {// WIFICIPHER_WPA wpa加密
-                config.preSharedKey = "\"" + wifiInfo.getPassword() + "\"";
-                config.hiddenSSID = true;
-                config.allowedAuthAlgorithms.set(WifiConfiguration.AuthAlgorithm.OPEN);//该配置支持的身份验证协议集合
-                config.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.TKIP);//该配置所支持的组密码集合
-                config.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.WPA_PSK);//该配置所支持的密钥管理集合
-                config.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.TKIP);//该配置所支持的WPA配对密码集合
-                config.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.CCMP);
-                config.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.CCMP);
-                config.status = WifiConfiguration.Status.ENABLED;
+                    .set(WifiConfiguration.GroupCipher.WEP104)
+                config.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE)
+                config.wepTxKeyIndex = 0
+            } else { // WIFICIPHER_WPA wpa加密
+                config.preSharedKey = "\"" + wifiInfo.password + "\""
+                config.hiddenSSID = true
+                config.allowedAuthAlgorithms.set(WifiConfiguration.AuthAlgorithm.OPEN) //该配置支持的身份验证协议集合
+                config.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.TKIP) //该配置所支持的组密码集合
+                config.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.WPA_PSK) //该配置所支持的密钥管理集合
+                config.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.TKIP) //该配置所支持的WPA配对密码集合
+                config.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.CCMP)
+                config.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.CCMP)
+                config.status = WifiConfiguration.Status.ENABLED
             }
         }
-
-        return config;
+        return config
     }
 
-    private WifiConfiguration isExist(String ssid) {
-        List<WifiConfiguration> configs = mWifiManager.getConfiguredNetworks();
-        for (WifiConfiguration config : configs) {
-            if (config.SSID.equals("\"" + ssid + "\"")) {
-                return config;
+    private fun isExist(ssid: String): WifiConfiguration? {
+        val configs: List<WifiConfiguration> = mWifiManager!!.configuredNetworks
+        for (config: WifiConfiguration in configs) {
+            if ((config.SSID == "\"" + ssid + "\"")) {
+                return config
             }
         }
-        return null;
+        return null
     }
 
+    companion object {
+        /**
+         * 正则预编译
+         */
+        /**
+         * SSID
+         */
+        private val REGEX_SSID: Pattern = Pattern.compile("ssid=\"([^\"]+)\"")
+
+        /**
+         * 密码
+         */
+        private val REGEX_PSK: Pattern = Pattern.compile("psk=\"([^\"]+)\"")
+
+        /**
+         * 加密类型
+         */
+        private val REGEX_KEY_MGMT: Pattern = Pattern.compile("key_mgmt=(.*?)\t")
+    }
 }

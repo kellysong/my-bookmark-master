@@ -1,13 +1,10 @@
-package com.sjl.bookmark.ui.contract;
+package com.sjl.bookmark.ui.contract
 
-import android.content.Intent;
-import android.util.ArrayMap;
-
-import com.sjl.bookmark.entity.table.Account;
-import com.sjl.core.mvp.BaseContract;
-import com.sjl.core.mvp.BasePresenter;
-
-import java.util.List;
+import android.content.Intent
+import android.util.ArrayMap
+import com.sjl.bookmark.entity.table.Account
+import com.sjl.core.mvp.BaseContract.IBaseView
+import com.sjl.core.mvp.BasePresenter
 
 /**
  * 改良mvp模式
@@ -18,17 +15,15 @@ import java.util.List;
  * @time 2018/11/26 10:16
  * @copyright(C) 2018 song
  */
-public interface AccountEditContract {
-    interface View extends BaseContract.IBaseView {
-        void initSpinner(ArrayMap<String, List<String>> data);
-
-        void initCreateModel(int position);
-
-        void initViewModel(Account account);
+interface AccountEditContract {
+    interface View : IBaseView {
+        fun initSpinner(data: ArrayMap<String, List<String>>)
+        fun initCreateModel(position: Int)
+        fun initViewModel(account: Account?)
     }
 
-    abstract class Presenter extends BasePresenter<View> {
-        public abstract void init(Intent intent);
+    abstract class Presenter : BasePresenter<View>() {
+        abstract fun init(intent: Intent)
 
         /**
          * 新增或者修改账号信息
@@ -36,11 +31,11 @@ public interface AccountEditContract {
          * @param account
          * @return 0修改, 1新增
          */
-        public abstract long saveAccount(Account account);
+        abstract fun saveAccount(account: Account): Long
 
         /**
          * 删除账号信息
          */
-        public abstract void deleteAccount();
+        abstract fun deleteAccount()
     }
 }

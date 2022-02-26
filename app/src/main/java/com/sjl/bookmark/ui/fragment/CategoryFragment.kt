@@ -1,27 +1,22 @@
-package com.sjl.bookmark.ui.fragment;
+package com.sjl.bookmark.ui.fragment
 
-import android.content.Intent;
-import android.os.Parcelable;
-import android.view.View;
-
-import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.sjl.bookmark.R;
-import com.sjl.bookmark.entity.Category;
-import com.sjl.bookmark.net.HttpConstant;
-import com.sjl.bookmark.ui.activity.ArticleTypeActivity;
-import com.sjl.bookmark.ui.adapter.CategoryAdapter;
-import com.sjl.bookmark.ui.contract.CategoryContract;
-import com.sjl.bookmark.ui.presenter.CategoryPresenter;
-import com.sjl.core.entity.EventBusDto;
-import com.sjl.core.mvp.BaseFragment;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import butterknife.BindView;
+import android.content.Intent
+import android.os.Parcelable
+import android.view.View
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
+import com.chad.library.adapter.base.BaseQuickAdapter
+import com.sjl.bookmark.R
+import com.sjl.bookmark.entity.Category
+import com.sjl.bookmark.net.HttpConstant
+import com.sjl.bookmark.ui.activity.ArticleTypeActivity
+import com.sjl.bookmark.ui.adapter.CategoryAdapter
+import com.sjl.bookmark.ui.contract.CategoryContract
+import com.sjl.bookmark.ui.presenter.CategoryPresenter
+import com.sjl.core.entity.EventBusDto
+import com.sjl.core.mvp.BaseFragment
+import kotlinx.android.synthetic.main.category_fragment.*
+import java.util.*
 
 /**
  * TODO
@@ -32,100 +27,62 @@ import butterknife.BindView;
  * @time 2018/3/21 11:26
  * @copyright(C) 2018 song
  */
-public class CategoryFragment extends BaseFragment<CategoryPresenter> implements CategoryContract.View, CategoryAdapter.OnItemClickListener, SwipeRefreshLayout.OnRefreshListener {
+class CategoryFragment : BaseFragment<CategoryPresenter>(), CategoryContract.View,
+    BaseQuickAdapter.OnItemClickListener, OnRefreshListener {
 
-    @BindView(R.id.rvKnowledgeSystems)
-    RecyclerView mRvKnowledgeSystems;
-    @BindView(R.id.swipeRefreshLayout)
-    SwipeRefreshLayout mSwipeRefreshLayout;
-
-    private CategoryAdapter mCategoryAdapter;
-
-
-
-    @Override
-    protected void onFirstUserVisible() {
-        /**请求数据*/
-        mPresenter.loadCategoryData();
+    private lateinit var mCategoryAdapter: CategoryAdapter
+    override fun onFirstUserVisible() {
+        /**请求数据 */
+        mPresenter.loadCategoryData()
     }
 
-    @Override
-    protected void onUserVisible() {
-
+    override fun onUserVisible() {}
+    override fun onUserInvisible() {}
+    override fun getLayoutId(): Int {
+        return R.layout.category_fragment
     }
 
-    @Override
-    protected void onUserInvisible() {
-
+    override fun initView() {}
+    override fun initListener() {}
+    override fun initData() {
+        swipeRefreshLayout.setColorSchemeResources(R.color.blueStatus)
+        mCategoryAdapter = CategoryAdapter(R.layout.category_knowledge_recycle_item, null)
+        /**设置RecyclerView */
+        rvKnowledgeSystems.layoutManager = LinearLayoutManager(context)
+        rvKnowledgeSystems.adapter = mCategoryAdapter
+        /**设置事件监听 */
+        mCategoryAdapter.onItemClickListener = this
+        swipeRefreshLayout.setOnRefreshListener(this)
     }
 
-    @Override
-    protected int getLayoutId() {
-        return R.layout.category_fragment;
+    public override fun onEventComing(eventCenter: EventBusDto<*>?) {}
+    override fun setCategory(categories: List<Category>) {
+        mCategoryAdapter.setNewData(categories)
+        swipeRefreshLayout.isRefreshing = false
     }
 
-    @Override
-    protected void initView() {
-
+    override fun showLoading() {
+        swipeRefreshLayout.isRefreshing = true
     }
 
-    @Override
-    protected void initListener() {
-
+    override fun showFail(message: String?) {
+        swipeRefreshLayout.isRefreshing = false
     }
 
-    @Override
-    protected void initData() {
-        mSwipeRefreshLayout.setColorSchemeResources(R.color.blueStatus);
-        mCategoryAdapter = new CategoryAdapter(R.layout.category_knowledge_recycle_item,null);
-        /**设置RecyclerView*/
-        mRvKnowledgeSystems.setLayoutManager(new LinearLayoutManager(getContext()));
-        mRvKnowledgeSystems.setAdapter(mCategoryAdapter);
-
-        /**设置事件监听*/
-        mCategoryAdapter.setOnItemClickListener(this);
-        mSwipeRefreshLayout.setOnRefreshListener(this);
-
-
+    override fun onRefresh() {
+        mPresenter.refresh()
     }
 
-    @Override
-    public void onEventComing(EventBusDto eventCenter) {
-
-    }
-
-
-    @Override
-    public void setCategory(List<Category> categories) {
-        mCategoryAdapter.setNewData(categories);
-        mSwipeRefreshLayout.setRefreshing(false);
-    }
-
-
-    @Override
-    public void showLoading() {
-        mSwipeRefreshLayout.setRefreshing(true);
-    }
-
-    @Override
-    public void showFail(String message) {
-        mSwipeRefreshLayout.setRefreshing(false);
-    }
-
-
-    @Override
-    public void onRefresh() {
-        mPresenter.refresh();
-    }
-
-    @Override
-    public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-        Intent intent = new Intent(mActivity, ArticleTypeActivity.class);
-        intent.putExtra(HttpConstant.CONTENT_TITLE_KEY, mCategoryAdapter.getItem(position).getName());
-        List<Category.ChildrenBean> children = mCategoryAdapter.getItem(position).getChildren();
-        intent.putParcelableArrayListExtra(HttpConstant.CONTENT_CHILDREN_DATA_KEY, (ArrayList<? extends Parcelable>) children);
-        intent.putExtra(HttpConstant.CONTENT_OPEN_FLAG, "1");
-
-        mActivity.startActivity(intent);
+    override fun onItemClick(adapter: BaseQuickAdapter<*, *>?, view: View, position: Int) {
+        val intent = Intent(mActivity, ArticleTypeActivity::class.java)
+        intent.putExtra(HttpConstant.CONTENT_TITLE_KEY, mCategoryAdapter.getItem(position)!!.name)
+        val children = mCategoryAdapter.getItem(position)!!
+            .children
+        intent.putParcelableArrayListExtra(
+            HttpConstant.CONTENT_CHILDREN_DATA_KEY,
+            children as ArrayList<out Parcelable?>
+        )
+        intent.putExtra(HttpConstant.CONTENT_OPEN_FLAG, "1")
+        mActivity.startActivity(intent)
     }
 }

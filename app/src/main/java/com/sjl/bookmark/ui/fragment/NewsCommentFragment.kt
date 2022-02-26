@@ -1,25 +1,21 @@
-package com.sjl.bookmark.ui.fragment;
+package com.sjl.bookmark.ui.fragment
 
-import android.os.Bundle;
-
-import com.sjl.bookmark.R;
-import com.sjl.bookmark.app.MyApplication;
-import com.sjl.bookmark.entity.zhihu.NewsCommentDto;
-import com.sjl.bookmark.ui.adapter.NewsCommentAdapter;
-import com.sjl.bookmark.ui.adapter.RecyclerViewDivider;
-import com.sjl.bookmark.ui.contract.NewsCommentContract;
-import com.sjl.bookmark.ui.presenter.NewsCommentPresenter;
-import com.sjl.bookmark.widget.danmu.DanMuControl;
-import com.sjl.bookmark.widget.danmu.DanMuInfo;
-import com.sjl.core.mvp.BaseFragment;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import butterknife.BindView;
-import master.flame.danmaku.controller.IDanmakuView;
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import butterknife.BindView
+import com.sjl.bookmark.R
+import com.sjl.bookmark.app.MyApplication
+import com.sjl.bookmark.entity.zhihu.NewsCommentDto
+import com.sjl.bookmark.ui.adapter.NewsCommentAdapter
+import com.sjl.bookmark.ui.adapter.RecyclerViewDivider
+import com.sjl.bookmark.ui.contract.NewsCommentContract
+import com.sjl.bookmark.ui.presenter.NewsCommentPresenter
+import com.sjl.bookmark.widget.danmu.DanMuControl
+import com.sjl.bookmark.widget.danmu.DanMuInfo
+import com.sjl.core.mvp.BaseFragment
+import kotlinx.android.synthetic.main.news_comment_fragmnet.*
+import master.flame.danmaku.controller.IDanmakuView
+import java.util.*
 
 /**
  * TODO
@@ -30,115 +26,86 @@ import master.flame.danmaku.controller.IDanmakuView;
  * @time 2018/12/24 11:07
  * @copyright(C) 2018 song
  */
-public class NewsCommentFragment extends BaseFragment<NewsCommentPresenter> implements NewsCommentContract.View {
-    @BindView(R.id.comment_recyclerview)
-    RecyclerView mCommentRecyclerView;
-    private NewsCommentAdapter mNewsCommentAdapter;
-    private int position;
+class NewsCommentFragment : BaseFragment<NewsCommentPresenter>(), NewsCommentContract.View {
 
-    @BindView(R.id.sv_danmaku)
-    IDanmakuView mDanmakuView;
+    private lateinit var mNewsCommentAdapter: NewsCommentAdapter
+    private var position = 0
 
-    private DanMuControl danmuControl;
-
-
-    @Override
-    protected int getLayoutId() {
-        return R.layout.news_comment_fragmnet;
+    private var danmuControl: DanMuControl? = null
+    override fun getLayoutId(): Int {
+        return R.layout.news_comment_fragmnet
     }
 
-    @Override
-    protected void initView() {
-
-    }
-
-    @Override
-    protected void initListener() {
-
-    }
-
-    @Override
-    protected void initData() {
-        Bundle arguments = getArguments();
-        position = arguments.getInt("position");//fragment索引
-        String newsId = arguments.getString("newsId");//当前日报id
-//        LogUtils.i("position=" + position + ",newsId=" + newsId);
-        mNewsCommentAdapter = new NewsCommentAdapter(R.layout.news_comment_recycle_item, null);
-        mCommentRecyclerView.setAdapter(mNewsCommentAdapter);
-        mCommentRecyclerView.addItemDecoration(new RecyclerViewDivider(mActivity, LinearLayoutManager.VERTICAL));
-        mCommentRecyclerView.setLayoutManager(new LinearLayoutManager(mActivity));
+    override fun initView() {}
+    override fun initListener() {}
+    override fun initData() {
+        val arguments = arguments
+        position = arguments!!.getInt("position") //fragment索引
+        val newsId = arguments.getString("newsId") //当前日报id
+        //        LogUtils.i("position=" + position + ",newsId=" + newsId);
+        mNewsCommentAdapter = NewsCommentAdapter(R.layout.news_comment_recycle_item, null)
+        comment_recyclerview.adapter = mNewsCommentAdapter
+        comment_recyclerview.addItemDecoration(
+            RecyclerViewDivider(
+                mActivity,
+                LinearLayoutManager.VERTICAL
+            )
+        )
+        comment_recyclerview.layoutManager = LinearLayoutManager(mActivity)
         if (position == 0) {
-            danmuControl = new DanMuControl(MyApplication.getContext(), mDanmakuView);
-            mPresenter.loadShortComment(newsId);
+            danmuControl = DanMuControl(MyApplication.getContext(), sv_danmaku)
+            mPresenter.loadShortComment(newsId)
         } else {
-            mPresenter.loadLongComment(newsId);
+            mPresenter.loadLongComment(newsId)
         }
-
     }
 
-    @Override
-    protected void onFirstUserVisible() {
-
-    }
-
-    @Override
-    protected void onUserVisible() {
-
-    }
-
-    @Override
-    protected void onUserInvisible() {
-
-    }
-
-    @Override
-    public void showNewsComment(NewsCommentDto newsCommentDto) {
-        ArrayList<NewsCommentDto.Comment> comments = newsCommentDto.getComments();
-        mNewsCommentAdapter.setNewData(comments);
+    override fun onFirstUserVisible() {}
+    override fun onUserVisible() {}
+    override fun onUserInvisible() {}
+    override fun showNewsComment(newsCommentDto: NewsCommentDto) {
+        val comments = newsCommentDto.comments
+        mNewsCommentAdapter.setNewData(comments)
         if (position == 0) {
-            if (comments != null && comments.size() > 0) {
-                List<DanMuInfo> danMuInfoList = new ArrayList<>();
-                DanMuInfo danMuInfo;
-                for (NewsCommentDto.Comment comment : comments) {
-                    danMuInfo = new DanMuInfo();
-                    danMuInfo.avatarUrl = comment.getAvatar();
-                    danMuInfo.name = comment.getAuthor()+":";
-                    danMuInfo.content = comment.getContent();
-                    danMuInfoList.add(danMuInfo);
+            if (comments != null && comments.size > 0) {
+                val danMuInfoList: MutableList<DanMuInfo> = ArrayList()
+                var danMuInfo: DanMuInfo
+                for (comment in comments) {
+                    danMuInfo = DanMuInfo()
+                    danMuInfo.avatarUrl = comment.avatar
+                    danMuInfo.name = comment.author + ":"
+                    danMuInfo.content = comment.content
+                    danMuInfoList.add(danMuInfo)
                 }
-                danmuControl.addDanmu(danMuInfoList);
+                danmuControl?.addDanmu(danMuInfoList)
             }
         }
     }
 
-    @Override
-    public void showError(String errorMsg) {
-        showLongToast(errorMsg);
+    override fun showError(errorMsg: String) {
+        showLongToast(errorMsg)
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (mDanmakuView != null && mDanmakuView.isPrepared() && mDanmakuView.isPaused()) {
-            mDanmakuView.resume();
+    override fun onResume() {
+        super.onResume()
+        sv_danmaku?.apply {
+            if (isPrepared&& isPaused){
+                resume()
+            }
         }
     }
 
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        if (mDanmakuView != null && mDanmakuView.isPrepared()) {
-            mDanmakuView.pause();
+    override fun onPause() {
+        super.onPause()
+        sv_danmaku?.apply {
+            if (isPrepared){
+                pause()
+            }
         }
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        if (mDanmakuView != null) {
-            mDanmakuView.release();
-            mDanmakuView = null;
-        }
+    override fun onDestroyView() {
+        super.onDestroyView()
+        sv_danmaku?.release()
     }
 }

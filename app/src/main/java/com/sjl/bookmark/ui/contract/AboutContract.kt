@@ -1,8 +1,9 @@
-package com.sjl.bookmark.ui.contract;
+package com.sjl.bookmark.ui.contract
 
-
-import com.sjl.core.mvp.BaseContract;
-import com.sjl.core.mvp.BasePresenter;
+import com.sjl.bookmark.app.MyApplication
+import com.sjl.core.mvp.BaseContract.IBaseView
+import com.sjl.core.mvp.BasePresenter
+import org.greenrobot.eventbus.EventBus
 
 /**
  * 改良mvp模式
@@ -13,17 +14,17 @@ import com.sjl.core.mvp.BasePresenter;
  * @time 2018/11/26 9:50
  * @copyright(C) 2018 song
  */
-public interface AboutContract {
-    interface View extends BaseContract.IBaseView {
+interface AboutContract {
+    interface View : IBaseView {
         /**
          * 显示当前app版本
          *
          * @param version app版本
          */
-        void showCurrentVersion(String version);
+        fun showCurrentVersion(version: String)
     }
 
-    abstract class Presenter extends BasePresenter<View> {
-        public abstract void getCurrentVersion();
+    abstract class Presenter : BasePresenter<View>() {
+        abstract fun getCurrentVersion()
     }
 }

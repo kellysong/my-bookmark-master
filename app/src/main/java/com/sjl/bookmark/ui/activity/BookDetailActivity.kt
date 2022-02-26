@@ -1,48 +1,41 @@
-package com.sjl.bookmark.ui.activity;
+package com.sjl.bookmark.ui.activity
 
-import android.app.ProgressDialog;
-import android.content.Context;
-import android.content.Intent;
-import android.graphics.drawable.Drawable;
-import android.os.Build;
-import android.os.Bundle;
-import android.text.TextUtils;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
-
-import com.bumptech.glide.Glide;
-import com.sjl.bookmark.R;
-import com.sjl.bookmark.dao.impl.DaoFactory;
-import com.sjl.bookmark.entity.zhuishu.BookDetailDto;
-import com.sjl.bookmark.entity.zhuishu.HotCommentDto;
-import com.sjl.bookmark.entity.zhuishu.table.CollectBook;
-import com.sjl.bookmark.entity.zhuishu.table.RecommendBook;
-import com.sjl.bookmark.kotlin.language.I18nUtils;
-import com.sjl.bookmark.net.HttpConstant;
-import com.sjl.bookmark.ui.adapter.BookHotCommentAdapter;
-import com.sjl.bookmark.ui.adapter.BookListAdapter;
-import com.sjl.bookmark.ui.adapter.RecyclerViewDivider;
-import com.sjl.bookmark.ui.contract.BookDetailContract;
-import com.sjl.bookmark.ui.presenter.BookDetailPresenter;
-import com.sjl.core.mvp.BaseActivity;
-import com.sjl.core.net.RxBus;
-import com.sjl.core.net.RxSchedulers;
-import com.sjl.core.net.RxVoid;
-import com.sjl.core.util.datetime.TimeUtils;
-import com.sjl.core.util.log.LogUtils;
-import com.sjl.core.widget.RefreshLayout;
-import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
-
-import java.util.List;
-
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.content.ContextCompat;
-import androidx.core.widget.NestedScrollView;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import butterknife.BindView;
-import io.reactivex.functions.Consumer;
+import android.app.ProgressDialog
+import android.content.*
+import android.graphics.drawable.Drawable
+import android.os.Build
+import android.os.Build.VERSION_CODES
+import android.os.Bundle
+import android.text.TextUtils
+import android.view.*
+import android.widget.*
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.sjl.bookmark.R
+import com.sjl.bookmark.dao.impl.DaoFactory
+import com.sjl.bookmark.entity.zhuishu.BookDetailDto.BookDetail
+import com.sjl.bookmark.entity.zhuishu.HotCommentDto.HotComment
+import com.sjl.bookmark.entity.zhuishu.table.CollectBook
+import com.sjl.bookmark.entity.zhuishu.table.RecommendBook
+import com.sjl.bookmark.kotlin.language.I18nUtils
+import com.sjl.bookmark.net.HttpConstant
+import com.sjl.bookmark.ui.activity.BookDetailActivity
+import com.sjl.bookmark.ui.activity.BookReadActivity
+import com.sjl.bookmark.ui.adapter.*
+import com.sjl.bookmark.ui.contract.BookDetailContract
+import com.sjl.bookmark.ui.presenter.BookDetailPresenter
+import com.sjl.core.mvp.BaseActivity
+import com.sjl.core.net.RxBus
+import com.sjl.core.net.RxSchedulers
+import com.sjl.core.net.RxVoid
+import com.sjl.core.util.datetime.TimeUtils
+import com.sjl.core.util.log.LogUtils
+import com.zhy.adapter.recyclerview.MultiItemTypeAdapter
+import io.reactivex.functions.Consumer
+import kotlinx.android.synthetic.main.book_detail_activity.*
+import kotlinx.android.synthetic.main.toolbar_default.*
 
 /**
  * 书籍详情
@@ -53,382 +46,331 @@ import io.reactivex.functions.Consumer;
  * @time 2018/12/2 21:07
  * @copyright(C) 2018 song
  */
-public class BookDetailActivity extends BaseActivity<BookDetailPresenter> implements BookDetailContract.View {
-    public static final String RESULT_IS_COLLECTED = "result_is_collected";
+class BookDetailActivity : BaseActivity<BookDetailPresenter>(),
+    BookDetailContract.View {
 
-    public static final String EXTRA_BOOK_ID = "extra_book_id";
-
-    @BindView(R.id.common_toolbar)
-    Toolbar mToolBar;
-    @BindView(R.id.refresh_layout)
-    RefreshLayout mRefreshLayout;
-    @BindView(R.id.nsv_content)
-    NestedScrollView mNestedScrollView;
-    @BindView(R.id.book_detail_iv_cover)
-    ImageView mIvCover;
-    @BindView(R.id.book_detail_tv_title)
-    TextView mTvTitle;
-    @BindView(R.id.book_detail_tv_author)
-    TextView mTvAuthor;
-    @BindView(R.id.book_detail_tv_type)
-    TextView mTvType;
-    @BindView(R.id.book_detail_tv_word_count)
-    TextView mTvWordCount;
-    @BindView(R.id.book_detail_tv_lately_update)
-    TextView mTvLatelyUpdate;
-    @BindView(R.id.book_list_tv_chase)
-    TextView mTvChase;
-    @BindView(R.id.book_detail_tv_read)
-    TextView mTvRead;
-    @BindView(R.id.book_detail_tv_follower_count)
-    TextView mTvFollowerCount;
-    @BindView(R.id.book_detail_tv_retention)
-    TextView mTvRetention;
-    @BindView(R.id.book_detail_tv_day_word_count)
-    TextView mTvDayWordCount;
-    @BindView(R.id.book_detail_tv_brief)
-    TextView mTvBrief;
-    @BindView(R.id.book_detail_tv_more_comment)
-    TextView mTvMoreComment;
-    @BindView(R.id.book_detail_rv_hot_comment)
-    RecyclerView mRvHotComment;
-    @BindView(R.id.book_list_tv_recommend_book_list)
-    TextView mTvRecommendBookList;
-    @BindView(R.id.book_detail_rv_recommend_book_list)
-    RecyclerView mRvRecommendBookList;
-
-    private BookHotCommentAdapter mHotCommentAdapter;
-    private BookListAdapter mBookListAdapter;
-    private CollectBook mCollBookBean;
-    private ProgressDialog mProgressDialog;
-    private String mBookId;
-    private boolean isBriefOpen = false;
-    private boolean isCollected = false;
-
-    @Override
-    protected int getLayoutId() {
-        return R.layout.book_detail_activity;
+    private lateinit var mHotCommentAdapter: BookHotCommentAdapter
+    private var mBookListAdapter: BookListAdapter? = null
+    private var mCollBookBean: CollectBook? = null
+    private var mProgressDialog: ProgressDialog? = null
+    private var mBookId: String? = null
+    private var isBriefOpen: Boolean = false
+    private var isCollected: Boolean = false
+    override fun getLayoutId(): Int {
+        return R.layout.book_detail_activity
     }
 
-    @Override
-    protected void initView() {
-
-    }
-
-    @Override
-    protected void initListener() {
-        bindingToolbar(mToolBar, I18nUtils.getString(R.string.title_book_detail));
+    override fun initView() {}
+    override fun initListener() {
+        bindingToolbar(common_toolbar, I18nUtils.getString(R.string.title_book_detail))
         //简介，可伸缩的TextView
-        mTvBrief.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        book_detail_tv_brief.setOnClickListener(object : View.OnClickListener {
+            override fun onClick(v: View) {
                 if (isBriefOpen) {
-                    mTvBrief.setMaxLines(4);
-                    isBriefOpen = false;
+                    book_detail_tv_brief.maxLines = 4
+                    isBriefOpen = false
                 } else {
-                    mTvBrief.setMaxLines(8);
-                    isBriefOpen = true;
+                    book_detail_tv_brief.maxLines = 8
+                    isBriefOpen = true
                 }
             }
-        });
+        })
 
         //追更和放弃
-        mTvChase.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (isCollected) {//已经收藏有，点击放弃
+        book_list_tv_chase.setOnClickListener(object : View.OnClickListener {
+            override fun onClick(v: View) {
+                if (isCollected) { //已经收藏有，点击放弃
                     //从数据库删除
                     DaoFactory.getCollectBookDao().deleteCollBookInRx(mCollBookBean)
-                            .compose(RxSchedulers.<RxVoid>applySingle())
-                            .as(BookDetailActivity.this.<RxVoid>bindLifecycle())
-                            .subscribe(new Consumer<RxVoid>() {
-                                @Override
-                                public void accept(RxVoid rxVoid) throws Exception {
-                                    LogUtils.i("删除收藏成功");
-                                    BaseActivity activity = getActivity(BookReadActivity.class);
-                                    if (activity != null) {
-                                        activity.finish();
-                                    }
-                                    RxBus.getInstance().post(false);//更新书架
+                        .compose(RxSchedulers.applySingle())
+                        .`as`(bindLifecycle())
+                        .subscribe(object : Consumer<RxVoid?> {
+                            @Throws(Exception::class)
+                            override fun accept(rxVoid: RxVoid?) {
+                                LogUtils.i("删除收藏成功")
+                                val activity: BaseActivity<*>? =
+                                    getActivity(BookReadActivity::class.java)
+                                if (activity != null) {
+                                    activity.finish()
                                 }
-                            }, new Consumer<Throwable>() {
-                                @Override
-                                public void accept(Throwable throwable) throws Exception {
-                                    LogUtils.e("删除收藏异常", throwable);
-                                }
-                            });
-
-                    mTvChase.setText(getResources().getString(R.string.nb_book_detail_chase_update));
+                                RxBus.getInstance().post(false) //更新书架
+                            }
+                        }, object : Consumer<Throwable?> {
+                            @Throws(Exception::class)
+                            override fun accept(throwable: Throwable?) {
+                                LogUtils.e("删除收藏异常", throwable)
+                            }
+                        })
+                    book_list_tv_chase.text =
+                        resources.getString(R.string.nb_book_detail_chase_update)
 
                     //修改背景
-                    Drawable drawable = getResources().getDrawable(R.drawable.selector_btn_book_list);
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                        mTvChase.setBackground(drawable);
+                    val drawable: Drawable =
+                        resources.getDrawable(R.drawable.selector_btn_book_list)
+                    if (Build.VERSION.SDK_INT >= VERSION_CODES.JELLY_BEAN) {
+                        book_list_tv_chase.background = drawable
                     } else {
-                        mTvChase.setBackgroundDrawable(drawable);
+                        book_list_tv_chase.setBackgroundDrawable(drawable)
                     }
                     //设置图片
-                    mTvChase.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(BookDetailActivity.this, R.mipmap.ic_book_list_add), null,
-                            null, null);
-
-                    isCollected = false;
-                } else {//没有收藏，添加收藏
-                    mPresenter.addToBookShelf(mCollBookBean);
-                    mTvChase.setText(getResources().getString(R.string.nb_book_detail_give_up));
+                    book_list_tv_chase.setCompoundDrawablesWithIntrinsicBounds(
+                        ContextCompat.getDrawable(
+                            this@BookDetailActivity,
+                            R.mipmap.ic_book_list_add
+                        ), null,
+                        null, null
+                    )
+                    isCollected = false
+                } else { //没有收藏，添加收藏
+                    mPresenter.addToBookShelf((mCollBookBean)!!)
+                    book_list_tv_chase.text = resources.getString(R.string.nb_book_detail_give_up)
 
                     //修改背景
-                    Drawable drawable = getResources().getDrawable(R.drawable.shape_common_gray_corner);
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                        mTvChase.setBackground(drawable);
+                    val drawable: Drawable =
+                        resources.getDrawable(R.drawable.shape_common_gray_corner)
+                    if (Build.VERSION.SDK_INT >= VERSION_CODES.JELLY_BEAN) {
+                        book_list_tv_chase.background = drawable
                     } else {
-                        mTvChase.setBackgroundDrawable(drawable);
+                        book_list_tv_chase.setBackgroundDrawable(drawable)
                     }
                     //设置图片
                     /**
                      * setCompoundDrawables 设置图片的宽高是通过的画的drawable的宽高决定的，
-                     所以，必须先使用Drawable.setBounds设置Drawable的宽高，图片才会显示,故采用setCompoundDrawablesWithIntrinsicBounds方便处理
+                     * 所以，必须先使用Drawable.setBounds设置Drawable的宽高，图片才会显示,故采用setCompoundDrawablesWithIntrinsicBounds方便处理
                      */
-                    mTvChase.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(BookDetailActivity.this, R.mipmap.ic_book_list_delete), null,
-                            null, null);
-
-                    isCollected = true;
+                    book_list_tv_chase.setCompoundDrawablesWithIntrinsicBounds(
+                        ContextCompat.getDrawable(
+                            this@BookDetailActivity,
+                            R.mipmap.ic_book_list_delete
+                        ), null,
+                        null, null
+                    )
+                    isCollected = true
                 }
             }
-        });
+        })
         //开始阅读
-        mTvRead.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        book_detail_tv_read.setOnClickListener(object : View.OnClickListener {
+            override fun onClick(v: View) {
 //                startActivityForResult(new Intent(BookDetailActivity.this, BookReadActivity.class)
 //                        .putExtra(BookReadActivity.EXTRA_IS_COLLECTED, isCollected)
 //                        .putExtra(BookReadActivity.EXTRA_COLL_BOOK, mCollBookBean), REQUEST_READ);
-
-                startActivity(new Intent(BookDetailActivity.this, BookReadActivity.class)
-                        .putExtra(BookReadActivity.EXTRA_IS_COLLECTED, isCollected)
-                        .putExtra(BookReadActivity.EXTRA_COLL_BOOK, mCollBookBean));
+                startActivity(
+                    Intent(this@BookDetailActivity, BookReadActivity::class.java)
+                        .putExtra(BookReadActivity.Companion.EXTRA_IS_COLLECTED, isCollected)
+                        .putExtra(BookReadActivity.Companion.EXTRA_COLL_BOOK, mCollBookBean)
+                )
             }
-        });
+        })
 
         //更多评论
-        mTvMoreComment.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Bundle bundle = new Bundle();
-                bundle.putString(EXTRA_BOOK_ID, mBookId);
-                openActivity(BookMoreCommentActivity.class, bundle);
+        book_detail_tv_more_comment!!.setOnClickListener(object : View.OnClickListener {
+            override fun onClick(v: View) {
+                val bundle: Bundle = Bundle()
+                bundle.putString(EXTRA_BOOK_ID, mBookId)
+                openActivity(BookMoreCommentActivity::class.java, bundle)
             }
-        });
-
+        })
     }
 
-    @Override
-    protected void initData() {
-        mBookId = getIntent().getStringExtra(EXTRA_BOOK_ID);
-        requestData();
-
+    override fun initData() {
+        mBookId = intent.getStringExtra(EXTRA_BOOK_ID)
+        requestData()
     }
 
-    private void requestData() {
-        mRefreshLayout.showLoading();
-        mPresenter.refreshBookDetail(mBookId);
+    private fun requestData() {
+        refresh_layout!!.showLoading()
+        mPresenter!!.refreshBookDetail((mBookId)!!)
     }
 
     /*
     * 复用Activity时的生命周期回调
     */
-    @Override
-    protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
-        setIntent(intent);
-        mBookId = getIntent().getStringExtra(EXTRA_BOOK_ID);
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        mBookId = getIntent().getStringExtra(EXTRA_BOOK_ID)
         if (TextUtils.isEmpty(mBookId)) {
-            return;
+            return
         }
-        mNestedScrollView.fling(0);//滑动到顶部
-        mNestedScrollView.smoothScrollTo(0, 0);
-        requestData();
+        nsv_content.fling(0) //滑动到顶部
+        nsv_content.smoothScrollTo(0, 0)
+        requestData()
     }
 
-
-    public static void startActivity(Context context, String bookId) {
-        Intent intent = new Intent(context, BookDetailActivity.class);
-        intent.putExtra(EXTRA_BOOK_ID, bookId);
-        context.startActivity(intent);
-    }
-
-    @Override
-    public void finishRefresh(BookDetailDto.BookDetail bookDetail) {
+    override fun finishRefresh(bookDetail: BookDetail) {
         //封面
         Glide.with(this)
-                .load(HttpConstant.ZHUISHU_IMG_BASE_URL + bookDetail.getCover())
-                .placeholder(R.drawable.ic_book_loading)
-                .error(R.mipmap.ic_load_error)
-                .centerCrop()
-                .into(mIvCover);
+            .load(HttpConstant.ZHUISHU_IMG_BASE_URL + bookDetail.cover)
+            .placeholder(R.drawable.ic_book_loading)
+            .error(R.mipmap.ic_load_error)
+            .centerCrop()
+            .into((book_detail_iv_cover))
 
         //书名
-        mTvTitle.setText(bookDetail.getTitle());
+        book_detail_tv_title.text = bookDetail.title
         //作者
-        mTvAuthor.setText(bookDetail.getAuthor());
+        book_detail_tv_author.text = bookDetail.author
         //类型
-        mTvType.setText("|" + bookDetail.getMajorCate());
+        book_detail_tv_type.text = "|" + bookDetail.majorCate
 
         //总字数
-        mTvWordCount.setText(getResources().getString(R.string.nb_book_word, bookDetail.getWordCount() / 10000));
+        book_detail_tv_word_count.text = resources.getString(
+            R.string.nb_book_word,
+            bookDetail.wordCount / 10000
+        )
         //更新时间
-        mTvLatelyUpdate.setText(TimeUtils.dateConvert(bookDetail.getUpdated(), TimeUtils.DATE_FORMAT_7));
+        book_detail_tv_lately_update.text = TimeUtils.dateConvert(
+            bookDetail.updated,
+            TimeUtils.DATE_FORMAT_7
+        )
         //追书人数
-        mTvFollowerCount.setText(bookDetail.getFollowerCount() + "");
+        book_detail_tv_follower_count.text = bookDetail.followerCount.toString() + ""
         //存留率
-        mTvRetention.setText(bookDetail.getRetentionRatio() + "%");
+        book_detail_tv_retention.text = bookDetail.retentionRatio + "%"
         //日更字数
-        mTvDayWordCount.setText(bookDetail.getSerializeWordCount() + "");
+        book_detail_tv_day_word_count.text = bookDetail.serializeWordCount.toString() + ""
         //简介
-        mTvBrief.setText(bookDetail.getLongIntro());
-
-        mCollBookBean = DaoFactory.getCollectBookDao().getCollectBook(bookDetail.get_id());
+        book_detail_tv_brief.text = bookDetail.longIntro
+        mCollBookBean = DaoFactory.getCollectBookDao().getCollectBook(bookDetail._id)
 
         //判断是否收藏
         if (mCollBookBean != null) {
-            isCollected = true;
-
-            mTvChase.setText(getResources().getString(R.string.nb_book_detail_give_up));
+            isCollected = true
+            book_list_tv_chase.text = resources.getString(R.string.nb_book_detail_give_up)
             //修改背景
-            Drawable drawable = getResources().getDrawable(R.drawable.shape_common_gray_corner);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                mTvChase.setBackground(drawable);
+            val drawable: Drawable = resources.getDrawable(R.drawable.shape_common_gray_corner)
+            if (Build.VERSION.SDK_INT >= VERSION_CODES.JELLY_BEAN) {
+                book_list_tv_chase.background = drawable
             } else {
-                mTvChase.setBackgroundDrawable(drawable);
-            }            //设置图片
-            mTvChase.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(this, R.mipmap.ic_book_list_delete), null,
-                    null, null);
-            mTvRead.setText(R.string.nb_book_detail_continue_read);
+                book_list_tv_chase.setBackgroundDrawable(drawable)
+            } //设置图片
+            book_list_tv_chase.setCompoundDrawablesWithIntrinsicBounds(
+                ContextCompat.getDrawable(this, R.mipmap.ic_book_list_delete), null,
+                null, null
+            )
+            book_detail_tv_read.setText(R.string.nb_book_detail_continue_read)
         } else {
-            isCollected = false;
-            mTvChase.setText(getResources().getString(R.string.nb_book_detail_chase_update));
+            isCollected = false
+            book_list_tv_chase.text = resources.getString(R.string.nb_book_detail_chase_update)
             //修改背景
-            Drawable drawable = getResources().getDrawable(R.drawable.selector_btn_book_list);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                mTvChase.setBackground(drawable);
+            val drawable: Drawable = resources.getDrawable(R.drawable.selector_btn_book_list)
+            if (Build.VERSION.SDK_INT >= VERSION_CODES.JELLY_BEAN) {
+                book_list_tv_chase.background = drawable
             } else {
-                mTvChase.setBackgroundDrawable(drawable);
-            }            //设置图片
-            mTvChase.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(BookDetailActivity.this, R.mipmap.ic_book_list_add), null,
-                    null, null);
-            mTvRead.setText(R.string.nb_book_detail_start_read);
-
-            mCollBookBean = bookDetail.getCollBookBean();
+                book_list_tv_chase.setBackgroundDrawable(drawable)
+            } //设置图片
+            book_list_tv_chase.setCompoundDrawablesWithIntrinsicBounds(
+                ContextCompat.getDrawable(this@BookDetailActivity, R.mipmap.ic_book_list_add), null,
+                null, null
+            )
+            book_detail_tv_read.setText(R.string.nb_book_detail_start_read)
+            mCollBookBean = bookDetail.collBookBean
         }
     }
 
-    @Override
-    public void finishHotComment(List<HotCommentDto.HotComment> hotCommentList) {
+    override fun finishHotComment(hotCommentList: List<HotComment>) {
         if (hotCommentList.isEmpty()) {
-            return;
+            return
         }
-        mHotCommentAdapter = new BookHotCommentAdapter(this, R.layout.bookdetail_hot_comment_recycle_item, hotCommentList);
-        mRvHotComment.setLayoutManager(new LinearLayoutManager(this) {
-            @Override
-            public boolean canScrollVertically() {
+        mHotCommentAdapter = BookHotCommentAdapter(
+            this,
+            R.layout.bookdetail_hot_comment_recycle_item,
+            hotCommentList
+        )
+        book_detail_rv_hot_comment.layoutManager = object : LinearLayoutManager(this) {
+            override fun canScrollVertically(): Boolean {
                 //RecyclerView与外部ScrollView滑动冲突
-                return false;
+                return false
             }
-        });
-        mRvHotComment.addItemDecoration(new RecyclerViewDivider(this, LinearLayoutManager.VERTICAL));
-        mRvHotComment.setNestedScrollingEnabled(false);//禁止RecyclerView嵌套滑动，防止NestedScrollView滑动不流畅
-
-        mRvHotComment.setAdapter(mHotCommentAdapter);
+        }
+        book_detail_rv_hot_comment.addItemDecoration(
+            RecyclerViewDivider(
+                this,
+                LinearLayoutManager.VERTICAL
+            )
+        )
+        book_detail_rv_hot_comment.isNestedScrollingEnabled =
+            false //禁止RecyclerView嵌套滑动，防止NestedScrollView滑动不流畅
+        book_detail_rv_hot_comment.adapter = mHotCommentAdapter
     }
 
-    @Override
-    public void finishRecommendBookList(final List<RecommendBook> recommendBookList) {
+    override fun finishRecommendBookList(recommendBookList: List<RecommendBook>) {
         if (recommendBookList == null || recommendBookList.isEmpty()) {
-            return;
+            return
         }
         //推荐书籍
-        mBookListAdapter = new BookListAdapter(this, R.layout.bookdetail_like_recycle_item, recommendBookList);
-        mRvRecommendBookList.setLayoutManager(new LinearLayoutManager(this) {
-            @Override
-            public boolean canScrollVertically() {
+        mBookListAdapter =
+            BookListAdapter(this, R.layout.bookdetail_like_recycle_item, recommendBookList)
+        book_detail_rv_recommend_book_list!!.layoutManager = object : LinearLayoutManager(this) {
+            override fun canScrollVertically(): Boolean {
                 //RecyclerView与外部ScrollView滑动冲突
-                return false;
+                return false
             }
-        });
-        mRvRecommendBookList.addItemDecoration(new RecyclerViewDivider(this, LinearLayoutManager.VERTICAL));
-        mRvRecommendBookList.setAdapter(mBookListAdapter);
-        mBookListAdapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
-                RecommendBook dataItem = mBookListAdapter.getItem(position);
-                BookDetailActivity.startActivity(BookDetailActivity.this, dataItem.getRecommendId());
+        }
+        book_detail_rv_recommend_book_list!!.addItemDecoration(
+            RecyclerViewDivider(
+                this,
+                LinearLayoutManager.VERTICAL
+            )
+        )
+        book_detail_rv_recommend_book_list.adapter = mBookListAdapter
+        mBookListAdapter?.setOnItemClickListener(object :
+            MultiItemTypeAdapter.OnItemClickListener {
+            override fun onItemClick(
+                view: View,
+                holder: RecyclerView.ViewHolder,
+                position: Int
+            ) {
+                val dataItem: RecommendBook = mBookListAdapter!!.getItem(position)
+                startActivity(this@BookDetailActivity, dataItem.recommendId)
             }
 
-            @Override
-            public boolean onItemLongClick(View view, RecyclerView.ViewHolder holder, int position) {
-                return false;
+            override fun onItemLongClick(
+                view: View,
+                holder: RecyclerView.ViewHolder,
+                position: Int
+            ): Boolean {
+                return false
             }
-        });
+        })
     }
 
-
-    @Override
-    public void waitToBookShelf() {
+    override fun waitToBookShelf() {
         if (mProgressDialog == null) {
-            mProgressDialog = new ProgressDialog(this);
-            mProgressDialog.setTitle(getString(R.string.book_detail_add_shelf_hint));
+            mProgressDialog = ProgressDialog(this)
+            mProgressDialog?.setTitle(getString(R.string.book_detail_add_shelf_hint))
         }
-        mProgressDialog.show();
+        mProgressDialog?.show()
     }
 
-    @Override
-    public void errorToBookShelf() {
-        if (mProgressDialog != null) {
-            mProgressDialog.dismiss();
-        }
-        showShortToast(getString(R.string.book_detail_add_shelf_hint2));
+    override fun errorToBookShelf() {
+        mProgressDialog?.dismiss()
+        showShortToast(getString(R.string.book_detail_add_shelf_hint2))
     }
 
-    @Override
-    public void succeedToBookShelf() {
-        if (mProgressDialog != null) {
-            mProgressDialog.dismiss();
-        }
-        showShortToast(getString(R.string.book_detail_add_shelf_hint3));
+    override fun succeedToBookShelf() {
+        mProgressDialog?.dismiss()
+        showShortToast(getString(R.string.book_detail_add_shelf_hint3))
         //更新书架
-        RxBus.getInstance().post(true);
+        RxBus.getInstance().post(true)
     }
 
-    @Override
-    public void showError() {
-        mRefreshLayout.showError();
+    override fun showError() {
+        refresh_layout.showError()
     }
 
-    @Override
-    public void complete() {
-        mRefreshLayout.showFinish();
+    override fun complete() {
+        refresh_layout.showFinish()
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        //如果进入阅读页面收藏了，页面结束的时候，就需要返回改变收藏按钮
-//        if (requestCode == REQUEST_READ) {
-//            if (data == null) {
-//                return;
-//            }
-//
-//            isCollected = data.getBooleanExtra(RESULT_IS_COLLECTED, false);
-//
-//            if (isCollected) {
-//                mTvChase.setText(getResources().getString(R.string.nb_book_detail_give_up));
-//                //修改背景
-//                Drawable drawable = getResources().getDrawable(R.drawable.shape_common_gray_corner);
-//                mTvChase.setBackground(drawable);
-//                //设置图片
-//                mTvChase.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(this, R.mipmap.ic_book_list_delete), null,
-//                        null, null);
-//                mTvRead.setText("继续阅读");
-//            }
-//        }
+    companion object {
+        val RESULT_IS_COLLECTED: String = "result_is_collected"
+        val EXTRA_BOOK_ID: String = "extra_book_id"
+        fun startActivity(context: Context, bookId: String?) {
+            val intent: Intent = Intent(context, BookDetailActivity::class.java)
+            intent.putExtra(EXTRA_BOOK_ID, bookId)
+            context.startActivity(intent)
+        }
     }
 }

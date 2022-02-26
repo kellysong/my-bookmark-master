@@ -1,25 +1,19 @@
-package com.sjl.bookmark.ui.activity;
+package com.sjl.bookmark.ui.activity
 
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.appcompat.widget.Toolbar;
-import android.view.View;
-import android.widget.TextView;
-
-import com.sjl.bookmark.R;
-import com.sjl.bookmark.entity.table.HistoryExpress;
-import com.sjl.bookmark.kotlin.language.I18nUtils;
-import com.sjl.bookmark.ui.adapter.HistoryExpressAdapter;
-import com.sjl.bookmark.ui.contract.ExpressContract;
-import com.sjl.bookmark.ui.presenter.ExpressPresenter;
-import com.sjl.core.mvp.BaseActivity;
-import com.sjl.core.util.AppUtils;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import butterknife.BindView;
+import android.view.View
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.sjl.bookmark.R
+import com.sjl.bookmark.entity.table.HistoryExpress
+import com.sjl.bookmark.kotlin.language.I18nUtils
+import com.sjl.bookmark.ui.adapter.HistoryExpressAdapter
+import com.sjl.bookmark.ui.contract.ExpressContract
+import com.sjl.bookmark.ui.presenter.ExpressPresenter
+import com.sjl.core.mvp.BaseActivity
+import com.sjl.core.util.AppUtils
+import kotlinx.android.synthetic.main.express_history_activity.*
+import kotlinx.android.synthetic.main.toolbar_default.*
+import java.util.*
 
 /**
  * 快递历史记录
@@ -30,61 +24,48 @@ import butterknife.BindView;
  * @time 2018/5/2 18:09
  * @copyright(C) 2018 song
  */
-public class ExpressHistoryActivity extends BaseActivity<ExpressPresenter> implements ExpressContract.View {
-    @BindView(R.id.common_toolbar)
-    Toolbar mToolBar;
+class ExpressHistoryActivity : BaseActivity<ExpressPresenter>(),
+    ExpressContract.View {
 
-    @BindView(R.id.rv_history_list)
-    RecyclerView rvHistoryList;
-    @BindView(R.id.tv_empty)
-    TextView tvEmpty;
-
-    private List<HistoryExpress> historyExpresses = new ArrayList<>();
-    private HistoryExpressAdapter historyExpressAdapter;
-
-    @Override
-    protected int getLayoutId() {
-        return R.layout.express_history_activity;
+    private val historyExpresses: MutableList<HistoryExpress> = ArrayList()
+    private lateinit var historyExpressAdapter: HistoryExpressAdapter
+    override fun getLayoutId(): Int {
+        return R.layout.express_history_activity
     }
 
-    @Override
-    protected void initView() {
-
+    override fun initView() {}
+    override fun initListener() {
+        bindingToolbar(common_toolbar, I18nUtils.getString(R.string.title_history_record))
     }
 
-
-    @Override
-    protected void initListener() {
-        bindingToolbar(mToolBar, I18nUtils.getString(R.string.title_history_record));
+    override fun initData() {
+        historyExpressAdapter =
+            HistoryExpressAdapter(this, R.layout.history_express_recycle_item, historyExpresses)
+        rv_history_list.layoutManager = LinearLayoutManager(this)
+        rv_history_list.addItemDecoration(
+            DividerItemDecoration(
+                this,
+                DividerItemDecoration.VERTICAL
+            )
+        )
+        rv_history_list.adapter = historyExpressAdapter
     }
 
-    @Override
-    protected void initData() {
-        historyExpressAdapter = new HistoryExpressAdapter(this, R.layout.history_express_recycle_item, historyExpresses);
-        rvHistoryList.setLayoutManager(new LinearLayoutManager(this));
-        rvHistoryList.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
-        rvHistoryList.setAdapter(historyExpressAdapter);
+    override fun onResume() {
+        super.onResume()
+        mPresenter.getHistoryExpresses()
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        mPresenter.getHistoryExpresses();
-    }
-
-    @Override
-    public void setHistoryExpress(List<HistoryExpress> historyExpresses) {
+    override fun setHistoryExpress(historyExpresses: List<HistoryExpress>) {
         if (AppUtils.isEmpty(historyExpresses)) {
-            rvHistoryList.setVisibility(View.GONE);
-            tvEmpty.setVisibility(View.VISIBLE);
+            rv_history_list.visibility = View.GONE
+            tv_empty.visibility = View.VISIBLE
         } else {
-            rvHistoryList.setVisibility(View.VISIBLE);
-            tvEmpty.setVisibility(View.GONE);
-            this.historyExpresses.clear();
-            this.historyExpresses.addAll(historyExpresses);
-            historyExpressAdapter.notifyDataSetChanged();
-
+            rv_history_list.visibility = View.VISIBLE
+            tv_empty.visibility = View.GONE
+            this.historyExpresses.clear()
+            this.historyExpresses.addAll(historyExpresses)
+            historyExpressAdapter.notifyDataSetChanged()
         }
     }
 }

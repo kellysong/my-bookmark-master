@@ -1,20 +1,16 @@
-package com.sjl.bookmark.ui.activity;
+package com.sjl.bookmark.ui.activity
 
-import androidx.appcompat.widget.Toolbar;
-import android.view.View;
-import android.widget.TextView;
-
-import com.sjl.bookmark.R;
-import com.sjl.bookmark.kotlin.language.I18nUtils;
-import com.sjl.bookmark.ui.contract.CreateLockContract;
-import com.sjl.bookmark.ui.presenter.CreateLockPresenter;
-import com.sjl.bookmark.widget.LockPatternView;
-import com.sjl.core.mvp.BaseActivity;
-import com.sjl.core.util.log.LogUtils;
-
-import java.util.List;
-
-import butterknife.BindView;
+import android.view.View
+import com.sjl.bookmark.R
+import com.sjl.bookmark.kotlin.language.I18nUtils
+import com.sjl.bookmark.ui.contract.CreateLockContract
+import com.sjl.bookmark.ui.presenter.CreateLockPresenter
+import com.sjl.bookmark.widget.LockPatternView
+import com.sjl.bookmark.widget.LockPatternView.OnPatternListener
+import com.sjl.core.mvp.BaseActivity
+import com.sjl.core.util.log.LogUtils
+import kotlinx.android.synthetic.main.activity_create_lock.*
+import kotlinx.android.synthetic.main.toolbar_default.*
 
 /**
  * 设置手势密码Activity
@@ -25,100 +21,70 @@ import butterknife.BindView;
  * @time 2018/3/5 10:00
  * @copyright(C) 2018 song
  */
-public class CreateLockActivity extends BaseActivity<CreateLockPresenter> implements CreateLockContract.View, LockPatternView.OnPatternListener {
-    @BindView(R.id.common_toolbar)
-    Toolbar toolbar;
-    @BindView(R.id.lockPatternView)
-    LockPatternView mLockPatternView;
-    @BindView(R.id.iv_warn_msg)
-    TextView mWarnMsg;
+class CreateLockActivity : BaseActivity<CreateLockPresenter>(),
+    CreateLockContract.View, OnPatternListener {
 
-
-    @Override
-    protected int getLayoutId() {
-        return R.layout.activity_create_lock;
+    override fun getLayoutId(): Int {
+        return R.layout.activity_create_lock
     }
 
-    @Override
-    protected void initView() {
-
-    }
-
-    @Override
-    protected void initListener() {
-        bindingToolbar(toolbar, I18nUtils.getString(R.string.title_setting_gesture_pwd));
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mPresenter.onBack();
-                finish();
+    override fun initView() {}
+    override fun initListener() {
+        bindingToolbar(common_toolbar, I18nUtils.getString(R.string.title_setting_gesture_pwd))
+        common_toolbar.setNavigationOnClickListener(object : View.OnClickListener {
+            override fun onClick(v: View) {
+                mPresenter.onBack()
+                finish()
             }
-        });
-        mLockPatternView.setOnPatternListener(this);
+        })
+        lockPatternView.setOnPatternListener(this)
     }
 
-    @Override
-    protected void initData() {
-        mPresenter.init(getIntent());
+    override fun initData() {
+        mPresenter.init(intent)
     }
 
-
-    @Override
-    public void lockDisplayError() {
-        mLockPatternView.setDisplayMode(LockPatternView.DisplayMode.Wrong);
+    override fun lockDisplayError() {
+        lockPatternView.setDisplayMode(LockPatternView.DisplayMode.Wrong)
     }
 
-    @Override
-    public void setTitle(String title) {
-        toolbar.setTitle(title);
+    override fun setTitle(title: String) {
+        common_toolbar.title = title
     }
 
-    @Override
-    public void setResults(int isSuccess) {
-        setResult(isSuccess);
+    override fun setResults(isSuccess: Int) {
+        setResult(isSuccess)
     }
 
-    @Override
-    public void clearPattern() {
-
+    override fun clearPattern() {}
+    override fun kill() {
+        finish()
     }
 
-    @Override
-    public void kill() {
-        finish();
+    override fun showLockMsg(msg: String) {
+        iv_warn_msg.text = msg
     }
 
-    @Override
-    public void showLockMsg(String msg) {
-        mWarnMsg.setText(msg);
+    override fun onPatternStart() {
+        LogUtils.i("onPatternStart")
+        mPresenter.fingerPress()
     }
 
-    @Override
-    public void onPatternStart() {
-        LogUtils.i("onPatternStart");
-        mPresenter.fingerPress();
+    override fun onPatternCleared() {
+        LogUtils.i("onPatternCleared")
     }
 
-    @Override
-    public void onPatternCleared() {
-        LogUtils.i("onPatternCleared");
+    override fun onPatternCellAdded(pattern: List<LockPatternView.Cell>) {
+        LogUtils.i("onPatternCellAdded")
     }
 
-    @Override
-    public void onPatternCellAdded(List<LockPatternView.Cell> pattern) {
-        LogUtils.i("onPatternCellAdded");
-
+    override fun onPatternDetected(pattern: List<LockPatternView.Cell>) {
+        LogUtils.i("onPatternDetected")
+        mPresenter.check(pattern)
     }
 
-    @Override
-    public void onPatternDetected(List<LockPatternView.Cell> pattern) {
-        LogUtils.i("onPatternDetected");
-        mPresenter.check(pattern);
-    }
-
-    @Override
-    public void onBackPressed() {
-        mPresenter.onBack();
-        super.onBackPressed();
+    override fun onBackPressed() {
+        mPresenter.onBack()
+        super.onBackPressed()
     }
 }

@@ -1,10 +1,8 @@
-package com.sjl.bookmark.ui.contract;
+package com.sjl.bookmark.ui.contract
 
-import com.sjl.bookmark.entity.zhuishu.SearchBookDto;
-import com.sjl.core.mvp.BaseContract;
-import com.sjl.core.mvp.BasePresenter;
-
-import java.util.List;
+import com.sjl.bookmark.entity.zhuishu.SearchBookDto.BooksBean
+import com.sjl.core.mvp.BaseContract.IBaseView
+import com.sjl.core.mvp.BasePresenter
 
 /**
  * TODO
@@ -15,30 +13,27 @@ import java.util.List;
  * @time 2018/11/30 16:59
  * @copyright(C) 2018 song
  */
-public interface BookSearchContract {
-    interface View extends BaseContract.IBaseView {
-        void finishHotWords(List<String> hotWords);
-
-        void finishKeyWords(List<String> keyWords);
-
-        void finishBooks(List<SearchBookDto.BooksBean> books);
-
-        void errorBooks();
+interface BookSearchContract {
+    interface View : IBaseView {
+        fun finishHotWords(hotWords: List<String>)
+        fun finishKeyWords(keyWords: List<String>)
+        fun finishBooks(books: List<BooksBean>)
+        fun errorBooks()
     }
 
-    abstract class Presenter extends BasePresenter<View> {
-        public abstract void searchHotWord();
+    abstract class Presenter : BasePresenter<View>() {
+        abstract fun searchHotWord()
 
         /**
          * 搜索提示
          * @param query
          */
-        public abstract void searchKeyWord(String query);
+        abstract fun searchKeyWord(query: String)
 
         /**
          * 搜索书籍
          * @param query
          */
-        public abstract void searchBook(String query);
+        abstract fun searchBook(query: String)
     }
 }

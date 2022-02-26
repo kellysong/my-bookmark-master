@@ -1,10 +1,8 @@
-package com.sjl.bookmark.ui.contract;
+package com.sjl.bookmark.ui.contract
 
-import com.sjl.bookmark.entity.Category;
-import com.sjl.core.mvp.BaseContract;
-import com.sjl.core.mvp.BasePresenter;
-
-import java.util.List;
+import com.sjl.bookmark.entity.Category
+import com.sjl.core.mvp.BaseContract.IBaseView
+import com.sjl.core.mvp.BasePresenter
 
 /**
  * TODO
@@ -15,25 +13,23 @@ import java.util.List;
  * @time 2018/11/26 15:42
  * @copyright(C) 2018 song
  */
-public interface CategoryContract {
-    interface View extends BaseContract.IBaseView {
-        void setCategory(List<Category> categories);
+interface CategoryContract {
+    interface View : IBaseView {
+        fun setCategory(categories: List<Category>)
 
         /**
          * 显示下拉加载进度
          */
-        void showLoading();
-
-        void showFail(String message);
-
+        fun showLoading()
+        fun showFail(message: String?)
     }
 
-    abstract class Presenter extends BasePresenter<View> {
-        public abstract void loadCategoryData();
+    abstract class Presenter : BasePresenter<View>() {
+        abstract fun loadCategoryData()
 
         /**
          * 下拉刷新
          */
-        public abstract void refresh();
+        abstract fun refresh()
     }
 }

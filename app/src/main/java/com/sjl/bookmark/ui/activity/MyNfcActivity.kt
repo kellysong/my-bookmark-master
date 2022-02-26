@@ -1,6 +1,6 @@
-package com.sjl.bookmark.ui.activity;
+package com.sjl.bookmark.ui.activity
 
-import com.sinpo.xnfc.NFCardActivity;
+import com.sinpo.xnfc.NFCardActivity
 
 /**
  * TODO
@@ -11,9 +11,8 @@ import com.sinpo.xnfc.NFCardActivity;
  * @time 2021/9/19 11:48
  * @copyright(C) 2021 song
  */
-public class MyNfcActivity extends NFCardActivity {
-    @Override
-    protected Class<?> getLaunchMainClass() {
-        return MainActivity.class;
+class MyNfcActivity : NFCardActivity() {
+    override fun getLaunchMainClass(): Class<*> {
+        return MainActivity::class.java
     }
 }

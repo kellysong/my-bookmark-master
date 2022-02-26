@@ -27,7 +27,7 @@
     </com.google.android.material.appbar.AppBarLayout>
 
     <FrameLayout
-        android:id="@+id/webView1"
+        android:id="@+id/fl_webView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/white"

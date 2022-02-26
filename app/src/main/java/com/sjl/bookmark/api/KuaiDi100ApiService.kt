@@ -1,22 +1,12 @@
-package com.sjl.bookmark.api;
+package com.sjl.bookmark.api
 
-
-import com.sjl.bookmark.entity.ExpressDetail;
-import com.sjl.bookmark.entity.ExpressDetail2;
-import com.sjl.bookmark.entity.ExpressName;
-
-import java.util.Map;
-
-import io.reactivex.Observable;
-import okhttp3.ResponseBody;
-import retrofit2.Response;
-import retrofit2.http.GET;
-import retrofit2.http.Header;
-import retrofit2.http.HeaderMap;
-import retrofit2.http.Headers;
-import retrofit2.http.Query;
-
-
+import com.sjl.bookmark.entity.ExpressDetail
+import com.sjl.bookmark.entity.ExpressDetail2
+import com.sjl.bookmark.entity.ExpressName
+import io.reactivex.Observable
+import okhttp3.ResponseBody
+import retrofit2.Response
+import retrofit2.http.*
 
 /**
  * TODO
@@ -27,8 +17,7 @@ import retrofit2.http.Query;
  * @time 2018/1/29 15:36
  * @copyright(C) 2018 song
  */
-public interface KuaiDi100ApiService {
-
+interface KuaiDi100ApiService {
     /**
      * 查询快递名称
      * http://www.kuaidi100.com/autonumber/autoComNum?resultv2=1&text=479389994039
@@ -37,27 +26,27 @@ public interface KuaiDi100ApiService {
      * @param expressNo 快递运单号
      * @return
      */
-    @Headers({"Domain-Name:kuaidi100"})
+    @Headers("Domain-Name:kuaidi100")
     @GET("autonumber/autoComNum")
-    Observable<ExpressName> queryExpressNameByNo(@HeaderMap Map<String,String> headers,@Query("text") String expressNo);
-
-
+    fun queryExpressNameByNo(
+        @HeaderMap headers: Map<String?, String?>?,
+        @Query("text") expressNo: String?
+    ): Observable<ExpressName>
 
     /**
      * 获取cookie
-     *  Observable<T> 里面的泛型T 不能是  okhttp3.Response 。
-     可以是 retrofit2.Response<T> ，但是T不能为okhttp3.Response,是okhttp3.ResponseBody
-
-     SET-Cookie是来自Server的header，意即在Client设置某个Cookie
-
-     Cookie是浏览器返回到Server所用的header
-
+     * Observable<T> 里面的泛型T 不能是  okhttp3.Response 。
+     * 可以是 retrofit2.Response<T> ，但是T不能为okhttp3.Response,是okhttp3.ResponseBody
+     *
+     * SET-Cookie是来自Server的header，意即在Client设置某个Cookie
+     *
+     * Cookie是浏览器返回到Server所用的header
+     *
      * @return
-     */
-    @Headers({"User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.157 Safari/537.36"})
-    @GET("https://www.kuaidi100.com")
-    Observable<Response<ResponseBody>> getCookie();
-
+    </T></T> */
+    @get:GET("https://www.kuaidi100.com")
+    @get:Headers("User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.157 Safari/537.36")
+    val cookie: Observable<Response<ResponseBody>>
 
     /**
      * 查询快递信息,已经受限制了（返回数据不对），不明原因
@@ -77,14 +66,20 @@ public interface KuaiDi100ApiService {
      * @param temp   时间戳
      * @return
      */
-    @Deprecated
-    @Headers({"Domain-Name:kuaidi100"
-            ,"User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.157 Safari/537.36"
-            ,"Referer: https://www.kuaidi100.com/"})
+    @Deprecated("")
+    @Headers(
+        "Domain-Name:kuaidi100",
+        "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.157 Safari/537.36",
+        "Referer: https://www.kuaidi100.com/"
+    )
     @GET("query")
-    Observable<ExpressDetail> queryExpressInfoSchedule(@Header("Cookie") String cookie,@Query("type") String type,
-
-                                                       @Query("postid") String postid, @Query("temp") double temp, @Query("phone") String phone);
+    fun queryExpressInfoSchedule(
+        @Header("Cookie") cookie: String?,
+        @Query("type") type: String?,
+        @Query("postid") postid: String?,
+        @Query("temp") temp: Double,
+        @Query("phone") phone: String?
+    ): Observable<ExpressDetail>
 
     /**
      * 查询快递信息,已经受限制了（返回数据不对），不明原因
@@ -104,15 +99,19 @@ public interface KuaiDi100ApiService {
      * @param temp   时间戳
      * @return
      */
-    @Headers({"Domain-Name:kuaidi100"
-            ,"Referer: https://www.kuaidi100.com/","X-Requested-With: XMLHttpRequest"})
+    @Headers(
+        "Domain-Name:kuaidi100",
+        "Referer: https://www.kuaidi100.com/",
+        "X-Requested-With: XMLHttpRequest"
+    )
     @GET("query")
-    Observable<ExpressDetail> queryExpressInfoSchedule(@HeaderMap Map<String, String> headers, @Query("type") String type,
-
-                                                       @Query("postid") String postid, @Query("temp") double temp, @Query("phone") String phone);
-
-
-
+    fun queryExpressInfoSchedule(
+        @HeaderMap headers: Map<String?, String?>?,
+        @Query("type") type: String?,
+        @Query("postid") postid: String?,
+        @Query("temp") temp: Double,
+        @Query("phone") phone: String?
+    ): Observable<ExpressDetail>
 
     /**
      * 采用阿里云查询接口，免费版有限制，暂时停用,个人账号，调用次数有限，切勿频繁使用https://market.aliyun.com/products/57126001/cmapi021863.html?spm=5176.2020520132.101.3.2f967218ShNdbf#sku=yuncode1586300000
@@ -120,9 +119,10 @@ public interface KuaiDi100ApiService {
      * @param type 快递公司字母简写：不知道可不填 95%能自动识别，填写查询速度会更快
      * @return
      */
-    @Headers({"Authorization:APPCODE dbab3c08c888405194305aa30e7c2109"})
+    @Headers("Authorization:APPCODE dbab3c08c888405194305aa30e7c2109")
     @GET("http://wuliu.market.alicloudapi.com/kdi")
-    Observable<ExpressDetail2> queryExpressInfoScheduleNew(@Query("no") String no, @Query("type") String type);
-
-
+    fun queryExpressInfoScheduleNew(
+        @Query("no") no: String?,
+        @Query("type") type: String?
+    ): Observable<ExpressDetail2>
 }

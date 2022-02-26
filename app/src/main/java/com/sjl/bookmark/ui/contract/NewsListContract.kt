@@ -1,10 +1,8 @@
-package com.sjl.bookmark.ui.contract;
+package com.sjl.bookmark.ui.contract
 
-import com.sjl.bookmark.entity.zhihu.NewsList;
-import com.sjl.core.mvp.BaseContract;
-import com.sjl.core.mvp.BasePresenter;
-
-import java.util.List;
+import com.sjl.bookmark.entity.zhihu.NewsList
+import com.sjl.core.mvp.BaseContract.IBaseView
+import com.sjl.core.mvp.BasePresenter
 
 /**
  * TODO
@@ -15,37 +13,35 @@ import java.util.List;
  * @time 2018/12/18 17:05
  * @copyright(C) 2018 song
  */
-public interface NewsListContract {
-    interface View extends BaseContract.IBaseView {
+interface NewsListContract {
+    interface View : IBaseView {
         /**
          * 刷新新闻列表
          * @param newsLists
          */
-        void refreshNewsList(List<NewsList> newsLists);
+        fun refreshNewsList(newsLists: List<NewsList>)
 
         /**
          * 显示更多日报数据
          * @param newsLists
          */
-        void showMoreNewsList(List<NewsList> newsLists);
-
+        fun showMoreNewsList(newsLists: List<NewsList>)
     }
 
-    abstract class Presenter extends BasePresenter<View> {
+    abstract class Presenter : BasePresenter<View>() {
         /**
          * 加载首页数据
          */
-        public abstract void loadNews();
+        abstract fun loadNews()
 
         /**
          * 上拉加载更多
          */
-        public abstract void loadMore();
-
+        abstract fun loadMore()
 
         /**
          * 下拉刷新
          */
-        public abstract void refresh();
+        abstract fun refresh()
     }
 }

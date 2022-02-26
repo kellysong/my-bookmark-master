@@ -1,32 +1,29 @@
-package com.sjl.bookmark.ui.activity;
+package com.sjl.bookmark.ui.activity
 
-import android.text.Editable;
-import android.text.TextUtils;
-import android.text.TextWatcher;
-import android.view.KeyEvent;
-import android.view.View;
-import android.view.inputmethod.EditorInfo;
-import android.widget.EditText;
-import android.widget.TextView;
-
-import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.sjl.bookmark.R;
-import com.sjl.bookmark.entity.table.Collection;
-import com.sjl.bookmark.net.HttpConstant;
-import com.sjl.bookmark.ui.adapter.MyCollectionAdapter;
-import com.sjl.bookmark.ui.contract.MyCollectionContract;
-import com.sjl.bookmark.ui.presenter.MyCollectionPresenter;
-import com.sjl.core.mvp.BaseActivity;
-import com.sjl.core.util.ViewUtils;
-import com.sjl.core.util.log.LogUtils;
-
-import java.util.List;
-
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import butterknife.BindView;
-
-import static com.sjl.bookmark.app.MyApplication.getContext;
+import android.text.Editable
+import android.text.TextUtils
+import android.text.TextWatcher
+import android.view.*
+import android.view.inputmethod.EditorInfo
+import android.widget.TextView
+import android.widget.TextView.OnEditorActionListener
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.chad.library.adapter.base.BaseQuickAdapter
+import com.chad.library.adapter.base.BaseQuickAdapter.RequestLoadMoreListener
+import com.sjl.bookmark.R
+import com.sjl.bookmark.entity.table.Collection
+import com.sjl.bookmark.net.HttpConstant
+import com.sjl.bookmark.ui.activity.BrowserActivity
+import com.sjl.bookmark.ui.activity.MyCollectionSearchActivity
+import com.sjl.bookmark.ui.adapter.MyCollectionAdapter
+import com.sjl.bookmark.ui.contract.MyCollectionContract
+import com.sjl.bookmark.ui.presenter.MyCollectionPresenter
+import com.sjl.core.app.BaseApplication
+import com.sjl.core.mvp.BaseActivity
+import com.sjl.core.util.*
+import com.sjl.core.util.log.LogUtils
+import kotlinx.android.synthetic.main.head_search_view.*
+import kotlinx.android.synthetic.main.my_collection_search_activity.*
 
 /**
  * TODO
@@ -37,139 +34,120 @@ import static com.sjl.bookmark.app.MyApplication.getContext;
  * @time 2018/4/10 15:51
  * @copyright(C) 2018 song
  */
-public class MyCollectionSearchActivity extends BaseActivity<MyCollectionPresenter> implements MyCollectionContract.View, MyCollectionAdapter.OnItemClickListener,
-        MyCollectionAdapter.RequestLoadMoreListener, View.OnClickListener {
-    @BindView(R.id.cet_word)
-    EditText etSearch;//输入框
-    @BindView(R.id.btn_search)
-    TextView mSearch;//取消和搜索
-    @BindView(R.id.tv_msg)
-    TextView mMsg;//消息提示
+class MyCollectionSearchActivity : BaseActivity<MyCollectionPresenter>(),
+    MyCollectionContract.View, BaseQuickAdapter.OnItemClickListener, RequestLoadMoreListener,
+    View.OnClickListener {
 
-    @BindView(R.id.rv_search_collection_content)
-    RecyclerView mRecyclerView;
-
-    MyCollectionAdapter myCollectionAdapter;
-
-    @Override
-    protected int getLayoutId() {
-        return R.layout.my_collection_search_activity;
+    lateinit var myCollectionAdapter: MyCollectionAdapter
+    override fun getLayoutId(): Int {
+        return R.layout.my_collection_search_activity
     }
 
-    @Override
-    protected void initView() {
-
-    }
-
-    @Override
-    protected void initListener() {
-        mSearch.setOnClickListener(this);
-        etSearch.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+    override fun initView() {}
+    override fun initListener() {
+        btn_search.setOnClickListener(this)
+        cet_word.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(
+                s: CharSequence,
+                start: Int,
+                count: Int,
+                after: Int
+            ) {
             }
 
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                LogUtils.i("onTextChanged");
-                String keywords = s.toString().trim();
-                if (TextUtils.isEmpty(keywords)) {//没有输入
-                    mMsg.setVisibility(View.VISIBLE);
-                    mMsg.setText("搜索收藏内容");
-                    mRecyclerView.setVisibility(View.GONE);
+            override fun onTextChanged(
+                s: CharSequence,
+                start: Int,
+                before: Int,
+                count: Int
+            ) {
+                LogUtils.i("onTextChanged")
+                val keywords: String = s.toString().trim { it <= ' ' }
+                if (TextUtils.isEmpty(keywords)) { //没有输入
+                    tv_msg!!.visibility = View.VISIBLE
+                    tv_msg!!.text = "搜索收藏内容"
+                    rv_search_collection_content!!.visibility = View.GONE
                 } else {
                     //有输入，实时搜索
-                    mPresenter.queryMyCollection(keywords);
+                    mPresenter!!.queryMyCollection(keywords)
                 }
             }
 
-            @Override
-            public void afterTextChanged(Editable s) {
-                LogUtils.i("afterTextChanged");
+            override fun afterTextChanged(s: Editable) {
+                LogUtils.i("afterTextChanged")
             }
-        });
-        etSearch.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_SEARCH || (event != null && event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
-                    String keywords = etSearch.getText().toString().trim();
-                    if (!TextUtils.isEmpty(keywords)) {//回车搜索
-                        ViewUtils.hideKeyBoard(MyCollectionSearchActivity.this, etSearch);
-                        mPresenter.queryMyCollection(keywords);
+        })
+        cet_word.setOnEditorActionListener(object : OnEditorActionListener {
+            override fun onEditorAction(
+                v: TextView,
+                actionId: Int,
+                event: KeyEvent
+            ): Boolean {
+                if (actionId == EditorInfo.IME_ACTION_SEARCH || (event != null && event.keyCode == KeyEvent.KEYCODE_ENTER)) {
+                    val keywords: String = cet_word.text.toString().trim { it <= ' ' }
+                    if (!TextUtils.isEmpty(keywords)) { //回车搜索
+                        ViewUtils.hideKeyBoard(this@MyCollectionSearchActivity, cet_word)
+                        mPresenter.queryMyCollection(keywords)
                     }
-                    return true;
+                    return true
                 }
-                return false;
+                return false
             }
-        });
+        })
     }
 
-    @Override
-    protected void initData() {
-        /**设置RecyclerView*/
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
-        mRecyclerView.setLayoutManager(linearLayoutManager);
-        myCollectionAdapter = new MyCollectionAdapter(R.layout.my_collection_recycle_item, null);
-        /**隐藏文章类型*/
-        mRecyclerView.setAdapter(myCollectionAdapter);
-
-        /**设置事件监听*/
-        myCollectionAdapter.setOnItemClickListener(this);
-        myCollectionAdapter.setOnLoadMoreListener(this, mRecyclerView);
+    override fun initData() {
+        /**设置RecyclerView */
+        val linearLayoutManager: LinearLayoutManager =
+            LinearLayoutManager(BaseApplication.getContext())
+        rv_search_collection_content.layoutManager = linearLayoutManager
+        myCollectionAdapter = MyCollectionAdapter(R.layout.my_collection_recycle_item, null)
+        /**隐藏文章类型 */
+        rv_search_collection_content.adapter = myCollectionAdapter
+        /**设置事件监听 */
+        myCollectionAdapter.setOnItemClickListener(this)
+        myCollectionAdapter.setOnLoadMoreListener(this, rv_search_collection_content)
     }
 
-    @Override
-    public void setMyCollection(List<Collection> collections, int loadType) {
-        switch (loadType) {
-            case HttpConstant.LoadType.TYPE_REFRESH_SUCCESS:
-                if (collections != null && collections.size() > 0) {
-                    mRecyclerView.setVisibility(View.VISIBLE);
-                    mMsg.setVisibility(View.GONE);
-                    myCollectionAdapter.setNewData(collections);
-                    myCollectionAdapter.loadMoreComplete(); //加载完成
-                } else {
-                    mRecyclerView.setVisibility(View.GONE);
-                    mMsg.setVisibility(View.VISIBLE);
-                    mMsg.setText(R.string.no_item);
-                }
-                break;
-            case HttpConstant.LoadType.TYPE_LOAD_MORE_SUCCESS://加载更多
-                if (collections != null && collections.size() > 0) {
-                    myCollectionAdapter.addData(collections);
-                    myCollectionAdapter.loadMoreComplete(); //加载完成
-                } else {
-                    LogUtils.i("搜索收藏分页完毕");
-                    myCollectionAdapter.loadMoreEnd(false); //数据全部加载完毕
-                }
-                break;
-            default:
-                break;
+    override fun setMyCollection(collections: List<Collection>, loadType: Int) {
+        when (loadType) {
+            HttpConstant.LoadType.TYPE_REFRESH_SUCCESS -> if (collections != null && collections.size > 0) {
+                rv_search_collection_content.visibility = View.VISIBLE
+                tv_msg.visibility = View.GONE
+                myCollectionAdapter.setNewData(collections)
+                myCollectionAdapter.loadMoreComplete() //加载完成
+            } else {
+                rv_search_collection_content.visibility = View.GONE
+                tv_msg.visibility = View.VISIBLE
+                tv_msg.setText(R.string.no_item)
+            }
+            HttpConstant.LoadType.TYPE_LOAD_MORE_SUCCESS -> if (collections != null && collections.size > 0) {
+                myCollectionAdapter.addData(collections)
+                myCollectionAdapter.loadMoreComplete() //加载完成
+            } else {
+                LogUtils.i("搜索收藏分页完毕")
+                myCollectionAdapter.loadMoreEnd(false) //数据全部加载完毕
+            }
+            else -> {}
         }
     }
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.btn_search://取消搜索
-                finish();
-                break;
-            default:
-                break;
+    override fun onClick(v: View) {
+        when (v.id) {
+            R.id.btn_search -> finish()
+            else -> {}
         }
     }
 
-    @Override
-    public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-        Collection item = myCollectionAdapter.getItem(position);
-        if (item.getType() == 0) {
-            BrowserActivity.startWithParams(this, item.getTitle(), item.getHref());
-        } else if (item.getType() == 1) {
-
+    override fun onItemClick(adapter: BaseQuickAdapter<*, *>?, view: View, position: Int) {
+        val item: Collection? = myCollectionAdapter.getItem(position)
+        if (item!!.type == 0) {
+            BrowserActivity.Companion.startWithParams(this, item.title, item.href)
+        } else if (item.type == 1) {
         }
     }
 
-    @Override
-    public void onLoadMoreRequested() {
-        mPresenter.loadMore();
+    override fun onLoadMoreRequested() {
+        mPresenter.loadMore()
     }
 }

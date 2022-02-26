@@ -1,18 +1,14 @@
-package com.sjl.bookmark.ui.activity;
+package com.sjl.bookmark.ui.activity
 
-import android.view.animation.AnimationUtils;
-import android.widget.TextView;
-
-import com.sjl.bookmark.R;
-import com.sjl.bookmark.ui.contract.CheckLockContract;
-import com.sjl.bookmark.ui.presenter.CheckLockPresenter;
-import com.sjl.bookmark.widget.LockPatternView;
-import com.sjl.core.mvp.BaseActivity;
-import com.sjl.core.util.log.LogUtils;
-
-import java.util.List;
-
-import butterknife.BindView;
+import android.view.animation.AnimationUtils
+import com.sjl.bookmark.R
+import com.sjl.bookmark.ui.contract.CheckLockContract
+import com.sjl.bookmark.ui.presenter.CheckLockPresenter
+import com.sjl.bookmark.widget.LockPatternView
+import com.sjl.bookmark.widget.LockPatternView.OnPatternListener
+import com.sjl.core.mvp.BaseActivity
+import com.sjl.core.util.log.LogUtils
+import kotlinx.android.synthetic.main.activity_check_lock.*
 
 /**
  * 手势密码验证Activity
@@ -23,67 +19,44 @@ import butterknife.BindView;
  * @time 2018/3/5 10:05
  * @copyright(C) 2018 song
  */
-public class CheckLockActivity extends BaseActivity<CheckLockPresenter> implements CheckLockContract.View,LockPatternView.OnPatternListener {
-    @BindView(R.id.lockPatternView)
-    LockPatternView mLockPatternView;
-    @BindView(R.id.show_text)
-    TextView mShowText;
+class CheckLockActivity : BaseActivity<CheckLockPresenter>(), CheckLockContract.View,
+    OnPatternListener {
 
-    @Override
-    protected int getLayoutId() {
-        setStatusBar(0xffAFAFAF);
-        return R.layout.activity_check_lock;
+    override fun getLayoutId(): Int {
+        setStatusBar(-0x505051)
+        return R.layout.activity_check_lock
     }
 
-    @Override
-    protected void initView() {
-
+    override fun initView() {}
+    override fun initListener() {
+        lockPatternView.setOnPatternListener(this)
     }
 
-
-
-    @Override
-    protected void initListener() {
-        mLockPatternView.setOnPatternListener(this);
+    override fun initData() {}
+    override fun lockDisplayError() {
+        lockPatternView.setDisplayMode(LockPatternView.DisplayMode.Wrong)
+        show_text.text = getString(R.string.check_error)
+        show_text.startAnimation(AnimationUtils.loadAnimation(this, R.anim.shake_x))
     }
 
-    @Override
-    protected void initData() {
+    override fun kill() {
+        finish()
     }
 
-
-    @Override
-    public void lockDisplayError() {
-        mLockPatternView.setDisplayMode(LockPatternView.DisplayMode.Wrong);
-        mShowText.setText(getString(R.string.check_error));
-        mShowText.startAnimation(AnimationUtils.loadAnimation(this, R.anim.shake_x));
+    override fun onPatternStart() {
+        LogUtils.i("onPatternStart")
     }
 
-    @Override
-    public void kill() {
-        finish();
+    override fun onPatternCleared() {
+        LogUtils.i("onPatternCleared")
     }
 
-
-    @Override
-    public void onPatternStart() {
-        LogUtils.i("onPatternStart");
-
+    override fun onPatternCellAdded(pattern: List<LockPatternView.Cell>) {
+        LogUtils.i("onPatternCellAdded")
     }
 
-    @Override
-    public void onPatternCleared() {
-        LogUtils.i("onPatternCleared");
-    }
-
-    @Override
-    public void onPatternCellAdded(List<LockPatternView.Cell> pattern) {
-        LogUtils.i("onPatternCellAdded");
-    }
-
-    @Override
-    public void onPatternDetected(List<LockPatternView.Cell> pattern) {
-        LogUtils.i("onPatternDetected");
-        mPresenter.check(pattern);
+    override fun onPatternDetected(pattern: List<LockPatternView.Cell>) {
+        LogUtils.i("onPatternDetected")
+        mPresenter.check(pattern)
     }
 }

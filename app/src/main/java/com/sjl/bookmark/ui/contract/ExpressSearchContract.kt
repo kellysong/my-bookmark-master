@@ -1,13 +1,10 @@
-package com.sjl.bookmark.ui.contract;
+package com.sjl.bookmark.ui.contract
 
-import android.widget.EditText;
-
-import com.sjl.bookmark.entity.ExpressCompany;
-import com.sjl.bookmark.entity.ExpressName;
-import com.sjl.core.mvp.BaseContract;
-import com.sjl.core.mvp.BasePresenter;
-
-import java.util.Map;
+import android.widget.EditText
+import com.sjl.bookmark.entity.ExpressCompany
+import com.sjl.bookmark.entity.ExpressName
+import com.sjl.core.mvp.BaseContract.IBaseView
+import com.sjl.core.mvp.BasePresenter
 
 /**
  * TODO
@@ -18,17 +15,14 @@ import java.util.Map;
  * @time 2018/11/26 11:24
  * @copyright(C) 2018 song
  */
-public interface ExpressSearchContract {
-    interface View extends BaseContract.IBaseView {
-        void showSuggestionCompany(ExpressName expressName);
+interface ExpressSearchContract {
+    interface View : IBaseView {
+        fun showSuggestionCompany(expressName: ExpressName)
     }
 
-    abstract class Presenter extends BasePresenter<View> {
-        public abstract Map<String, ExpressCompany> initCompany();
-
-
-        public abstract void getSuggestionList(String postId);
-
-        public abstract void getSuggestionList(EditText etPostId);
+    abstract class Presenter : BasePresenter<View>() {
+        abstract fun initCompany(): Map<String, ExpressCompany>
+        abstract fun getSuggestionList(postId: String)
+        abstract fun getSuggestionList(etPostId: EditText)
     }
 }

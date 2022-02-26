@@ -1,21 +1,18 @@
-package com.sjl.bookmark.ui.activity;
+package com.sjl.bookmark.ui.activity
 
-import android.view.Gravity;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.RelativeLayout;
-import android.widget.Spinner;
-import android.widget.TextView;
-
-import com.sjl.bookmark.R;
-import com.sjl.bookmark.kotlin.language.I18nUtils;
-import com.sjl.bookmark.widget.reader.ReadSettingManager;
-import com.sjl.core.mvp.BaseActivity;
-
-import androidx.appcompat.widget.SwitchCompat;
-import androidx.appcompat.widget.Toolbar;
-import butterknife.BindView;
+import android.view.Gravity
+import android.view.View
+import android.widget.AdapterView
+import android.widget.AdapterView.OnItemSelectedListener
+import android.widget.ArrayAdapter
+import android.widget.TextView
+import com.sjl.bookmark.R
+import com.sjl.bookmark.kotlin.language.I18nUtils
+import com.sjl.bookmark.widget.reader.ReadSettingManager
+import com.sjl.core.mvp.BaseActivity
+import com.sjl.core.mvp.NoPresenter
+import kotlinx.android.synthetic.main.book_more_setting_activity.*
+import kotlinx.android.synthetic.main.toolbar_default.*
 
 /**
  * 阅读器更多设置
@@ -26,95 +23,64 @@ import butterknife.BindView;
  * @time 2018/12/5 11:24
  * @copyright(C) 2018 song
  */
-public class BookMoreSettingActivity extends BaseActivity {
+class BookMoreSettingActivity : BaseActivity<NoPresenter>() {
 
-    @BindView(R.id.common_toolbar)
-    Toolbar mToolBar;
-
-    @BindView(R.id.more_setting_rl_volume)
-    RelativeLayout mRlVolume;
-    @BindView(R.id.more_setting_sc_volume)
-    SwitchCompat mScVolume;
-    @BindView(R.id.more_setting_rl_full_screen)
-    RelativeLayout mRlFullScreen;
-    @BindView(R.id.more_setting_sc_full_screen)
-    SwitchCompat mScFullScreen;
-    @BindView(R.id.more_setting_rl_convert_type)
-    RelativeLayout mRlConvertType;
-    @BindView(R.id.more_setting_sc_convert_type)
-    Spinner mScConvertType;
-    @BindView(R.id.more_setting_tv_convert_type)
-    TextView mTvConvertType;
-    private ReadSettingManager mSettingManager;
-    private boolean isVolumeTurnPage;
-    private boolean isFullScreen;
-
-    @Override
-    protected int getLayoutId() {
-        return R.layout.book_more_setting_activity;
+    private lateinit var mSettingManager: ReadSettingManager
+    private var isVolumeTurnPage: Boolean = false
+    private var isFullScreen: Boolean = false
+    override fun getLayoutId(): Int {
+        return R.layout.book_more_setting_activity
     }
 
-    @Override
-    protected void initView() {
-        mTvConvertType.setSelected(true);
+    override fun initView() {
+        more_setting_tv_convert_type.isSelected = true
     }
 
-    @Override
-    protected void initListener() {
-        bindingToolbar(mToolBar, I18nUtils.getString(R.string.title_read_setting));
-        mRlVolume.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (isVolumeTurnPage) {
-                    isVolumeTurnPage = false;
-                } else {
-                    isVolumeTurnPage = true;
-                }
-                mScVolume.setChecked(isVolumeTurnPage);
-                mSettingManager.setVolumeTurnPage(isVolumeTurnPage);
+    override fun initListener() {
+        bindingToolbar(common_toolbar, I18nUtils.getString(R.string.title_read_setting))
+        more_setting_rl_volume.setOnClickListener(object : View.OnClickListener {
+            override fun onClick(v: View) {
+                isVolumeTurnPage = !isVolumeTurnPage
+                more_setting_sc_volume!!.isChecked = isVolumeTurnPage
+                mSettingManager.isVolumeTurnPage = isVolumeTurnPage
             }
-        });
-
-        mRlFullScreen.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (isFullScreen) {
-                    isFullScreen = false;
-                } else {
-                    isFullScreen = true;
-                }
-                mScFullScreen.setChecked(isFullScreen);
-                mSettingManager.setFullScreen(isFullScreen);
+        })
+        more_setting_rl_full_screen!!.setOnClickListener(object : View.OnClickListener {
+            override fun onClick(v: View) {
+                isFullScreen = !isFullScreen
+                more_setting_sc_full_screen.isChecked = isFullScreen
+                mSettingManager.isFullScreen = isFullScreen
             }
-        });
+        })
     }
 
-    @Override
-    protected void initData() {
-        mSettingManager = ReadSettingManager.getInstance();
-        isVolumeTurnPage = mSettingManager.isVolumeTurnPage();
-        isFullScreen = mSettingManager.isFullScreen();
-        int convertType = mSettingManager.getConvertType();
-        mScVolume.setChecked(isVolumeTurnPage);
-        mScFullScreen.setChecked(isFullScreen);
-
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
-                R.array.conversion_type_array, android.R.layout.simple_spinner_item);
-
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        mScConvertType.setAdapter(adapter);
-        mScConvertType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                TextView tv = (TextView) view;
-                tv.setGravity(Gravity.RIGHT);//设置居中
-                mSettingManager.setConvertType(position);//设置语言转换类型
+    override fun initData() {
+        mSettingManager = ReadSettingManager.getInstance()
+        isVolumeTurnPage = mSettingManager.isVolumeTurnPage
+        isFullScreen = mSettingManager.isFullScreen
+        val convertType: Int = mSettingManager.convertType
+        more_setting_sc_volume.isChecked = isVolumeTurnPage
+        more_setting_sc_full_screen.isChecked = isFullScreen
+        val adapter: ArrayAdapter<CharSequence> = ArrayAdapter.createFromResource(
+            this,
+            R.array.conversion_type_array, android.R.layout.simple_spinner_item
+        )
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        more_setting_sc_convert_type.adapter = adapter
+        more_setting_sc_convert_type.onItemSelectedListener = object : OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View,
+                position: Int,
+                id: Long
+            ) {
+                val tv: TextView = view as TextView
+                tv.gravity = Gravity.RIGHT //设置居中
+                mSettingManager.convertType = position //设置语言转换类型
             }
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
-        });
-        mScConvertType.setSelection(convertType);
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
+        }
+        more_setting_sc_convert_type.setSelection(convertType)
     }
 }

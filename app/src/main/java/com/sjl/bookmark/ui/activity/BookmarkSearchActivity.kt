@@ -1,38 +1,22 @@
-package com.sjl.bookmark.ui.activity;
+package com.sjl.bookmark.ui.activity
 
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextUtils;
-import android.text.TextWatcher;
-import android.view.KeyEvent;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.inputmethod.EditorInfo;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import com.sjl.bookmark.R;
-import com.sjl.bookmark.kotlin.language.I18nUtils;
-import com.sjl.core.mvp.BaseActivity;
-import com.sjl.core.util.log.LogUtils;
-import com.sjl.core.widget.FlowLayout;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.widget.Toolbar;
-import butterknife.BindView;
+import android.content.*
+import android.os.Bundle
+import android.text.Editable
+import android.text.TextUtils
+import android.text.TextWatcher
+import android.view.*
+import android.view.inputmethod.EditorInfo
+import android.widget.*
+import android.widget.TextView.OnEditorActionListener
+import androidx.appcompat.app.AlertDialog
+import com.sjl.bookmark.R
+import com.sjl.bookmark.kotlin.language.I18nUtils
+import com.sjl.core.mvp.BaseActivity
+import com.sjl.core.mvp.NoPresenter
+import com.sjl.core.util.log.LogUtils
+import kotlinx.android.synthetic.main.activity_search.*
+import java.util.*
 
 /**
  * TODO
@@ -43,249 +27,246 @@ import butterknife.BindView;
  * @time 2018/2/9 17:54
  * @copyright(C) 2018 song
  */
-public class BookmarkSearchActivity extends BaseActivity implements View.OnClickListener{
-    @BindView(R.id.search_toolbar)
-    Toolbar toolbar;
+class BookmarkSearchActivity : BaseActivity<NoPresenter>(), View.OnClickListener {
 
-    @BindView(R.id.cet_search_word)
-    EditText cet_search_word;
-
-    @BindView(R.id.iv_search)
-    ImageView mSearch;
-    @BindView(R.id.flowlayout)
-    FlowLayout mFlowLayout;
-
-    @BindView(R.id.search_history_ll)
-    LinearLayout mSearchHistoryLl;
-    @BindView(R.id.search_history_lv)
-    ListView listView;
-    @BindView(R.id.clear_history_btn)
-    Button mClearHistory;
-
-
-
-    private LayoutInflater mInflater;
+    private lateinit var mInflater: LayoutInflater
 
     /**
      * 搜索标签，暂时写死
      */
-    private String[] mVals = new String[]{"JavaSE", "Android", "JavaEE", "Mui",
-            I18nUtils.getString(R.string.label_database), I18nUtils.getString(R.string.label_front_end), I18nUtils.getString(R.string.label_app_store), I18nUtils.getString(R.string.label_other),
-            I18nUtils.getString(R.string.label_basic_knowledge), I18nUtils.getString(R.string.label_push), I18nUtils.getString(R.string.label_css),
-            I18nUtils.getString(R.string.label_h5), I18nUtils.getString(R.string.label_website)};//数据模拟，实际应从网络获取此数据
+    private val mVals: Array<String> = arrayOf(
+        "JavaSE",
+        "Android",
+        "JavaEE",
+        "Mui",
+        I18nUtils.getString(R.string.label_database),
+        I18nUtils.getString(R.string.label_front_end),
+        I18nUtils.getString(R.string.label_app_store),
+        I18nUtils.getString(R.string.label_other),
+        I18nUtils.getString(R.string.label_basic_knowledge),
+        I18nUtils.getString(R.string.label_push),
+        I18nUtils.getString(R.string.label_css),
+        I18nUtils.getString(R.string.label_h5),
+        I18nUtils.getString(R.string.label_website)
+    ) //数据模拟，实际应从网络获取此数据
 
-    public static final String KEY_SEARCH_HISTORY_KEYWORD = "key_search_history_keyword";
-    public static final String KEY_SEARCH_TEXT = "key_search_text";//搜索文本
-    private SharedPreferences mPref;//使用SharedPreferences记录搜索历史
-    private List<String> mHistoryKeywords;//记录文本
-    private ArrayAdapter<String> mArrAdapter;//搜索历史适配器
+    private lateinit var mPref //使用SharedPreferences记录搜索历史
+            : SharedPreferences
+    private lateinit var mHistoryKeywords //记录文本
+            : MutableList<String>
+    private lateinit var mArrAdapter //搜索历史适配器
+            : ArrayAdapter<String>
 
-
-    @Override
-    protected int getLayoutId() {
-        return R.layout.activity_search;
+    override fun getLayoutId(): Int {
+        return R.layout.activity_search
     }
 
-    @Override
-    protected void initView() {
-        setSupportActionBar(toolbar);
-        cet_search_word.requestFocus();//获取焦点 光标出现
-        initHistoryView();
+    override fun initView() {
+        setSupportActionBar(search_toolbar)
+        cet_search_word.requestFocus() //获取焦点 光标出现
+        initHistoryView()
     }
 
-    @Override
-    protected void initListener() {
-        mSearch.setOnClickListener(this);
-        mClearHistory.setOnClickListener(this);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
+    override fun initListener() {
+        iv_search.setOnClickListener(this)
+        clear_history_btn.setOnClickListener(this)
+        search_toolbar.setNavigationOnClickListener(object : View.OnClickListener {
+            override fun onClick(v: View) {
+                finish()
             }
-        });
+        })
     }
 
-    @Override
-    protected void initData() {
-        mInflater = LayoutInflater.from(this);
-        for (int i = 0; i < mVals.length; i++) {
-            TextView tv = (TextView) mInflater.inflate(
-                    R.layout.search_label_tv, mFlowLayout, false);
-            tv.setText(mVals[i]);
-            final String str = tv.getText().toString();
+    override fun initData() {
+        mInflater = LayoutInflater.from(this)
+        for (i in mVals.indices) {
+            val tv: TextView = mInflater.inflate(
+                R.layout.search_label_tv, flowlayout, false
+            ) as TextView
+            tv.text = mVals.get(i)
+            val str: String = tv.text.toString()
             //点击事件
-            tv.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
+            tv.setOnClickListener(object : View.OnClickListener {
+                override fun onClick(v: View) {
                     //加入搜索历史纪录记录
-                    showSearchList(str);
+                    showSearchList(str)
                 }
-            });
-            mFlowLayout.addView(tv);
+            })
+            flowlayout.addView(tv)
         }
     }
 
-
     /************
      * 以上为流式标签相关
-     ************/
-
-    private void initHistoryView() {
-
-        mHistoryKeywords = new ArrayList<String>();
-
-        cet_search_word.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
+     */
+    private fun initHistoryView() {
+        mHistoryKeywords = ArrayList()
+        cet_search_word.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(
+                s: CharSequence,
+                start: Int,
+                count: Int,
+                after: Int
+            ) {
             }
 
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.length() == 0) {
-                    if (mHistoryKeywords.size() > 0) {
-                        mSearchHistoryLl.setVisibility(View.VISIBLE);
+            override fun onTextChanged(
+                s: CharSequence,
+                start: Int,
+                before: Int,
+                count: Int
+            ) {
+                if (s.length == 0) {
+                    if (mHistoryKeywords.size > 0) {
+                        search_history_ll.visibility = View.VISIBLE
                     } else {
-                        mSearchHistoryLl.setVisibility(View.GONE);
+                        search_history_ll.visibility = View.GONE
                     }
                 } else {
-                    mSearchHistoryLl.setVisibility(View.GONE);
+                    search_history_ll.visibility = View.GONE
                 }
             }
 
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
-
-        cet_search_word.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId== EditorInfo.IME_ACTION_SEARCH ||(event!=null&&event.getKeyCode()== KeyEvent.KEYCODE_ENTER)) {
-                    String keywords = cet_search_word.getText().toString();
+            override fun afterTextChanged(s: Editable) {}
+        })
+        cet_search_word.setOnEditorActionListener(object : OnEditorActionListener {
+            override fun onEditorAction(
+                v: TextView,
+                actionId: Int,
+                event: KeyEvent
+            ): Boolean {
+                if (actionId == EditorInfo.IME_ACTION_SEARCH || (event != null && event.keyCode == KeyEvent.KEYCODE_ENTER)) {
+                    val keywords: String = cet_search_word.text.toString()
                     if (!TextUtils.isEmpty(keywords)) {
-                        save();
-                        showSearchList(keywords);
+                        save()
+                        showSearchList(keywords)
                     }
-                    return true;
+                    return true
                 }
-                return false;
+                return false
             }
-        });
-        initSearchHistory();
+        })
+        initSearchHistory()
     }
 
     /**
      * 初始化搜索历史记录
      */
-    public void initSearchHistory() {
-        mPref = getSharedPreferences("search_config", MODE_PRIVATE);
-        String history = mPref.getString(KEY_SEARCH_HISTORY_KEYWORD, "");
+    fun initSearchHistory() {
+        mPref = getSharedPreferences("search_config", MODE_PRIVATE)
+        val history: String = mPref.getString(KEY_SEARCH_HISTORY_KEYWORD, "")
         if (!TextUtils.isEmpty(history)) {
-            List<String> list = new ArrayList<String>();
-            for (Object o : history.split(",")) {
-                list.add((String) o);
+            val list: MutableList<String> = ArrayList()
+            for (o: Any in history.split(",").toTypedArray()) {
+                list.add(o as String)
             }
-            mHistoryKeywords = list;
+            mHistoryKeywords = list
         }
-        if (mHistoryKeywords.size() > 0) {
-            mSearchHistoryLl.setVisibility(View.VISIBLE);
+        if (mHistoryKeywords.size > 0) {
+            search_history_ll.visibility = View.VISIBLE
         } else {
-            mSearchHistoryLl.setVisibility(View.GONE);
+            search_history_ll.visibility = View.GONE
         }
-        mArrAdapter = new ArrayAdapter<String>(this, R.layout.item_search_history, mHistoryKeywords);
-        listView.setAdapter(mArrAdapter);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                showSearchList(mHistoryKeywords.get(i));
+        mArrAdapter = ArrayAdapter(this, R.layout.item_search_history, mHistoryKeywords)
+        search_history_lv.adapter = mArrAdapter
+        search_history_lv.onItemClickListener = object : AdapterView.OnItemClickListener {
+            override fun onItemClick(
+                adapterView: AdapterView<*>?,
+                view: View,
+                i: Int,
+                l: Long
+            ) {
+                showSearchList(mHistoryKeywords[i])
             }
-        });
-        mArrAdapter.notifyDataSetChanged();
+        }
+        mArrAdapter.notifyDataSetChanged()
     }
 
     /**
      * 储存搜索历史
      */
-    public void save() {
-        String text = cet_search_word.getText().toString();
-        String oldText = mPref.getString(KEY_SEARCH_HISTORY_KEYWORD, "");
-        LogUtils.i("oldText:"+oldText+","+text+",oldText.contains(text):"+oldText.contains(text));
-
+    fun save() {
+        val text: String = cet_search_word!!.text.toString()
+        val oldText: String = mPref.getString(KEY_SEARCH_HISTORY_KEYWORD, "")
+        LogUtils.i(
+            "oldText:$oldText,$text,oldText.contains(text):" + oldText.contains(
+                text
+            )
+        )
         if (!TextUtils.isEmpty(text) && !(oldText.contains(text))) {
-            if (mHistoryKeywords.size() > 5) {//最多保存条数
-                return;
+            if (mHistoryKeywords.size > 5) { //最多保存条数
+                return
             }
-            SharedPreferences.Editor editor = mPref.edit();
-            editor.putString(KEY_SEARCH_HISTORY_KEYWORD, text + "," + oldText);
-            editor.commit();
-            mHistoryKeywords.add(0, text);
+            val editor: SharedPreferences.Editor = mPref.edit()
+            editor.putString(KEY_SEARCH_HISTORY_KEYWORD, "$text,$oldText")
+            editor.commit()
+            mHistoryKeywords.add(0, text)
         }
-        mArrAdapter.notifyDataSetChanged();
+        mArrAdapter.notifyDataSetChanged()
     }
 
     /**
      * 清除历史纪录
      */
-    public void cleanHistory() {
+    fun cleanHistory() {
         // 创建构建器
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        val builder: AlertDialog.Builder = AlertDialog.Builder(this)
         // 设置参数
         builder.setTitle(R.string.nb_common_tip)
-                .setMessage(R.string.delete_hint3)
-                .setPositiveButton(R.string.sure, new DialogInterface.OnClickListener() {// 积极
-
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        SharedPreferences.Editor editor = mPref.edit();
-                        editor.remove(KEY_SEARCH_HISTORY_KEYWORD).commit();
-                        mHistoryKeywords.clear();
-                        mArrAdapter.notifyDataSetChanged();
-                        mSearchHistoryLl.setVisibility(View.GONE);
-                    }
-                }).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {// 消极
-
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-             dialog.dismiss();
-            }
-        });
-        builder.create().show();
-
+            .setMessage(R.string.delete_hint3)
+            .setPositiveButton(R.string.sure, object : DialogInterface.OnClickListener {
+                // 积极
+                override fun onClick(dialog: DialogInterface, which: Int) {
+                    val editor: SharedPreferences.Editor = mPref.edit()
+                    editor.remove(KEY_SEARCH_HISTORY_KEYWORD).commit()
+                    mHistoryKeywords.clear()
+                    mArrAdapter.notifyDataSetChanged()
+                    search_history_ll.visibility = View.GONE
+                }
+            }).setNegativeButton(R.string.cancel, object : DialogInterface.OnClickListener {
+                // 消极
+                override fun onClick(dialog: DialogInterface, which: Int) {
+                    dialog.dismiss()
+                }
+            })
+        builder.create().show()
     }
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.iv_search:
-                String keywords = cet_search_word.getText().toString();
+    override fun onClick(v: View) {
+        when (v.id) {
+            R.id.iv_search -> {
+                val keywords: String = cet_search_word.text.toString()
                 if (!TextUtils.isEmpty(keywords)) {
-                    save();
-                    showSearchList(keywords);
+                    save()
+                    showSearchList(keywords)
                 } else {
-                    Toast.makeText(BookmarkSearchActivity.this, R.string.input_search_content, Toast.LENGTH_LONG).show();
+                    Toast.makeText(
+                        this@BookmarkSearchActivity,
+                        R.string.input_search_content,
+                        Toast.LENGTH_LONG
+                    ).show()
                 }
-                break;
-            case R.id.clear_history_btn:
-                cleanHistory();
-                break;
-            default:
-                break;
+            }
+            R.id.clear_history_btn -> cleanHistory()
+            else -> {}
         }
-
     }
 
     /**
      * 显示搜索列表
      * @param keywords 搜索关键字
      */
-    private void showSearchList(String keywords) {
-        Intent intent = new Intent(this, BookmarkActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putString(KEY_SEARCH_TEXT,keywords);
-        intent.putExtras(bundle);
-        startActivity(intent);
-        finish();
+    private fun showSearchList(keywords: String) {
+        val intent: Intent = Intent(this, BookmarkActivity::class.java)
+        val bundle: Bundle = Bundle()
+        bundle.putString(KEY_SEARCH_TEXT, keywords)
+        intent.putExtras(bundle)
+        startActivity(intent)
+        finish()
+    }
+
+    companion object {
+        val KEY_SEARCH_HISTORY_KEYWORD: String = "key_search_history_keyword"
+        val KEY_SEARCH_TEXT: String = "key_search_text" //搜索文本
     }
 }

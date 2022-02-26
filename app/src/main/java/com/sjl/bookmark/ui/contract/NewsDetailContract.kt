@@ -1,9 +1,9 @@
-package com.sjl.bookmark.ui.contract;
+package com.sjl.bookmark.ui.contract
 
-import com.sjl.bookmark.entity.zhihu.NewsDetailDto;
-import com.sjl.bookmark.entity.zhihu.NewsExtraDto;
-import com.sjl.core.mvp.BaseContract;
-import com.sjl.core.mvp.BasePresenter;
+import com.sjl.bookmark.entity.zhihu.NewsDetailDto
+import com.sjl.bookmark.entity.zhihu.NewsExtraDto
+import com.sjl.core.mvp.BaseContract.IBaseView
+import com.sjl.core.mvp.BasePresenter
 
 /**
  * TODO
@@ -14,49 +14,45 @@ import com.sjl.core.mvp.BasePresenter;
  * @time 2018/12/21 11:28
  * @copyright(C) 2018 song
  */
-public interface NewsDetailContract {
-    interface View extends BaseContract.IBaseView {
+interface NewsDetailContract {
+    interface View : IBaseView {
         /**
          * 新闻额外信息
          * @param newsExtra
          */
-        void showNewsExtra(NewsExtraDto newsExtra);
+        fun showNewsExtra(newsExtra: NewsExtraDto)
 
         /**
          * 显示详情
          * @param newsDetail
          */
-        void showNewsDetail(NewsDetailDto newsDetail);
+        fun showNewsDetail(newsDetail: NewsDetailDto)
 
         /**
          * 显示加载错误信息
          * @param errorMsg
          */
-        void showError(String errorMsg);
-
+        fun showError(errorMsg: String?)
     }
 
-    abstract class Presenter extends BasePresenter<View> {
-
+    abstract class Presenter : BasePresenter<View>() {
         /**
          * 分享新闻
          * @param content
          * @param imgUrl
          */
-        public abstract void shareNews(String content, String imgUrl);
+        abstract fun shareNews(content: String, imgUrl: String)
 
         /**
          * 加载新闻额外信息
          * @param id
          */
-        public abstract void loadNewsExtra(String id);
+        abstract fun loadNewsExtra(id: String?)
 
         /**
          * 加载新闻详情
          * @param id
          */
-        public abstract void loadNewsDetail(String id);
-
-
+        abstract fun loadNewsDetail(id: String?)
     }
 }

@@ -1,37 +1,31 @@
-package com.sjl.bookmark.ui.activity;
+package com.sjl.bookmark.ui.activity
 
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.os.Handler;
-import android.view.KeyEvent;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
-
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.sjl.bookmark.R;
-import com.sjl.bookmark.entity.zhuishu.table.CollectBook;
-import com.sjl.bookmark.kotlin.language.I18nUtils;
-import com.sjl.bookmark.ui.adapter.ShelfAdapter;
-import com.sjl.bookmark.ui.contract.BookShelfContract;
-import com.sjl.bookmark.ui.presenter.BookShelfPresenter;
-import com.sjl.bookmark.widget.DragGridView;
-import com.sjl.core.mvp.BaseActivity;
-import com.sjl.core.net.RxBus;
-import com.sjl.core.util.log.LogUtils;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.widget.Toolbar;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import butterknife.BindView;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
+import android.content.*
+import android.os.*
+import android.view.*
+import android.widget.AdapterView
+import androidx.appcompat.app.AlertDialog
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
+import com.sjl.bookmark.R
+import com.sjl.bookmark.entity.zhuishu.table.CollectBook
+import com.sjl.bookmark.kotlin.language.I18nUtils
+import com.sjl.bookmark.ui.activity.BookReadActivity
+import com.sjl.bookmark.ui.activity.BookSearchActivity
+import com.sjl.bookmark.ui.activity.BookShelfActivity
+import com.sjl.bookmark.ui.adapter.ShelfAdapter
+import com.sjl.bookmark.ui.adapter.ShelfAdapter.OnDeleteItemListener
+import com.sjl.bookmark.ui.contract.BookShelfContract
+import com.sjl.bookmark.ui.presenter.BookShelfPresenter
+import com.sjl.core.mvp.BaseActivity
+import com.sjl.core.net.RxBus
+import com.sjl.core.util.log.LogUtils
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.functions.Consumer
+import kotlinx.android.synthetic.main.book_shelf_activity.*
+import kotlinx.android.synthetic.main.toolbar_default.*
+import kotlinx.android.synthetic.main.toolbar_default.common_toolbar
+import java.io.File
+import java.util.*
 
 /**
  * TODO
@@ -42,236 +36,206 @@ import io.reactivex.functions.Consumer;
  * @time 2018/11/30 14:39
  * @copyright(C) 2018 song
  */
-public class BookShelfActivity extends BaseActivity<BookShelfPresenter> implements BookShelfContract.View {
-    @BindView(R.id.common_toolbar)
-    Toolbar mToolBar;
-    @BindView(R.id.fab)
-    FloatingActionButton fab;
+class BookShelfActivity : BaseActivity<BookShelfPresenter>(), BookShelfContract.View {
 
-    @BindView(R.id.bookShelf)
-    DragGridView dragGridView;
-    @BindView(R.id.srl_bookShelf)
-    SwipeRefreshLayout swipeRefreshLayout;
 
-    private List<CollectBook> bookLists;
-    private ShelfAdapter shelfAdapter;
+    private var bookLists: List<CollectBook>? = null
+    private lateinit var shelfAdapter: ShelfAdapter
+
     /**
      * 点击书本的位置
      */
-    private int itemPosition;
-
-    @Override
-    protected int getLayoutId() {
-        setStatusBar(0xff000000);
-        return R.layout.book_shelf_activity;
+    private var itemPosition = 0
+    override fun getLayoutId(): Int {
+        setStatusBar(-0x1000000)
+        return R.layout.book_shelf_activity
     }
 
-    @Override
-    protected void initView() {
-    }
-
-    @Override
-    protected void initListener() {
-        bindingToolbar(mToolBar, I18nUtils.getString(R.string.tool_novel_read));
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(BookShelfActivity.this, FileSystemActivity.class);
-                startActivity(intent);
-            }
-        });
+    override fun initView() {}
+    override fun initListener() {
+        bindingToolbar(common_toolbar, I18nUtils.getString(R.string.tool_novel_read))
+        fab.setOnClickListener(View.OnClickListener {
+            val intent = Intent(this@BookShelfActivity, FileSystemActivity::class.java)
+            startActivity(intent)
+        })
         /**
          * 点击书籍跳转到阅读页面
          */
-        dragGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                itemPosition = position;
-                List<CollectBook> bookList = shelfAdapter.getBookList();//持有引用
-                if (bookList == null || bookList.size() == 0 || itemPosition > bookList.size() - 1) {//说明是绘制的书架背景
-                    return;
+        bookShelf.onItemClickListener = object : AdapterView.OnItemClickListener {
+            override fun onItemClick(parent: AdapterView<*>?, view: View, position: Int, id: Long) {
+                itemPosition = position
+                val bookList: List<CollectBook>? = shelfAdapter.bookList //持有引用
+                if ((bookList == null) || (bookList.size == 0) || (itemPosition > bookList.size - 1)) { //说明是绘制的书架背景
+                    return
                 }
-                final CollectBook collectBook = bookList.get(position);
+                val collectBook: CollectBook = bookList.get(position)
                 //如果是本地文件，首先判断这个文件是否存在
                 if (collectBook.isLocal()) {
                     //id表示本地文件的路径
-                    String path = collectBook.getCover();
-                    File file = new File(path);
+                    val path: String = collectBook.cover
+                    val file: File = File(path)
                     //判断这个本地文件是否存在
-                    if (file.exists() && file.length() != 0) {
-                        shelfAdapter.setItemToFirst(itemPosition);
-                        BookReadActivity.startActivity(BookShelfActivity.this, collectBook, true);//此时collectBook的排序id已经是最大
+                    if (file.exists() && file.length() != 0L) {
+                        shelfAdapter.setItemToFirst(itemPosition)
+                        BookReadActivity.Companion.startActivity(
+                            this@BookShelfActivity,
+                            collectBook,
+                            true
+                        ) //此时collectBook的排序id已经是最大
                     } else {
-                        String tip = BookShelfActivity.this.getString(R.string.nb_bookshelf_book_not_exist);
+                        val tip: String =
+                            this@BookShelfActivity.getString(R.string.nb_bookshelf_book_not_exist)
                         //提示(从目录中移除这个文件)
-                        new AlertDialog.Builder(BookShelfActivity.this)
-                                .setTitle(getResources().getString(R.string.nb_common_tip))
-                                .setMessage(tip)
-                                .setPositiveButton(getResources().getString(R.string.nb_common_sure),
-                                        new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                mPresenter.deleteBook(collectBook);
-                                            }
-                                        })
-                                .setNegativeButton(getResources().getString(R.string.nb_common_cancel), null)
-                                .show();
+                        AlertDialog.Builder(this@BookShelfActivity)
+                            .setTitle(resources.getString(R.string.nb_common_tip))
+                            .setMessage(tip)
+                            .setPositiveButton(
+                                resources.getString(R.string.nb_common_sure),
+                                object : DialogInterface.OnClickListener {
+                                    override fun onClick(dialog: DialogInterface, which: Int) {
+                                        mPresenter!!.deleteBook(collectBook)
+                                    }
+                                })
+                            .setNegativeButton(resources.getString(R.string.nb_common_cancel), null)
+                            .show()
                     }
                 } else {
-                    shelfAdapter.setItemToFirst(itemPosition);
-                    BookReadActivity.startActivity(BookShelfActivity.this, collectBook, true);
+                    shelfAdapter.setItemToFirst(itemPosition)
+                    BookReadActivity.Companion.startActivity(
+                        this@BookShelfActivity,
+                        collectBook,
+                        true
+                    )
                 }
             }
-        });
-        dragGridView.setSwipeRefreshLayout(swipeRefreshLayout);
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                new Handler().postDelayed(new Runnable() {
-                    public void run() {
-                        refreshShelfBook();
-                        swipeRefreshLayout.setRefreshing(false);
-                    }
-                }, 1000);
-            }
-        });
-        //监听书架添加书籍
-        Disposable subscribe = RxBus.getInstance()
-                .toObservable(Boolean.class)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<Boolean>() {
-                    @Override
-                    public void accept(Boolean s) throws Exception {
-                        if (s) {
-                            LogUtils.i("书架更新，新增收藏" + s);
-                        } else {
-                            LogUtils.i("书架更新，移除收藏" + s);
-                        }
-                        mPresenter.getRecommendBook();
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
-
-                    }
-                });
-        addDisposable(subscribe);
-
-    }
-
-
-    @Override
-    protected void initData() {
-        bookLists = new ArrayList<>();
-        shelfAdapter = new ShelfAdapter(this, bookLists);
-        dragGridView.setAdapter(shelfAdapter);
-        shelfAdapter.setItemDeleteListener(new ShelfAdapter.OnDeleteItemListener() {
-            @Override
-            public void item(int deletePosition) {
-                itemPosition = deletePosition;
-                CollectBook collectBook = shelfAdapter.getBookList().get(deletePosition);
-                mPresenter.deleteBook(collectBook);
-
-            }
-        });
-        shelfAdapter.setDragGridView(dragGridView);
-        showLoadingDialog();
-        mPresenter.getRecommendBook();
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.book_shelf_menu, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        int id = item.getItemId();
-
-        if (id == R.id.action_search) {
-            Intent intent = new Intent(this, BookSearchActivity.class);
-            startActivity(intent);
-        } else if (id == R.id.action_clear) {
-            new AlertDialog.Builder(BookShelfActivity.this)
-                    .setTitle(getResources().getString(R.string.nb_common_tip))
-                    .setMessage(R.string.book_shelf_hint)
-                    .setPositiveButton(getResources().getString(R.string.nb_common_sure),
-                            new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    showLoadingDialog(getString(R.string.book_delete_hint));
-                                    mPresenter.deleteAllBook();
-                                    dialog.dismiss();
-                                }
-                            })
-                    .setNegativeButton(getResources().getString(R.string.nb_common_cancel), null)
-                    .show();
-        } else if (id == R.id.action_refresh) {
-            refreshShelfBook();
-
-            return true;
         }
+        bookShelf.setSwipeRefreshLayout(srl_bookShelf)
+        srl_bookShelf.setOnRefreshListener(object : OnRefreshListener {
+            override fun onRefresh() {
+                Handler().postDelayed(object : Runnable {
+                    override fun run() {
+                        refreshShelfBook()
+                        srl_bookShelf.isRefreshing = false
+                    }
+                }, 1000)
+            }
+        })
+        //监听书架添加书籍
+        val subscribe = RxBus.getInstance()
+            .toObservable(Boolean::class.java)
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(object : Consumer<Boolean> {
+                @Throws(Exception::class)
+                override fun accept(s: Boolean) {
+                    if (s) {
+                        LogUtils.i("书架更新，新增收藏$s")
+                    } else {
+                        LogUtils.i("书架更新，移除收藏$s")
+                    }
+                    mPresenter.getRecommendBook()
+                }
+            }, object : Consumer<Throwable?> {
+                @Throws(Exception::class)
+                override fun accept(throwable: Throwable?) {
+                }
+            })
+        addDisposable(subscribe)
+    }
 
-        return super.onOptionsItemSelected(item);
+    override fun initData() {
+        bookLists = ArrayList()
+        shelfAdapter = ShelfAdapter(this, bookLists)
+        bookShelf.adapter = shelfAdapter
+        shelfAdapter.setItemDeleteListener(object : OnDeleteItemListener {
+            override fun item(deletePosition: Int) {
+                itemPosition = deletePosition
+                val collectBook = shelfAdapter.bookList[deletePosition]
+                mPresenter.deleteBook(collectBook)
+            }
+        })
+        shelfAdapter.setDragGridView(bookShelf)
+        showLoadingDialog()
+        mPresenter.getRecommendBook()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.book_shelf_menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        val id = item.itemId
+        if (id == R.id.action_search) {
+            val intent = Intent(this, BookSearchActivity::class.java)
+            startActivity(intent)
+        } else if (id == R.id.action_clear) {
+            AlertDialog.Builder(this@BookShelfActivity)
+                .setTitle(resources.getString(R.string.nb_common_tip))
+                .setMessage(R.string.book_shelf_hint)
+                .setPositiveButton(
+                    resources.getString(R.string.nb_common_sure),
+                    object : DialogInterface.OnClickListener {
+                        override fun onClick(dialog: DialogInterface, which: Int) {
+                            showLoadingDialog(getString(R.string.book_delete_hint))
+                            mPresenter.deleteAllBook()
+                            dialog.dismiss()
+                        }
+                    })
+                .setNegativeButton(resources.getString(R.string.nb_common_cancel), null)
+                .show()
+        } else if (id == R.id.action_refresh) {
+            refreshShelfBook()
+            return true
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     /**
      * 刷新书架书籍
      */
-    private void refreshShelfBook() {
-        List<CollectBook> bookList = shelfAdapter.getBookList();
-        showLoadingDialog(getString(R.string.book_update_hint));
-        if (bookList != null && !bookList.isEmpty()) {//书架已经有数据
-            mPresenter.getRecommendBook();
+    private fun refreshShelfBook() {
+        val bookList = shelfAdapter.bookList
+        showLoadingDialog(getString(R.string.book_update_hint))
+        if (bookList != null && !bookList.isEmpty()) { //书架已经有数据
+            mPresenter.getRecommendBook()
         } else {
-            mPresenter.refreshCollectBooks();
+            mPresenter.refreshCollectBooks()
         }
     }
 
-
-    @Override
-    public void showErrorMsg(String msg) {
-        showToast(msg);
-        hideLoadingDialog();
+    override fun showErrorMsg(msg: String) {
+        showToast(msg)
+        hideLoadingDialog()
     }
 
-    @Override
-    public void showRecommendBook(List<CollectBook> collBookBeans) {
-        shelfAdapter.setItems(collBookBeans);//刷新图书
-        hideLoadingDialog();
+    override fun showRecommendBook(collBookBeans: List<CollectBook>) {
+        shelfAdapter.setItems(collBookBeans) //刷新图书
+        hideLoadingDialog()
     }
 
-    @Override
-    public void refreshBook() {
-        CollectBook remove = shelfAdapter.getBookList().remove(itemPosition);
-        LogUtils.i("删除的书本是:" + remove.getTitle());
-        if (shelfAdapter.getBookList().size() == 0) {//没有书籍了隐藏删除按钮，防止重新加载书籍时显示删除按钮
-            dragGridView.setShowDeleteButton(false);
+    override fun refreshBook() {
+        val remove = shelfAdapter.bookList.removeAt(itemPosition)
+        LogUtils.i("删除的书本是:" + remove.title)
+        if (shelfAdapter.bookList.size == 0) { //没有书籍了隐藏删除按钮，防止重新加载书籍时显示删除按钮
+            bookShelf.isShowDeleteButton = false
         }
-        shelfAdapter.notifyDataSetChanged();
+        shelfAdapter.notifyDataSetChanged()
     }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-        dragGridView.setShowDeleteButton(false);
-        shelfAdapter.notifyDataSetChanged();
+    override fun onStop() {
+        super.onStop()
+        bookShelf.isShowDeleteButton = false
+        shelfAdapter.notifyDataSetChanged()
     }
 
-
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
+    override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            if (dragGridView.isShowDeleteButton()) {
-                dragGridView.setShowDeleteButton(false);
-                shelfAdapter.notifyDataSetChanged();
-                return true;
+            if (bookShelf.isShowDeleteButton) {
+                bookShelf.isShowDeleteButton = false
+                shelfAdapter.notifyDataSetChanged()
+                return true
             }
-
         }
-        return super.onKeyDown(keyCode, event);
+        return super.onKeyDown(keyCode, event)
     }
-
 }

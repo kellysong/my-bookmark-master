@@ -1,10 +1,8 @@
-package com.sjl.bookmark.ui.contract;
+package com.sjl.bookmark.ui.contract
 
-import com.sjl.bookmark.entity.table.Collection;
-import com.sjl.core.mvp.BaseContract;
-import com.sjl.core.mvp.BasePresenter;
-
-import java.util.List;
+import com.sjl.bookmark.entity.table.Collection
+import com.sjl.core.mvp.BaseContract.IBaseView
+import com.sjl.core.mvp.BasePresenter
 
 /**
  * TODO
@@ -15,25 +13,25 @@ import java.util.List;
  * @time 2018/11/26 10:50
  * @copyright(C) 2018 song
  */
-public interface MyCollectionContract {
-    interface View extends BaseContract.IBaseView {
-        void setMyCollection(List<Collection> collections, int loadType);
-
+interface MyCollectionContract {
+    interface View : IBaseView {
+        fun setMyCollection(collections: List<Collection>, loadType: Int)
     }
 
-    abstract class Presenter extends BasePresenter<View> {
-        public abstract void loadMyCollection();
-        public abstract void loadMore();
+    abstract class Presenter : BasePresenter<View>() {
+        abstract fun loadMyCollection()
+        abstract fun loadMore()
+
         /**
          * 删除收藏
          *
          * @param collection
          */
-        public abstract void deleteCollection(Collection collection);
+        abstract fun deleteCollection(collection: Collection)
 
         /**
          * 数据为空，询问是否从服务器端恢复收藏的书签
          */
-        public abstract void recoverCollectionDataFromServer();
+        abstract fun recoverCollectionDataFromServer()
     }
 }

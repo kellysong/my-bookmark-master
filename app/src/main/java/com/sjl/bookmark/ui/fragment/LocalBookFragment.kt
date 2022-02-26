@@ -1,23 +1,20 @@
-package com.sjl.bookmark.ui.fragment;
+package com.sjl.bookmark.ui.fragment
 
-import android.view.View;
-
-import com.sjl.bookmark.R;
-import com.sjl.bookmark.dao.impl.DaoFactory;
-import com.sjl.bookmark.ui.adapter.FileSystemAdapter;
-import com.sjl.bookmark.ui.adapter.RecyclerViewDivider;
-import com.sjl.bookmark.ui.base.extend.BaseFileFragment;
-import com.sjl.bookmark.widget.reader.media.MediaStoreHelper;
-import com.sjl.core.util.security.MD5Utils;
-import com.sjl.core.widget.RefreshLayout;
-import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
-
-import java.io.File;
-import java.util.List;
-
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import butterknife.BindView;
+import android.view.View
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import butterknife.BindView
+import com.sjl.bookmark.R
+import com.sjl.bookmark.dao.impl.DaoFactory
+import com.sjl.bookmark.ui.adapter.*
+import com.sjl.bookmark.ui.base.extend.BaseFileFragment
+import com.sjl.bookmark.widget.reader.media.MediaStoreHelper
+import com.sjl.bookmark.widget.reader.media.MediaStoreHelper.MediaResultCallback
+import com.sjl.core.mvp.NoPresenter
+import com.sjl.core.util.security.MD5Utils
+import com.sjl.core.widget.RefreshLayout
+import com.zhy.adapter.recyclerview.MultiItemTypeAdapter
+import kotlinx.android.synthetic.main.fragment_local_book.*
 
 /**
  * 本地书籍
@@ -28,96 +25,71 @@ import butterknife.BindView;
  * @time 2018/12/10 14:38
  * @copyright(C) 2018 song
  */
-public class LocalBookFragment<BasePresenter> extends BaseFileFragment {
-    @BindView(R.id.refresh_layout)
-    RefreshLayout mRlRefresh;
-    @BindView(R.id.local_book_rv_content)
-    RecyclerView mRvContent;
+class LocalBookFragment : BaseFileFragment<NoPresenter>() {
 
 
-
-    @Override
-    protected int getLayoutId() {
-        return R.layout.fragment_local_book;
+    override fun getLayoutId(): Int {
+        return R.layout.fragment_local_book
     }
 
-    @Override
-    protected void initView() {
-
+    override fun initView() {}
+    override fun initListener() {}
+    override fun initData() {
+        setUpAdapter()
     }
 
-    @Override
-    protected void initListener() {
-
-    }
-
-    @Override
-    protected void initData() {
-        setUpAdapter();
-    }
-
-    private void setUpAdapter() {
-        mAdapter = new FileSystemAdapter(getContext(), R.layout.file_book_recycle_item, null);
-        mRvContent.setLayoutManager(new LinearLayoutManager(getContext()));
-        mRvContent.addItemDecoration(new RecyclerViewDivider(getContext(), LinearLayoutManager.VERTICAL));
-        mRvContent.setAdapter(mAdapter);
-        mAdapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
+    private fun setUpAdapter() {
+        mAdapter = FileSystemAdapter(context, R.layout.file_book_recycle_item, null)
+        local_book_rv_content.layoutManager = LinearLayoutManager(context)
+        local_book_rv_content.addItemDecoration(RecyclerViewDivider(context, LinearLayoutManager.VERTICAL))
+        local_book_rv_content.adapter = mAdapter
+        mAdapter.setOnItemClickListener(object : MultiItemTypeAdapter.OnItemClickListener {
+            override fun onItemClick(view: View, holder: RecyclerView.ViewHolder, position: Int) {
                 //如果是已加载的文件，则点击事件无效。
-                String id = MD5Utils.strToMd5By16(mAdapter.getItem(position).getAbsolutePath());
+                val id = MD5Utils.strToMd5By16(mAdapter.getItem(position).absolutePath)
                 if (DaoFactory.getCollectBookDao().getCollectBook(id) != null) {
-                    return;
+                    return
                 }
 
                 //点击选中
-                mAdapter.setCheckedItem(position);
+                mAdapter.setCheckedItem(position)
 
                 //反馈
                 if (mListener != null) {
-                    mListener.onItemCheckedChange(mAdapter.getItemIsChecked(position));
+                    mListener.onItemCheckedChange(mAdapter.getItemIsChecked(position))
                 }
             }
 
-            @Override
-            public boolean onItemLongClick(View view, RecyclerView.ViewHolder holder, int position) {
-                return false;
+            override fun onItemLongClick(
+                view: View,
+                holder: RecyclerView.ViewHolder,
+                position: Int
+            ): Boolean {
+                return false
             }
-        });
-
+        })
     }
 
-    @Override
-    protected void onFirstUserVisible() {
-        long start = System.currentTimeMillis();
-        MediaStoreHelper.getAllBookFile(getActivity(), new MediaStoreHelper.MediaResultCallback() {
-            @Override
-            public void onResultCallback(List<File> files) {
-                if (isDetached()){
-                    return;
-                }
-                System.out.println("txt文件加载耗时:"+(System.currentTimeMillis()-start)/1000.0+"s");
-                if (files.isEmpty()) {
-                    mRlRefresh.showEmpty();
-                } else {
-                    mAdapter.refreshItems(files);//加载列表
-                    mRlRefresh.showFinish();
-                    //反馈
-                    if (mListener != null) {
-                        mListener.onCategoryChanged();
-                    }
+    override fun onFirstUserVisible() {
+        val start = System.currentTimeMillis()
+        MediaStoreHelper.getAllBookFile(activity, MediaResultCallback { files ->
+            if (isDetached) {
+                return@MediaResultCallback
+            }
+            println("txt文件加载耗时:" + (System.currentTimeMillis() - start) / 1000.0 + "s")
+            if (files.isEmpty()) {
+                refresh_layout!!.showEmpty()
+            } else {
+                mAdapter.refreshItems(files) //加载列表
+                refresh_layout!!.showFinish()
+                //反馈
+                if (mListener != null) {
+                    mListener.onCategoryChanged()
                 }
             }
-        });
+        })
     }
 
-    @Override
-    protected void onUserVisible() {
-
-    }
-
-    @Override
-    protected void onUserInvisible() {
-
-    }
+    override fun onUserVisible() {}
+    override fun onUserInvisible() {}
 }

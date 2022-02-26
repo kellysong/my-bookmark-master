@@ -1,55 +1,43 @@
-package com.sjl.bookmark.ui.activity;
+package com.sjl.bookmark.ui.activity
 
-import com.sjl.bookmark.R;
-import com.sjl.bookmark.kotlin.language.I18nUtils;
-import com.sjl.bookmark.ui.base.extend.BaseSwipeBackActivity;
-import com.sjl.bookmark.ui.fragment.BackupAndSyncFragment;
-import com.sjl.core.net.RxLifecycleUtils;
-
-import androidx.appcompat.widget.Toolbar;
-import butterknife.BindView;
+import com.sjl.bookmark.R
+import com.sjl.bookmark.kotlin.language.I18nUtils
+import com.sjl.bookmark.ui.base.extend.BaseSwipeBackActivity
+import com.sjl.bookmark.ui.fragment.BackupAndSyncFragment
+import com.sjl.core.net.RxLifecycleUtils
+import kotlinx.android.synthetic.main.toolbar_scroll.*
 
 /**
  * 收藏同步与恢复
  */
-public class BackupAndSyncActivity extends BaseSwipeBackActivity {
-    @BindView(R.id.common_toolbar)
-    Toolbar mToolBar;
+class BackupAndSyncActivity : BaseSwipeBackActivity() {
 
-    @Override
-    protected int getLayoutId() {
-        return R.layout.activity_setting;
+    override fun getLayoutId(): Int {
+        return R.layout.activity_setting
     }
 
-    @Override
-    protected void changeStatusBarColor() {
-        setColorForSwipeBack();
+    override fun changeStatusBarColor() {
+        setColorForSwipeBack()
     }
 
-    @Override
-    protected void initView() {
-        setFragment();
+    override fun initView() {
+        setFragment()
     }
 
-    private void setFragment() {
-        getFragmentManager()
-                .beginTransaction()
-                .replace(R.id.container, new BackupAndSyncFragment())
-                .commit();
+    private fun setFragment() {
+        fragmentManager
+            .beginTransaction()
+            .replace(R.id.container, BackupAndSyncFragment())
+            .commit()
     }
 
-    @Override
-    protected void initListener() {
-        bindingToolbar(mToolBar, I18nUtils.getString(R.string.title_backup_sync));
+    override fun initListener() {
+        bindingToolbar(common_toolbar, I18nUtils.getString(R.string.title_backup_sync))
     }
 
-    @Override
-    protected void initData() {
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        RxLifecycleUtils.setLifecycleOwner(this);
+    override fun initData() {}
+    override fun onResume() {
+        super.onResume()
+        RxLifecycleUtils.setLifecycleOwner(this)
     }
 }

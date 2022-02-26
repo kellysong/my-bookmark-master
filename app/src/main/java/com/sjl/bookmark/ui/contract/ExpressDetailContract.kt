@@ -1,11 +1,10 @@
-package com.sjl.bookmark.ui.contract;
+package com.sjl.bookmark.ui.contract
 
-import android.content.Intent;
-
-import com.sjl.bookmark.entity.ExpressDetail;
-import com.sjl.bookmark.entity.ExpressSearchInfo;
-import com.sjl.core.mvp.BaseContract;
-import com.sjl.core.mvp.BasePresenter;
+import android.content.Intent
+import com.sjl.bookmark.entity.ExpressDetail
+import com.sjl.bookmark.entity.ExpressSearchInfo
+import com.sjl.core.mvp.BaseContract.IBaseView
+import com.sjl.core.mvp.BasePresenter
 
 /**
  * TODO
@@ -16,28 +15,28 @@ import com.sjl.core.mvp.BasePresenter;
  * @time 2018/11/26 11:19
  * @copyright(C) 2018 song
  */
-public interface ExpressDetailContract {
-    interface View extends BaseContract.IBaseView {
+interface ExpressDetailContract {
+    interface View : IBaseView {
         /**
          * 显示快递来源
          * @param expressSearchInfo
          */
-        void showExpressSource(ExpressSearchInfo expressSearchInfo);
+        fun showExpressSource(expressSearchInfo: ExpressSearchInfo)
 
         /**
          * 显示物流详情
          * @param expressDetail
          */
-        void showExpressDetail(ExpressDetail expressDetail);
+        fun showExpressDetail(expressDetail: ExpressDetail)
 
         /**
          * 显示错误信息
          */
-        void showErrorInfo();
+        fun showErrorInfo()
     }
 
-    abstract class Presenter extends BasePresenter<View> {
-        public abstract void init(Intent intent);
+    abstract class Presenter : BasePresenter<View>() {
+        abstract fun init(intent: Intent)
 
         /**
          * 获取快递备注信息
@@ -45,35 +44,34 @@ public interface ExpressDetailContract {
          * @param postId
          * @return
          */
-        public abstract String getExpressRemark(String postId);
+        abstract fun getExpressRemark(postId: String): String?
 
         /**
          * 查询快递明细
          *
          * @param searchInfo
          */
-        public abstract void queryExpressDetail(ExpressSearchInfo searchInfo);
+        abstract fun queryExpressDetail(searchInfo: ExpressSearchInfo)
 
         /**
          * 更新本地快递信息
          * @param searchInfo
          * @param expressDetail
          */
-        public abstract void updateExpressDetail(ExpressSearchInfo searchInfo, ExpressDetail expressDetail);
-
+        abstract fun updateExpressDetail(searchInfo: ExpressSearchInfo, expressDetail: ExpressDetail?)
 
         /**
          * 判断本地是否缓存有快递信息
          * @param postId
          * @return
          */
-        public abstract boolean checkExistExpress(String postId);
+        abstract fun checkExistExpress(postId: String): Boolean
 
         /**
          * 更新快递单备注信息
          * @param postId
          * @param remark
          */
-        public abstract void updateExpressRemark(String postId, String remark);
+        abstract fun updateExpressRemark(postId: String, remark: String)
     }
 }

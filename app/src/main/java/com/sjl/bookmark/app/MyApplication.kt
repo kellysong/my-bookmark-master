@@ -1,160 +1,139 @@
-package com.sjl.bookmark.app;
+package com.sjl.bookmark.app
 
-import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
-import android.os.Build;
-import android.os.Bundle;
-
-import com.sjl.bookmark.BuildConfig;
-import com.sjl.bookmark.kotlin.darkmode.DarkModeUtils;
-import com.sjl.bookmark.net.MyBaseUrlAdapter;
-import com.sjl.bookmark.service.X5CoreService;
-import com.sjl.core.app.BaseApplication;
-import com.sjl.core.app.CrashHandler;
-import com.sjl.core.manager.CachedThreadManager;
-import com.sjl.core.net.RetrofitHelper;
-import com.sjl.core.net.RetrofitLogAdapter;
-import com.sjl.core.net.RetrofitParams;
-import com.squareup.leakcanary.LeakCanary;
-import com.tencent.bugly.crashreport.CrashReport;
-
-import androidx.multidex.MultiDex;
-import io.reactivex.plugins.RxJavaPlugins;
+import android.app.Activity
+import android.content.Context
+import android.content.Intent
+import android.os.Build
+import android.os.Bundle
+import androidx.multidex.MultiDex
+import com.sjl.bookmark.BuildConfig
+import com.sjl.bookmark.kotlin.darkmode.DarkModeUtils
+import com.sjl.bookmark.net.MyBaseUrlAdapter
+import com.sjl.bookmark.service.X5CoreService
+import com.sjl.core.app.BaseApplication
+import com.sjl.core.app.CrashHandler
+import com.sjl.core.manager.CachedThreadManager
+import com.sjl.core.net.RetrofitHelper
+import com.sjl.core.net.RetrofitLogAdapter
+import com.sjl.core.net.RetrofitParams
+import com.squareup.leakcanary.LeakCanary
+import com.tencent.bugly.crashreport.CrashReport
+import io.reactivex.plugins.RxJavaPlugins
 
 /**
  * @author song
  */
-public class MyApplication extends BaseApplication {
+class MyApplication : BaseApplication() {
 
+    companion object {
 
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        initSyncTask();
-        initAsyncTask();
+        fun getContext(): Context {
+            return BaseApplication.getContext()
+        }
+
+        fun getAppVersion(): String {
+            return BaseApplication.getAppVersion()
+        }
+
+        fun getVersionCode(): Int {
+            return BaseApplication.getVersionCode()
+        }
+
     }
 
-    private void initSyncTask() {
-        boolean enableLog = BuildConfig.enableLog;
-        initLogConfig(enableLog);//控制是否开启开启
-        initSkinLoader();
-        initRetrofit();
-        initDarkMode();
-        initErrorHandler();
+    override fun onCreate() {
+        super.onCreate()
+        initSyncTask()
+        initAsyncTask()
+    }
+
+    private fun initSyncTask() {
+        val enableLog = BuildConfig.enableLog
+        initLogConfig(enableLog) //控制是否开启开启
+        initSkinLoader()
+        initRetrofit()
+        initDarkMode()
+        initErrorHandler()
         if (LeakCanary.isInAnalyzerProcess(this)) {
             // This process is dedicated to LeakCanary for heap analysis.
             // You should not init your app in this process.
-            return;
+            return
         }
-        LeakCanary.install(this);
-//        WebViewPool.init();
+        LeakCanary.install(this)
+        //        WebViewPool.init();
     }
 
-    private void initAsyncTask() {
-        CachedThreadManager.getInstance().execute(new Runnable() {
-            @Override
-            public void run() {
-//                MobSDK.init(MyApplication.this);
-                preInitX5Core();
+    private fun initAsyncTask() {
+        CachedThreadManager.getInstance()
+            .execute { //                MobSDK.init(MyApplication.this);
+                preInitX5Core()
             }
-        });
     }
 
-    private void initDarkMode() {
-        registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {
-            @Override
-            public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
-                DarkModeUtils.INSTANCE.initDarkMode();
+    private fun initDarkMode() {
+        registerActivityLifecycleCallbacks(object : ActivityLifecycleCallbacks {
+            override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
+                DarkModeUtils.initDarkMode()
             }
 
-            @Override
-            public void onActivityStarted(Activity activity) {
-
-            }
-
-            @Override
-            public void onActivityResumed(Activity activity) {
-
-            }
-
-            @Override
-            public void onActivityPaused(Activity activity) {
-
-            }
-
-            @Override
-            public void onActivityStopped(Activity activity) {
-
-            }
-
-            @Override
-            public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
-
-            }
-
-            @Override
-            public void onActivityDestroyed(Activity activity) {
-
-            }
-        });
+            override fun onActivityStarted(activity: Activity) {}
+            override fun onActivityResumed(activity: Activity) {}
+            override fun onActivityPaused(activity: Activity) {}
+            override fun onActivityStopped(activity: Activity) {}
+            override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {}
+            override fun onActivityDestroyed(activity: Activity) {}
+        })
     }
 
-    private void initErrorHandler() {
-        CrashHandler.getInstance().init(this);
-        if (!BuildConfig.enableLog){
-            CrashReport.initCrashReport(getApplicationContext(), BuildConfig.buglyID, false);
+    private fun initErrorHandler() {
+        CrashHandler.getInstance().init(this)
+        if (!BuildConfig.enableLog) {
+            CrashReport.initCrashReport(applicationContext, BuildConfig.buglyID, false)
         }
-        RxJavaPlugins.setErrorHandler(throwable -> {
-            CrashReport.postCatchedException(new Exception("RxJava全局异常", throwable));
-        });
+        RxJavaPlugins.setErrorHandler { throwable: Throwable? ->
+            CrashReport.postCatchedException(
+                Exception("RxJava全局异常", throwable)
+            )
+        }
     }
 
-    private void initRetrofit() {
-        RetrofitParams retrofitParams = new RetrofitParams.Builder()
-                .setBaseUrlAdapter(new MyBaseUrlAdapter()).setRetrofitLogAdapter(new RetrofitLogAdapter() {
-                    @Override
-                    public boolean printRequestUrl() {
-                        return false;
-                    }
+    private fun initRetrofit() {
+        val retrofitParams = RetrofitParams.Builder()
+            .setBaseUrlAdapter(MyBaseUrlAdapter())
+            .setRetrofitLogAdapter(object : RetrofitLogAdapter {
+                override fun printRequestUrl(): Boolean {
+                    return false
+                }
 
-                    @Override
-                    public boolean printHttpLog() {
-                        return BuildConfig.DEBUG;
-                    }
-                })
-//                .setInterceptor(new WanAndroidCookieInterceptor())
-                .build();
-        RetrofitHelper.getInstance().init(retrofitParams);
+                override fun printHttpLog(): Boolean {
+                    return BuildConfig.DEBUG
+                }
+            }) //                .setInterceptor(new WanAndroidCookieInterceptor())
+            .build()
+        RetrofitHelper.getInstance().init(retrofitParams)
     }
-
-
 
     /**
      * 初始化X5内核
      */
-    private void preInitX5Core() {
+    private fun preInitX5Core() {
         //预加载x5内核
-        Intent intent = new Intent(this, X5CoreService.class);
+        val intent = Intent(this, X5CoreService::class.java)
         //开启服务兼容
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            startForegroundService(intent);
+            startForegroundService(intent)
         } else {
-            startService(intent);
+            startService(intent)
         }
     }
-
-
-
 
     /**
      * 在onCreate之前执行
      *
      * @param base
      */
-    @Override
-    protected void attachBaseContext(Context base) {
-        super.attachBaseContext(base);
-        MultiDex.install(this);//https://developer.android.com/studio/build/multidex
+    override fun attachBaseContext(base: Context) {
+        super.attachBaseContext(base)
+        MultiDex.install(this) //https://developer.android.com/studio/build/multidex
     }
 }

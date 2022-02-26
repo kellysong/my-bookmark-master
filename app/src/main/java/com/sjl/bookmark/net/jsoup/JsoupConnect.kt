@@ -1,12 +1,10 @@
-package com.sjl.bookmark.net.jsoup;
+package com.sjl.bookmark.net.jsoup
 
-import org.jsoup.Connection;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-
-import java.io.IOException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import org.jsoup.Connection
+import org.jsoup.Jsoup
+import org.jsoup.nodes.Document
+import java.io.IOException
+import java.util.regex.Pattern
 
 /**
  * TODO
@@ -17,68 +15,62 @@ import java.util.regex.Pattern;
  * @time 2018/12/8 13:38
  * @copyright(C) 2018 song
  */
-public class JsoupConnect {
-    public int timeOut = 15 * 1000;
-    private Connection conn;
-
-    private JsoupConnect(Connection conn) {
-        this.conn = conn;
+class JsoupConnect private constructor(private val conn: Connection) {
+    var timeOut = 15 * 1000
+    fun timeout(time: Int): JsoupConnect {
+        timeOut = time
+        return this
     }
 
-    public static JsoupConnect connect(String url) {
-        return new JsoupConnect(Jsoup.connect(url));
+    @Throws(IOException::class)
+    fun get(): Document {
+        return conn.timeout(timeOut).get()
     }
 
-    public JsoupConnect timeout(int time) {
-        timeOut = time;
-        return this;
+    @Throws(IOException::class)
+    fun post(): Document {
+        return conn.timeout(timeOut).post()
     }
 
-    public Document get() throws IOException {
-        return conn.timeout(timeOut).get();
-    }
-
-    public Document post() throws IOException {
-        return conn.timeout(timeOut).post();
-
-    }
-
-    public static Document parse(String html) {
-        return Jsoup.parse(html);
-    }
-
-
-    public static String root(String url) {
-        Pattern p =
-                Pattern.compile("[a-zA-z]+://[^\\s'\"]*\\.[a-zA-Z]{2,6}",
-                        Pattern.CASE_INSENSITIVE);
-        Matcher matcher = p.matcher(url);
-        if (matcher.find()) {
-            String s = matcher.group();
-            return s;
+    companion object {
+        fun connect(url: String?): JsoupConnect {
+            return JsoupConnect(Jsoup.connect(url))
         }
 
-        try {
-            throw new Exception("没有找到网站根目录！");
-        } catch (Exception e) {
-            e.printStackTrace();
+        fun parse(html: String?): Document {
+            return Jsoup.parse(html)
         }
 
-        return null;
-    }
-
-    public static String domain(String url) {
-        Pattern p =
-                Pattern.compile("^(http|https)://?([a-zA-Z0-9]([a-zA-Z0-9\\-]{0,61}[a-zA-Z0-9])?\\.)+[a-zA-Z]{2,6}(/)", Pattern.CASE_INSENSITIVE);
-//	    Pattern.compile("[^\\s'\"./:]*.(com|cn|net|org|biz|info|cc|tv)", Pattern.CASE_INSENSITIVE);
-        try {
-            Matcher matcher = p.matcher(url);
-            if (matcher.find()) return matcher.group();
-        } catch (Exception e) {
-            e.printStackTrace();
+        fun root(url: String?): String? {
+            val p = Pattern.compile(
+                "[a-zA-z]+://[^\\s'\"]*\\.[a-zA-Z]{2,6}",
+                Pattern.CASE_INSENSITIVE
+            )
+            val matcher = p.matcher(url)
+            if (matcher.find()) {
+                return matcher.group()
+            }
+            try {
+                throw Exception("没有找到网站根目录！")
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+            return null
         }
 
-        return null;
+        fun domain(url: String?): String? {
+            val p = Pattern.compile(
+                "^(http|https)://?([a-zA-Z0-9]([a-zA-Z0-9\\-]{0,61}[a-zA-Z0-9])?\\.)+[a-zA-Z]{2,6}(/)",
+                Pattern.CASE_INSENSITIVE
+            )
+            //	    Pattern.compile("[^\\s'\"./:]*.(com|cn|net|org|biz|info|cc|tv)", Pattern.CASE_INSENSITIVE);
+            try {
+                val matcher = p.matcher(url)
+                if (matcher.find()) return matcher.group()
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+            return null
+        }
     }
-
 }

@@ -1,49 +1,32 @@
-package com.sjl.bookmark.ui.activity;
+package com.sjl.bookmark.ui.activity
 
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.os.Parcelable;
-import android.text.Editable;
-import android.text.Selection;
-import android.text.Spannable;
-import android.text.TextUtils;
-import android.text.TextWatcher;
-import android.view.KeyEvent;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.inputmethod.EditorInfo;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.ScrollView;
-import android.widget.TextView;
-
-import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.sjl.bookmark.R;
-import com.sjl.bookmark.entity.Article;
-import com.sjl.bookmark.entity.Category;
-import com.sjl.bookmark.entity.HotKey;
-import com.sjl.bookmark.net.HttpConstant;
-import com.sjl.bookmark.ui.adapter.ArticleAdapter;
-import com.sjl.bookmark.ui.contract.ArticleSearchContract;
-import com.sjl.bookmark.ui.presenter.ArticleSearchPresenter;
-import com.sjl.core.mvp.BaseActivity;
-import com.sjl.core.util.SnackbarUtils;
-import com.sjl.core.util.ViewUtils;
-import com.sjl.core.util.log.LogUtils;
-import com.sjl.core.widget.FlowLayout;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import androidx.appcompat.app.AlertDialog;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import butterknife.BindView;
+import android.content.*
+import android.os.Parcelable
+import android.text.*
+import android.view.*
+import android.view.inputmethod.EditorInfo
+import android.widget.*
+import android.widget.TextView.OnEditorActionListener
+import androidx.appcompat.app.AlertDialog
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.chad.library.adapter.base.BaseQuickAdapter
+import com.chad.library.adapter.base.BaseQuickAdapter.RequestLoadMoreListener
+import com.sjl.bookmark.R
+import com.sjl.bookmark.entity.Article.DatasBean
+import com.sjl.bookmark.entity.Category.ChildrenBean
+import com.sjl.bookmark.entity.HotKey
+import com.sjl.bookmark.net.HttpConstant
+import com.sjl.bookmark.ui.activity.BrowserActivity
+import com.sjl.bookmark.ui.adapter.ArticleAdapter
+import com.sjl.bookmark.ui.contract.ArticleSearchContract
+import com.sjl.bookmark.ui.presenter.ArticleSearchPresenter
+import com.sjl.core.mvp.BaseActivity
+import com.sjl.core.util.*
+import com.sjl.core.util.log.LogUtils
+import kotlinx.android.synthetic.main.article_search_activity.*
+import kotlinx.android.synthetic.main.empty_view.*
+import kotlinx.android.synthetic.main.head_search_view.*
+import java.util.*
 
 /**
  * 文章搜索
@@ -54,320 +37,289 @@ import butterknife.BindView;
  * @time 2018/3/30 16:00
  * @copyright(C) 2018 song
  */
-public class ArticleSearchActivity extends BaseActivity<ArticleSearchPresenter> implements ArticleSearchContract.View, ArticleAdapter.OnItemClickListener,
-        ArticleAdapter.OnItemChildClickListener,ArticleAdapter.RequestLoadMoreListener,View.OnClickListener {
-    @BindView(R.id.cet_word)
-    EditText etSearch;//输入框
-    @BindView(R.id.btn_search)
-    TextView mSearch;//取消和搜索
-    //热门搜索
-    @BindView(R.id.layout_hot_key)
-    FlowLayout mFlowLayout;
-    @BindView(R.id.ll_hot_key)
-    LinearLayout llHotKey;
+class ArticleSearchActivity : BaseActivity<ArticleSearchPresenter>(),
+    ArticleSearchContract.View, BaseQuickAdapter.OnItemClickListener,
+    BaseQuickAdapter.OnItemChildClickListener, RequestLoadMoreListener, View.OnClickListener {
 
-    //历史搜索
-    @BindView(R.id.search_history_ll)
-    LinearLayout historySearchKey;
-    @BindView(R.id.search_history_lv)
-    ListView mListView;
-    @BindView(R.id.clear_history_btn)
-    Button clearHistory;
+    private lateinit var mArticleAdapter: ArticleAdapter
+    private lateinit var mInflater: LayoutInflater
+    private lateinit var mPref //使用SharedPreferences记录搜索历史
+            : SharedPreferences
+    private lateinit var mHistoryKeywords //记录文本
+            : MutableList<String>
+    private lateinit var mArrAdapter //搜索历史适配器
+            : ArrayAdapter<String>
 
-    //搜索为空
-    @BindView(R.id.ll_empty_view)
-    LinearLayout mEmptyView;
-
-    @BindView(R.id.rv_content)
-    RecyclerView recyclerView;
-
-    @BindView(R.id.sv_content)
-    ScrollView scrollView;
-
-
-    private ArticleAdapter mArticleAdapter;
-
-    private LayoutInflater mInflater;
-
-    public static final String KEY_SEARCH_HISTORY_KEYWORD = "key_search_history_keyword2";
-    private SharedPreferences mPref;//使用SharedPreferences记录搜索历史
-    private List<String> mHistoryKeywords;//记录文本
-    private ArrayAdapter<String> mArrAdapter;//搜索历史适配器
-
-
-    @Override
-    protected int getLayoutId() {
-        return R.layout.article_search_activity;
+    override fun getLayoutId(): Int {
+        return R.layout.article_search_activity
     }
 
-    @Override
-    protected void initView() {
-
-    }
-
-    @Override
-    protected void initListener() {
-        mSearch.setOnClickListener(this);
-        clearHistory.setOnClickListener(this);
-        etSearch.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+    override fun initView() {}
+    override fun initListener() {
+        btn_search.setOnClickListener(this)
+        clear_history_btn.setOnClickListener(this)
+        cet_word!!.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(
+                s: CharSequence,
+                start: Int,
+                count: Int,
+                after: Int
+            ) {
             }
 
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.length() == 0) {//没有输入
-                    scrollView.setVisibility(View.VISIBLE);
-
-                    llHotKey.setVisibility(View.VISIBLE);//显示热门搜索
-                    recyclerView.setVisibility(View.GONE);
-                    mEmptyView.setVisibility(View.GONE);
-                    if (mHistoryKeywords.size() > 0) {
-                        historySearchKey.setVisibility(View.VISIBLE);
+            override fun onTextChanged(
+                s: CharSequence,
+                start: Int,
+                before: Int,
+                count: Int
+            ) {
+                if (s.length == 0) { //没有输入
+                    sv_content.visibility = View.VISIBLE
+                    ll_hot_key.visibility = View.VISIBLE //显示热门搜索
+                    rv_content.visibility = View.GONE
+                    ll_empty_view.visibility = View.GONE
+                    if (mHistoryKeywords.size > 0) {
+                        search_history_ll.visibility = View.VISIBLE
                     } else {
-                        historySearchKey.setVisibility(View.GONE);
+                        search_history_ll.visibility = View.GONE
                     }
                 } else {
                     //有输入，不管是否进行了搜索操作，保持搜索框下面原貌
-                    historySearchKey.setVisibility(View.GONE);
+                    search_history_ll.visibility = View.GONE
                 }
             }
 
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
-        etSearch.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId== EditorInfo.IME_ACTION_SEARCH ||(event!=null&&event.getKeyCode()== KeyEvent.KEYCODE_ENTER)) {
-                    String keywords = etSearch.getText().toString().trim();
-                    if (!TextUtils.isEmpty(keywords)) {//回车搜索
-                        save();
-                        ViewUtils.hideKeyBoard(ArticleSearchActivity.this,etSearch);
-                        mPresenter.searchData(keywords);
+            override fun afterTextChanged(s: Editable) {}
+        })
+        cet_word.setOnEditorActionListener(object : OnEditorActionListener {
+            override fun onEditorAction(
+                v: TextView,
+                actionId: Int,
+                event: KeyEvent
+            ): Boolean {
+                if (actionId == EditorInfo.IME_ACTION_SEARCH || (event != null && event.keyCode == KeyEvent.KEYCODE_ENTER)) {
+                    val keywords: String = cet_word!!.text.toString().trim({ it <= ' ' })
+                    if (!TextUtils.isEmpty(keywords)) { //回车搜索
+                        save()
+                        ViewUtils.hideKeyBoard(this@ArticleSearchActivity, cet_word)
+                        mPresenter.searchData(keywords)
                     }
-                    return true;
+                    return true
                 }
-                return false;
+                return false
             }
-        });
+        })
     }
 
-
-    @Override
-    protected void initData() {
-        mHistoryKeywords = new ArrayList<String>();
-        initSearchHistory();
-        mInflater = LayoutInflater.from(this);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mArticleAdapter = new ArticleAdapter(R.layout.home_article_recycle_item,null);
-        recyclerView.setAdapter(mArticleAdapter);
-        /**设置事件监听*/
-        mArticleAdapter.setOnItemClickListener(this);
-        mArticleAdapter.setOnItemChildClickListener(this);
-
-        mArticleAdapter.setOnLoadMoreListener(this, recyclerView);
-        mPresenter.getHotKeyData();
-
+    override fun initData() {
+        mHistoryKeywords = ArrayList()
+        initSearchHistory()
+        mInflater = LayoutInflater.from(this)
+        rv_content.layoutManager = LinearLayoutManager(this)
+        mArticleAdapter = ArticleAdapter(R.layout.home_article_recycle_item, null)
+        rv_content.adapter = mArticleAdapter
+        /**设置事件监听 */
+        mArticleAdapter.onItemClickListener = this
+        mArticleAdapter.onItemChildClickListener = this
+        mArticleAdapter.setOnLoadMoreListener(this, rv_content)
+        mPresenter.getHotKeyData()
     }
 
-    @Override
-    public void getHotKeySuccess(final List<HotKey> data) {
-        int size = data.size();
-        for (int i = 0; i < size; i++) {
-            TextView tv = (TextView) mInflater.inflate(
-                    R.layout.search_label_tv, mFlowLayout, false);
-            tv.setText(data.get(i).getName());
-            final String str = tv.getText().toString();
-            final int finalI = i;
+    override fun getHotKeySuccess(data: List<HotKey>) {
+        val size: Int = data.size
+        for (i in 0 until size) {
+            val tv: TextView = mInflater.inflate(
+                R.layout.search_label_tv, layout_hot_key, false
+            ) as TextView
+            tv.text = data.get(i).name
+            val str: String = tv.text.toString()
+            val finalI: Int = i
             //点击事件
-            tv.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    etSearch.setText(data.get(finalI).getName());
+            tv.setOnClickListener(object : View.OnClickListener {
+                override fun onClick(v: View) {
+                    cet_word.setText(data.get(finalI).name)
                     // 将光标移至字符串尾部
-                    CharSequence charSequence = etSearch.getText();
-                    if (charSequence instanceof Spannable) {
-                        Spannable spanText = (Spannable) charSequence;
-                        Selection.setSelection(spanText, charSequence.length());
+                    val charSequence: CharSequence = cet_word!!.text
+                    if (charSequence is Spannable) {
+                        Selection.setSelection(charSequence, charSequence.length)
                     }
-                    ViewUtils.hideKeyBoard(ArticleSearchActivity.this,etSearch);
-                    mPresenter.searchData(etSearch.getText().toString().trim());
+                    ViewUtils.hideKeyBoard(this@ArticleSearchActivity, cet_word)
+                    mPresenter.searchData(cet_word.text.toString().trim({ it <= ' ' }))
                 }
-            });
-            mFlowLayout.addView(tv);
+            })
+            layout_hot_key.addView(tv)
         }
     }
-
 
     /**
      * 初始化搜索历史记录
      */
-    public void initSearchHistory() {
-        mPref = getSharedPreferences("search_config", MODE_PRIVATE);
-        String history = mPref.getString(KEY_SEARCH_HISTORY_KEYWORD, "");
+    fun initSearchHistory() {
+        mPref = getSharedPreferences("search_config", MODE_PRIVATE)
+        val history: String = mPref.getString(KEY_SEARCH_HISTORY_KEYWORD, "")
         if (!TextUtils.isEmpty(history)) {
-            List<String> list = new ArrayList<String>();
-            for (Object o : history.split(",")) {
-                list.add((String) o);
+            val list: MutableList<String> = ArrayList()
+            for (o: Any in history.split(",").toTypedArray()) {
+                list.add(o as String)
             }
-            mHistoryKeywords = list;
+            mHistoryKeywords = list
         }
-        if (mHistoryKeywords.size() > 0) {
-            historySearchKey.setVisibility(View.VISIBLE);
+        if (mHistoryKeywords.size > 0) {
+            search_history_ll.visibility = View.VISIBLE
         } else {
-            historySearchKey.setVisibility(View.GONE);
+            search_history_ll.visibility = View.GONE
         }
-        mArrAdapter = new ArrayAdapter<String>(this, R.layout.item_search_history, mHistoryKeywords);
-        mListView.setAdapter(mArrAdapter);
-        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                etSearch.setText(mHistoryKeywords.get(i));
-                CharSequence charSequence = etSearch.getText();
-                if (charSequence instanceof Spannable) {
-                    Spannable spanText = (Spannable) charSequence;
-                    Selection.setSelection(spanText, charSequence.length());
+        mArrAdapter = ArrayAdapter(this, R.layout.item_search_history, mHistoryKeywords)
+        search_history_lv.adapter = mArrAdapter
+        search_history_lv.onItemClickListener = object : AdapterView.OnItemClickListener {
+            override fun onItemClick(
+                adapterView: AdapterView<*>?,
+                view: View,
+                i: Int,
+                l: Long
+            ) {
+                cet_word.setText(mHistoryKeywords[i])
+                val charSequence: CharSequence = cet_word.text
+                if (charSequence is Spannable) {
+                    Selection.setSelection(charSequence, charSequence.length)
                 }
-                ViewUtils.hideKeyBoard(ArticleSearchActivity.this,etSearch);
-                mPresenter.searchData(mHistoryKeywords.get(i));
+                ViewUtils.hideKeyBoard(this@ArticleSearchActivity, cet_word)
+                mPresenter.searchData(mHistoryKeywords[i])
             }
-        });
-        mArrAdapter.notifyDataSetChanged();
+        }
+        mArrAdapter.notifyDataSetChanged()
     }
-
-
 
     /**
      * 储存搜索历史
      */
-    public void save() {
-        String text = etSearch.getText().toString();
-        String oldText = mPref.getString(KEY_SEARCH_HISTORY_KEYWORD, "");
-        LogUtils.i("oldText:"+oldText+","+text+",oldText.contains(text):"+oldText.contains(text));
+    fun save() {
+        val text: String = cet_word.text.toString()
+        val oldText: String = mPref.getString(KEY_SEARCH_HISTORY_KEYWORD, "")
+        LogUtils.i(
+            "oldText:$oldText,$text,oldText.contains(text):" + oldText.contains(
+                text
+            )
+        )
         if (!TextUtils.isEmpty(text) && !(oldText.contains(text))) {
-            if (mHistoryKeywords.size() > 20) {//最多保存条数
-                return;
+            if (mHistoryKeywords.size > 20) { //最多保存条数
+                return
             }
-            SharedPreferences.Editor editor = mPref.edit();
-            editor.putString(KEY_SEARCH_HISTORY_KEYWORD, text + "," + oldText);
-            editor.commit();
-            mHistoryKeywords.add(0, text);
+            val editor: SharedPreferences.Editor = mPref.edit()
+            editor.putString(KEY_SEARCH_HISTORY_KEYWORD, "$text,$oldText")
+            editor.commit()
+            mHistoryKeywords.add(0, text)
         }
-        mArrAdapter.notifyDataSetChanged();
+        mArrAdapter.notifyDataSetChanged()
     }
 
     /**
      * 清除历史纪录
      */
-    public void cleanHistory() {
+    fun cleanHistory() {
         // 创建构建器
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        val builder: AlertDialog.Builder = AlertDialog.Builder(this)
         // 设置参数
         builder.setTitle(R.string.nb_common_tip)
-                .setMessage(R.string.delete_hint3)
-                .setPositiveButton(R.string.sure, new DialogInterface.OnClickListener() {// 积极
-
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        SharedPreferences.Editor editor = mPref.edit();
-                        editor.remove(KEY_SEARCH_HISTORY_KEYWORD).commit();
-                        mHistoryKeywords.clear();
-                        mArrAdapter.notifyDataSetChanged();
-                        historySearchKey.setVisibility(View.GONE);
-                    }
-                }).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {// 消极
-
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-        builder.create().show();
-
+            .setMessage(R.string.delete_hint3)
+            .setPositiveButton(R.string.sure, object : DialogInterface.OnClickListener {
+                // 积极
+                override fun onClick(dialog: DialogInterface, which: Int) {
+                    val editor: SharedPreferences.Editor = mPref.edit()
+                    editor.remove(KEY_SEARCH_HISTORY_KEYWORD).commit()
+                    mHistoryKeywords.clear()
+                    mArrAdapter.notifyDataSetChanged()
+                    search_history_ll.visibility = View.GONE
+                }
+            }).setNegativeButton(R.string.cancel, object : DialogInterface.OnClickListener {
+                // 消极
+                override fun onClick(dialog: DialogInterface, which: Int) {
+                    dialog.dismiss()
+                }
+            })
+        builder.create().show()
     }
 
-    @Override
-    public void showFailMsg(String message) {
-        SnackbarUtils.makeShort(getWindow().getDecorView(),message).danger();
+    override fun showFailMsg(message: String) {
+        SnackbarUtils.makeShort(window.decorView, message).danger()
     }
 
-    @Override
-    public void searchDataSuccess(List<Article.DatasBean> data) {
-        if (data == null || data.size() == 0) {//没有搜索到数据
+    override fun searchDataSuccess(data: List<DatasBean>) {
+        if (data == null || data.size == 0) { //没有搜索到数据
 //            llHotKey.setVisibility(BaseView.GONE);
 //            historySearchKey.setVisibility(BaseView.GONE);
-            scrollView.setVisibility(View.GONE);
-
-            recyclerView.setVisibility(View.GONE);
-            mEmptyView.setVisibility(View.VISIBLE);
-
+            sv_content.visibility = View.GONE
+            rv_content.visibility = View.GONE
+            ll_empty_view.visibility = View.VISIBLE
         } else {
 //            llHotKey.setVisibility(BaseView.GONE);
 //            historySearchKey.setVisibility(BaseView.GONE);
-            scrollView.setVisibility(View.GONE);
-
-            recyclerView.setVisibility(View.VISIBLE);
-            mEmptyView.setVisibility(View.GONE);
-            mArticleAdapter.setNewData(data);
+            sv_content.visibility = View.GONE
+            rv_content.visibility = View.VISIBLE
+            ll_empty_view.visibility = View.GONE
+            mArticleAdapter.setNewData(data)
         }
-
     }
 
-
-    @Override
-    public void loadMoreDataSuccess(List<Article.DatasBean> data) {
-        if (data == null || data.size() == 0) {
-            mArticleAdapter.loadMoreEnd();
+    override fun loadMoreDataSuccess(data: List<DatasBean>) {
+        if (data == null || data.size == 0) {
+            mArticleAdapter.loadMoreEnd()
         } else {
-            mArticleAdapter.addData(data);
-            mArticleAdapter.loadMoreComplete();
+            mArticleAdapter.addData(data)
+            mArticleAdapter.loadMoreComplete()
         }
     }
 
-
-    @Override
-    public void onLoadMoreRequested() {
-        String keyWord = etSearch.getText().toString().trim();
+    override fun onLoadMoreRequested() {
+        val keyWord: String = cet_word!!.text.toString().trim({ it <= ' ' })
         if (!TextUtils.isEmpty(keyWord)) {
-            mPresenter.getMoreData(keyWord);
+            mPresenter!!.getMoreData(keyWord)
         }
     }
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.btn_search:
-                finish();
-                break;
-            case R.id.clear_history_btn:
-                cleanHistory();
-                break;
-            default:
-                break;
+    override fun onClick(v: View) {
+        when (v.id) {
+            R.id.btn_search -> finish()
+            R.id.clear_history_btn -> cleanHistory()
+            else -> {}
         }
     }
 
-    @Override
-    public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-        BrowserActivity.startWithParams(this,mArticleAdapter.getItem(position).getTitle(),
-                mArticleAdapter.getItem(position).getLink());
+    override fun onItemClick(adapter: BaseQuickAdapter<*, *>?, view: View, position: Int) {
+        BrowserActivity.Companion.startWithParams(
+            this, mArticleAdapter.getItem(position)!!.title,
+            mArticleAdapter.getItem(position)!!.link
+        )
     }
 
-    @Override
-    public void onItemChildClick(BaseQuickAdapter adapter, View view, int position) {
-        if (view.getId() == R.id.tvChapterName) {
-            Intent intent = new Intent(this, ArticleTypeActivity.class);
-            intent.putExtra(HttpConstant.CONTENT_TITLE_KEY, mArticleAdapter.getItem(position).getChapterName());
-            List<Category.ChildrenBean> children = new ArrayList<>();
-            children.add(new Category.ChildrenBean(mArticleAdapter.getItem(position).getChapterId(),
-                    mArticleAdapter.getItem(position).getChapterName()));
-            intent.putParcelableArrayListExtra(HttpConstant.CONTENT_CHILDREN_DATA_KEY, (ArrayList<? extends Parcelable>) children);
-            intent.putExtra(HttpConstant.CONTENT_OPEN_FLAG, "0");
-
-            startActivity(intent);
+    override fun onItemChildClick(
+        adapter: BaseQuickAdapter<*, *>?,
+        view: View,
+        position: Int
+    ) {
+        if (view.id == R.id.tvChapterName) {
+            val intent: Intent = Intent(this, ArticleTypeActivity::class.java)
+            intent.putExtra(
+                HttpConstant.CONTENT_TITLE_KEY,
+                mArticleAdapter.getItem(position)!!.chapterName
+            )
+            val children: MutableList<ChildrenBean?> = ArrayList()
+            children.add(
+                ChildrenBean(
+                    mArticleAdapter.getItem(position)!!.chapterId,
+                    mArticleAdapter.getItem(position)!!.chapterName
+                )
+            )
+            intent.putParcelableArrayListExtra(
+                HttpConstant.CONTENT_CHILDREN_DATA_KEY,
+                children as ArrayList<out Parcelable?>?
+            )
+            intent.putExtra(HttpConstant.CONTENT_OPEN_FLAG, "0")
+            startActivity(intent)
         }
+    }
+
+    companion object {
+        val KEY_SEARCH_HISTORY_KEYWORD: String = "key_search_history_keyword2"
     }
 }

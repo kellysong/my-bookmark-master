@@ -1,9 +1,8 @@
-package com.sjl.bookmark.ui.presenter;
+package com.sjl.bookmark.ui.presenter
 
-import com.sjl.bookmark.app.MyApplication;
-import com.sjl.bookmark.ui.contract.AboutContract;
-
-import org.greenrobot.eventbus.EventBus;
+import com.sjl.bookmark.app.MyApplication
+import com.sjl.bookmark.ui.contract.AboutContract
+import org.greenrobot.eventbus.EventBus
 
 /**
  * TODO
@@ -14,11 +13,8 @@ import org.greenrobot.eventbus.EventBus;
  * @time 2018/3/2 14:55
  * @copyright(C) 2018 song
  */
-public class AboutPresenter extends AboutContract.Presenter {
-
-
-    @Override
-    public void getCurrentVersion() {
-        EventBus.getDefault().post(MyApplication.getAppVersion());
+class AboutPresenter : AboutContract.Presenter() {
+    override fun getCurrentVersion() {
+        EventBus.getDefault().post(MyApplication.getAppVersion())
     }
 }

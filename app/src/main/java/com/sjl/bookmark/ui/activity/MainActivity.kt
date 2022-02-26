@@ -1,176 +1,125 @@
-package com.sjl.bookmark.ui.activity;
+package com.sjl.bookmark.ui.activity
 
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.res.Configuration;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.ColorMatrix;
-import android.graphics.ColorMatrixColorFilter;
-import android.graphics.Paint;
-import android.net.Uri;
-import android.os.Build;
-import android.os.Bundle;
-import android.os.Environment;
-import android.os.Handler;
-import android.text.TextUtils;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.content.*
+import android.content.res.Configuration
+import android.graphics.*
+import android.net.Uri
+import android.os.Build
+import android.os.Build.VERSION_CODES
+import android.os.Environment
+import android.os.Handler
+import android.text.TextUtils
+import android.util.Log
+import android.view.*
+import android.widget.*
+import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.app.AlertDialog
+import androidx.core.view.GravityCompat
+import androidx.drawerlayout.widget.DrawerLayout
+import androidx.viewpager.widget.ViewPager
+import cn.feng.skin.manager.loader.SkinManager
+import cn.feng.skin.manager.statusbar.StatusBarUtil
+import cn.feng.skin.manager.util.ObjectUtils
+import com.google.android.material.navigation.NavigationView
+import com.orhanobut.logger.Logger
+import com.renny.zxing.Activity.CaptureActivity
+import com.sjl.bookmark.R
+import com.sjl.bookmark.api.WanAndroidApiService
+import com.sjl.bookmark.app.AppConstant
+import com.sjl.bookmark.dao.impl.CollectDaoImpl
+import com.sjl.bookmark.dao.util.BookmarkParse
+import com.sjl.bookmark.dao.util.BrowseMapper
+import com.sjl.bookmark.entity.DataResponse
+import com.sjl.bookmark.entity.UserInfo
+import com.sjl.bookmark.entity.UserLogin
+import com.sjl.bookmark.ui.adapter.MainViewPagerAdapter
+import com.sjl.bookmark.ui.fragment.CategoryFragment
+import com.sjl.bookmark.ui.fragment.HomeFragment
+import com.sjl.bookmark.ui.fragment.ToolFragment
+import com.sjl.bookmark.util.NavigationViewHelper
+import com.sjl.bookmark.util.NotificationUtils
+import com.sjl.bookmark.util.WebViewPool
+import com.sjl.bookmark.widget.WaveView
+import com.sjl.core.entity.EventBusDto
+import com.sjl.core.mvp.BaseActivity
+import com.sjl.core.mvp.BaseFragment
+import com.sjl.core.mvp.NoPresenter
+import com.sjl.core.net.RetrofitHelper
+import com.sjl.core.net.RxBus
+import com.sjl.core.net.RxObserver
+import com.sjl.core.net.RxSchedulers
+import com.sjl.core.util.AppUtils
+import com.sjl.core.util.PreferencesHelper
+import com.sjl.core.util.SerializeUtils
+import com.sjl.core.util.datetime.TimeUtils
+import com.sjl.core.util.log.LogUtils
+import com.sjl.core.widget.imageview.CircleImageView
+import com.uber.autodispose.AutoDispose
+import com.uber.autodispose.android.lifecycle.AndroidLifecycleScopeProvider
+import io.reactivex.Observable
+import io.reactivex.Observer
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
+import io.reactivex.functions.Function
+import io.reactivex.schedulers.Schedulers
+import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.app_bar_main.*
+import kotlinx.android.synthetic.main.content_main.*
+import java.io.*
+import java.lang.reflect.Proxy
+import java.util.*
+import kotlin.collections.ArrayList
 
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.navigation.NavigationView;
-import com.orhanobut.logger.Logger;
-import com.renny.zxing.Activity.CaptureActivity;
-import com.sjl.bookmark.R;
-import com.sjl.bookmark.api.WanAndroidApiService;
-import com.sjl.bookmark.app.AppConstant;
-import com.sjl.bookmark.dao.impl.CollectDaoImpl;
-import com.sjl.bookmark.dao.util.BookmarkParse;
-import com.sjl.bookmark.dao.util.BrowseMapper;
-import com.sjl.bookmark.entity.DataResponse;
-import com.sjl.bookmark.entity.UserInfo;
-import com.sjl.bookmark.entity.UserLogin;
-import com.sjl.bookmark.entity.table.Collection;
-import com.sjl.bookmark.ui.adapter.MainViewPagerAdapter;
-import com.sjl.bookmark.ui.fragment.CategoryFragment;
-import com.sjl.bookmark.ui.fragment.HomeFragment;
-import com.sjl.bookmark.ui.fragment.ToolFragment;
-import com.sjl.bookmark.util.NavigationViewHelper;
-import com.sjl.bookmark.util.NotificationUtils;
-import com.sjl.bookmark.util.WebViewPool;
-import com.sjl.bookmark.widget.WaveView;
-import com.sjl.core.entity.EventBusDto;
-import com.sjl.core.mvp.BaseActivity;
-import com.sjl.core.mvp.BaseFragment;
-import com.sjl.core.mvp.BasePresenter;
-import com.sjl.core.net.RetrofitHelper;
-import com.sjl.core.net.RxBus;
-import com.sjl.core.net.RxObserver;
-import com.sjl.core.net.RxSchedulers;
-import com.sjl.core.util.AppUtils;
-import com.sjl.core.util.PreferencesHelper;
-import com.sjl.core.util.SerializeUtils;
-import com.sjl.core.util.datetime.TimeUtils;
-import com.sjl.core.util.log.LogUtils;
-import com.sjl.core.widget.imageview.CircleImageView;
-import com.uber.autodispose.AutoDispose;
-import com.uber.autodispose.android.lifecycle.AndroidLifecycleScopeProvider;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+class MainActivity : BaseActivity<NoPresenter>(),
+    NavigationView.OnNavigationItemSelectedListener {
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.Fragment;
-import androidx.viewpager.widget.ViewPager;
-import cn.feng.skin.manager.loader.SkinManager;
-import cn.feng.skin.manager.statusbar.StatusBarUtil;
-import cn.feng.skin.manager.util.ObjectUtils;
-import io.reactivex.Observable;
-import io.reactivex.ObservableEmitter;
-import io.reactivex.ObservableOnSubscribe;
-import io.reactivex.Observer;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
-import io.reactivex.functions.Function;
-import io.reactivex.schedulers.Schedulers;
+    private var mNavHeader: LinearLayout? = null
+    private lateinit var sharedPreferences: SharedPreferences
+    private var circleImageView: CircleImageView? = null
+    private var tvNickname: TextView? = null
+    private var tvPersonality: TextView? = null
+    private lateinit var mFragments: MutableList<BaseFragment<*>>
+    private var mLastFgIndex = 0
+    private var searchMenuItem: MenuItem? = null
+    private val mToggle: ActionBarDrawerToggle? = null
+    private var DOUBLE_CLICK_TIME: Long = 0
+    private var notificationUtils: NotificationUtils? = null
 
-public class MainActivity extends BaseActivity<BasePresenter>
-        implements NavigationView.OnNavigationItemSelectedListener {
-
-    private Toolbar mToolbar;
-    private ImageView mToolBarIcon;
-    private TextView mToolBarTitle;
-    private DrawerLayout mDrawerLayout;
-    private LinearLayout mNavHeader;
-
-    private SharedPreferences sharedPreferences;
-    private CircleImageView circleImageView;
-    private TextView tvNickname;
-    private TextView tvPersonality;
-
-    private ViewPager mViewPager;
-    private BottomNavigationView mNavigation;
-
-    private List<BaseFragment> mFragments;
-    private static final int REQUEST_SCAN = 0;
-    private int mLastFgIndex;
-
-    private MenuItem searchMenuItem;
-    private ActionBarDrawerToggle mToggle;
-    private long DOUBLE_CLICK_TIME = 0;
-    private NotificationUtils notificationUtils;
     /**
      * 更换语言标志
      */
-    public boolean executeChangeLanguage = false;
-    private static final List<String> MOURNING_DAYS = new ArrayList<>(Arrays.asList("04-04","05-12","09-03","12-13"));
-
-    @Override
-    protected int getLayoutId() {
-        setMourningDaysTheme();
-        return R.layout.activity_main;
+    var executeChangeLanguage = false
+    override fun getLayoutId(): Int {
+        setMourningDaysTheme()
+        return R.layout.activity_main
     }
 
     /**
      * 主页设置公祭日和悼念日主题
      */
-    private void setMourningDaysTheme() {
-        String currentDate = TimeUtils.formatDateToStr(new Date(),"MM-dd");
-//        MOURNING_DAYS.add(currentDate);//测试
-        for (String day:MOURNING_DAYS){
-            if (day.equals(currentDate)){
-                View view  = getWindow(). getDecorView();
-                Paint paint = new  Paint();
-                ColorMatrix cm = new  ColorMatrix();
-                cm.setSaturation(0);
-                paint.setColorFilter(new ColorMatrixColorFilter(cm));
-                view. setLayerType(View.LAYER_TYPE_HARDWARE, paint);
-                break;
+    private fun setMourningDaysTheme() {
+        val currentDate = TimeUtils.formatDateToStr(Date(), "MM-dd")
+        //        MOURNING_DAYS.add(currentDate);//测试
+        for (day in MOURNING_DAYS) {
+            if (day == currentDate) {
+                val view = window.decorView
+                val paint = Paint()
+                val cm = ColorMatrix()
+                cm.setSaturation(0f)
+                paint.colorFilter = ColorMatrixColorFilter(cm)
+                view.setLayerType(View.LAYER_TYPE_HARDWARE, paint)
+                break
             }
         }
     }
 
-    @Override
-    protected void initView() {
-        mToolBarIcon = (ImageView) findViewById(R.id.tool_bar_icon);
-        mToolBarTitle = findViewById(R.id.tool_bar_title);
-        mToolbar = (Toolbar) findViewById(R.id.common_toolbar);
-
-        mToolbar.setTitle("");
-
-        setSupportActionBar(mToolbar);
-        mViewPager = (ViewPager) findViewById(R.id.vp_main);
-
-        mNavigation = (BottomNavigationView) findViewById(R.id.bnv_navigation);
-//        NavigationViewHelper.disableShiftMode(mNavigation);
+    override fun initView() {
+        common_toolbar.title = ""
+        setSupportActionBar(common_toolbar)
+        //        NavigationViewHelper.disableShiftMode(mNavigation);
         //下面控制菜单显示
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        initStatusColor();
+        initStatusColor()
 
 //        mToggle = new ActionBarDrawerToggle(
 //                this, mDrawer, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -179,75 +128,71 @@ public class MainActivity extends BaseActivity<BasePresenter>
 
 
         //headerLayout id获取比较特殊
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        NavigationViewHelper.disableNavigationViewScrollbars(navigationView);
-        navigationView.setNavigationItemSelectedListener(this);
-        navigationView.setItemIconTintList(null);//使菜单项图标显示图标原始颜色
-        View headerView = navigationView.getHeaderView(0);
-        mNavHeader = (LinearLayout) headerView.findViewById(R.id.ll_nav_header);
-
-        WaveView waveView = (WaveView) headerView.findViewById(R.id.wave_view);
-        circleImageView = (CircleImageView) headerView.findViewById(R.id.iv_head_img);
-        tvNickname = (TextView) headerView.findViewById(R.id.tv_name);
-        tvPersonality = (TextView) headerView.findViewById(R.id.tv_personality);
-        initFragment();
-        initWaveView(waveView);
+        val navigationView = findViewById<View>(R.id.nav_view) as NavigationView
+        NavigationViewHelper.disableNavigationViewScrollbars(navigationView)
+        navigationView.setNavigationItemSelectedListener(this)
+        navigationView.itemIconTintList = null //使菜单项图标显示图标原始颜色
+        val headerView = navigationView.getHeaderView(0)
+        mNavHeader = headerView.findViewById<View>(R.id.ll_nav_header) as LinearLayout
+        val waveView = headerView.findViewById<View>(R.id.wave_view) as WaveView
+        circleImageView = headerView.findViewById<View>(R.id.iv_head_img) as CircleImageView
+        tvNickname = headerView.findViewById<View>(R.id.tv_name) as TextView
+        tvPersonality = headerView.findViewById<View>(R.id.tv_personality) as TextView
+        initFragment()
+        initWaveView(waveView)
 
         //switchFragment(0);
         //注意：高版本肯能无效或报错
 //        hookToast();
     }
 
-
-    private void initStatusColor() {
-        int color = SkinManager.getInstance().getColorPrimary();
-        color = color != -1 ? color : getResources().getColor(R.color.colorPrimary);//必须指定定一个颜色值，不然更换主题时出现两个StatusBar
-        StatusBarUtil.setColorNoTranslucentForDrawerLayout(this, mDrawerLayout, color);
+    private fun initStatusColor() {
+        var color = SkinManager.getInstance().colorPrimary
+        color =
+            if (color != -1) color else resources.getColor(R.color.colorPrimary) //必须指定定一个颜色值，不然更换主题时出现两个StatusBar
+        StatusBarUtil.setColorNoTranslucentForDrawerLayout(this, drawer_layout, color)
     }
 
-
-    @Override
-    protected void changeStatusBarColor() {
-        int color = SkinManager.getInstance().getColorPrimary();
-        if (color != -1 && mDrawerLayout != null) {//不能少，否则状态栏无效
-            StatusBarUtil.setColorNoTranslucentForDrawerLayout(this, mDrawerLayout, color);
+    override fun changeStatusBarColor() {
+        val color = SkinManager.getInstance().colorPrimary
+        if (color != -1 && drawer_layout != null) { //不能少，否则状态栏无效
+            StatusBarUtil.setColorNoTranslucentForDrawerLayout(this, drawer_layout, color)
         }
     }
 
-
-    private void initWaveView(WaveView waveView) {
+    private fun initWaveView(waveView: WaveView) {
         //设置头像跟着波浪背景浮动
-        final LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) circleImageView.getLayoutParams();
-        waveView.setOnWaveAnimationListener(new WaveView.OnWaveAnimationListener() {
-            @Override
-            public void OnWaveAnimation(float y) {
-                lp.setMargins(0, 0, 0, (int) y + 2);
-                circleImageView.setLayoutParams(lp);
-            }
-        });
+        val lp = circleImageView!!.layoutParams as LinearLayout.LayoutParams
+        waveView.setOnWaveAnimationListener { y ->
+            lp.setMargins(0, 0, 0, y.toInt() + 2)
+            circleImageView!!.layoutParams = lp
+        }
     }
 
     /**
      * 初始化fragment
      */
-    private void initFragment() {
-        mFragments = new ArrayList<>();
- /*       mFragments.add(new HomeFragment());
+    private fun initFragment() {
+        mFragments = ArrayList()
+        /*       mFragments.add(new HomeFragment());
         mFragments.add(new CategoryFragment());
         mFragments.add(new ToolFragment());*/
-        int position = 0;
-        mFragments.add(instantiateFragment(mViewPager, position, new HomeFragment()));
-        position++;
-        mFragments.add(instantiateFragment(mViewPager, position, new CategoryFragment()));
-        position++;
-        mFragments.add(instantiateFragment(mViewPager, position, new ToolFragment()));
+        var position = 0
+        mFragments.add(instantiateFragment(vp_main, position, HomeFragment()))
+        position++
+        mFragments.add(instantiateFragment(vp_main, position, CategoryFragment()))
+        position++
+        mFragments.add(instantiateFragment(vp_main, position, ToolFragment()))
     }
 
-
-    private BaseFragment instantiateFragment(ViewPager viewPager, int position, BaseFragment defaultResult) {
-        String tag = "android:switcher:" + viewPager.getId() + ":" + position;
-        Fragment fragment = getSupportFragmentManager().findFragmentByTag(tag);
-        return fragment == null ? defaultResult : (BaseFragment) fragment;
+    private fun instantiateFragment(
+        viewPager: ViewPager?,
+        position: Int,
+        defaultResult: BaseFragment<*>
+    ): BaseFragment<*> {
+        val tag = "android:switcher:" + viewPager!!.id + ":" + position
+        val fragment = supportFragmentManager.findFragmentByTag(tag)
+        return if (fragment == null) defaultResult else (fragment as BaseFragment<*>?)!!
     }
 
     /**
@@ -255,8 +200,7 @@ public class MainActivity extends BaseActivity<BasePresenter>
      *
      * @param position 要显示的fragment的下标
      */
-
-    private void switchFragment(int position) {
+    private fun switchFragment(position: Int) {
 //        if (position >= mFragments.size()) {
 //            return;
 //        }
@@ -273,95 +217,66 @@ public class MainActivity extends BaseActivity<BasePresenter>
 //        ft.commit();
     }
 
-    @Override
-    protected void initListener() {
+    override fun initListener() {
         //设置mToolBarIcon监听
-        mToolBarIcon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mDrawerLayout.openDrawer(GravityCompat.START);
-            }
-        });
-
-        circleImageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openActivity(PersonCenterActivity.class);
-            }
-        });
-
+        tool_bar_icon.setOnClickListener { drawer_layout!!.openDrawer(GravityCompat.START) }
+        circleImageView?.setOnClickListener { openActivity(PersonCenterActivity::class.java) }
         /**
          * 点击底部tab切换fragment
          */
-        mNavigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.nav_home:
-//                        mToggle.setDrawerIndicatorEnabled(true);//隐藏侧滑菜单按钮
-                        if (searchMenuItem != null) {
-                            searchMenuItem.setVisible(true);
-                        }
-                        setToolbarTitle(getString(R.string.bottom_tab_home), true);
-                        switchFragmentNew(0);
-                        break;
-                    case R.id.nav_category:
-//                        mToggle.setDrawerIndicatorEnabled(false);
-                        if (searchMenuItem != null) {
-                            searchMenuItem.setVisible(false);
-                        }
-                        setToolbarTitle(getString(R.string.bottom_tab_category), false);
-                        switchFragmentNew(1);
-                        break;
-                    case R.id.nav_tool:
-//                        mToggle.setDrawerIndicatorEnabled(false);
-                        if (searchMenuItem != null) {
-                            searchMenuItem.setVisible(false);
-                        }
-                        setToolbarTitle(getString(R.string.bottom_tab_tool), false);
-                        switchFragmentNew(2);
-                        break;
-                    default:
-                        break;
+        bnv_navigation.setOnNavigationItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.nav_home -> {
+                    //                        mToggle.setDrawerIndicatorEnabled(true);//隐藏侧滑菜单按钮
+                    if (searchMenuItem != null) {
+                        searchMenuItem!!.isVisible = true
+                    }
+                    setToolbarTitle(getString(R.string.bottom_tab_home), true)
+                    switchFragmentNew(0)
                 }
-                return true;
+                R.id.nav_category -> {
+                    //                        mToggle.setDrawerIndicatorEnabled(false);
+                    if (searchMenuItem != null) {
+                        searchMenuItem!!.isVisible = false
+                    }
+                    setToolbarTitle(getString(R.string.bottom_tab_category), false)
+                    switchFragmentNew(1)
+                }
+                R.id.nav_tool -> {
+                    //                        mToggle.setDrawerIndicatorEnabled(false);
+                    if (searchMenuItem != null) {
+                        searchMenuItem!!.isVisible = false
+                    }
+                    setToolbarTitle(getString(R.string.bottom_tab_tool), false)
+                    switchFragmentNew(2)
+                }
+                else -> {}
             }
-        });
-
-
-        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
+            true
+        }
+        vp_main.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+            override fun onPageScrolled(
+                position: Int,
+                positionOffset: Float,
+                positionOffsetPixels: Int
+            ) {
             }
 
-            @Override
-            public void onPageSelected(int position) {
+            override fun onPageSelected(position: Int) {
                 //ViewPager和BottomNaviationView联动,当ViewPager的某个页面被选中了,同时设置BottomNaviationView对应的tab按钮被选中
-                switch (position) {
-                    case 0:
-                        mNavigation.setSelectedItemId(R.id.nav_home);
-                        break;
-                    case 1:
-                        mNavigation.setSelectedItemId(R.id.nav_category);
-                        break;
-                    case 2:
-                        mNavigation.setSelectedItemId(R.id.nav_tool);
-                        break;
-
-                    default:
-                        break;
+                when (position) {
+                    0 -> bnv_navigation!!.selectedItemId = R.id.nav_home
+                    1 -> bnv_navigation!!.selectedItemId = R.id.nav_category
+                    2 -> bnv_navigation!!.selectedItemId = R.id.nav_tool
+                    else -> {}
                 }
             }
 
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });
+            override fun onPageScrollStateChanged(state: Int) {}
+        })
         //为viewpager设置adapter
-        mViewPager.setOffscreenPageLimit(2);
-        mViewPager.setAdapter(new MainViewPagerAdapter(getSupportFragmentManager(), mFragments));
+        vp_main.offscreenPageLimit = 2
+        vp_main.adapter = MainViewPagerAdapter(supportFragmentManager, mFragments)
     }
 
     /**
@@ -370,256 +285,214 @@ public class MainActivity extends BaseActivity<BasePresenter>
      * @param title
      * @param iconShow
      */
-    private void setToolbarTitle(String title, boolean iconShow) {
-        mToolBarTitle.setText(title);
+    private fun setToolbarTitle(title: String, iconShow: Boolean) {
+        tool_bar_title.text = title
         if (iconShow) {
-            mToolBarIcon.setVisibility(View.VISIBLE);
+            tool_bar_icon.visibility = View.VISIBLE
         } else {
-            mToolBarIcon.setVisibility(View.GONE);
-
+            tool_bar_icon.visibility = View.GONE
         }
     }
 
-    private void switchFragmentNew(int position) {
-        mViewPager.setCurrentItem(position, false);
-
+    private fun switchFragmentNew(position: Int) {
+        vp_main!!.setCurrentItem(position, false)
     }
 
-    @Override
-    protected void initData() {
-        mLastFgIndex = 0;
-        switchFragmentNew(mLastFgIndex);
-
-        loadBookmark();
-        initHeadImg();
-        registerUpdateHeadImg();
+    override fun initData() {
+        mLastFgIndex = 0
+        switchFragmentNew(mLastFgIndex)
+        loadBookmark()
+        initHeadImg()
+        registerUpdateHeadImg()
         //限时大促
 //        runnable.run();
-        autoBackupCollection();
-//        CrashReport.testJavaCrash();
-
-        autoLoginWanAndroid();
+        autoBackupCollection()
+        //        CrashReport.testJavaCrash();
+        autoLoginWanAndroid()
     }
 
     /**
      * 自动登录WanAndroid，获取积分
      */
-    private void autoLoginWanAndroid() {
-        final PreferencesHelper preferencesHelper = PreferencesHelper.getInstance(mContext);
-        String date = (String) preferencesHelper.get(AppConstant.SETTING.LOGIN_DATE, "");
-        String currentDate = TimeUtils.formatDateToStr(new Date(), TimeUtils.DATE_FORMAT_4);
-        if (currentDate.equals(date)) {
-            return;
+    private fun autoLoginWanAndroid() {
+        val preferencesHelper = PreferencesHelper.getInstance(mContext)
+        val date = preferencesHelper[AppConstant.SETTING.LOGIN_DATE, ""] as String
+        val currentDate = TimeUtils.formatDateToStr(Date(), TimeUtils.DATE_FORMAT_4)
+        if (currentDate == date) {
+            return
         }
-        RetrofitHelper.getInstance().getApiService(WanAndroidApiService.class).login("songjiali", "songjiali")
-                .compose(RxSchedulers.applySchedulers()).as(bindLifecycle()).subscribe(new RxObserver<DataResponse<UserLogin>>() {
-            @Override
-            public void _onNext(DataResponse<UserLogin> userLoginDataResponse) {
-                if (userLoginDataResponse.getErrorCode() == 0) {
-                    LogUtils.i("登录成功");
-                    preferencesHelper.put(AppConstant.SETTING.LOGIN_DATE, currentDate);
+        RetrofitHelper.getInstance().getApiService(WanAndroidApiService::class.java)
+            .login("songjiali", "songjiali")
+            .compose(RxSchedulers.applySchedulers()).`as`(bindLifecycle())
+            .subscribe(object : RxObserver<DataResponse<UserLogin>>() {
+                override fun _onNext(userLoginDataResponse: DataResponse<UserLogin>) {
+                    if (userLoginDataResponse.errorCode == 0) {
+                        LogUtils.i("登录成功")
+                        preferencesHelper.put(AppConstant.SETTING.LOGIN_DATE, currentDate)
+                    }
                 }
 
-            }
-
-            @Override
-            public void _onError(String msg) {
-
-            }
-
-            @Override
-            public void _onComplete() {
-
-            }
-        });
+                override fun _onError(msg: String) {}
+                override fun _onComplete() {}
+            })
     }
 
     /**
      * 自动备份
      */
-    private void autoBackupCollection() {
-        final PreferencesHelper preferencesHelper = PreferencesHelper.getInstance(mContext);
-        boolean isAutoBackup = (Boolean) preferencesHelper.get(AppConstant.SETTING.AUTO_BACKUP_COLLECTION, true);
+    private fun autoBackupCollection() {
+        val preferencesHelper = PreferencesHelper.getInstance(mContext)
+        val isAutoBackup =
+            preferencesHelper[AppConstant.SETTING.AUTO_BACKUP_COLLECTION, true] as Boolean
         if (isAutoBackup) {
-            long time = (long) preferencesHelper.get(AppConstant.SETTING.AUTO_BACKUP_COLLECTION_TIME, -1L);
-            long dateDiff = TimeUtils.dateDiff(new Date(time), new Date());
-            if (time == -1 || dateDiff > 2) {//两天备份一次
-                CollectDaoImpl collectService = new CollectDaoImpl(mContext);
-                final List<Collection> collection = collectService.findAllCollection();
+            val time =
+                preferencesHelper[AppConstant.SETTING.AUTO_BACKUP_COLLECTION_TIME, -1L] as Long
+            val dateDiff = TimeUtils.dateDiff(Date(time), Date())
+            if (time == -1L || dateDiff > 2) { //两天备份一次
+                val collectService = CollectDaoImpl(mContext)
+                val collection = collectService.findAllCollection()
                 if (AppUtils.isEmpty(collection)) {
-                    return;
+                    return
                 }
                 //开始序列化数据
                 Observable.just(collection)
-                        .map(new Function<List<Collection>, Boolean>() {
+                    .map(object :
+                        Function<List<com.sjl.bookmark.entity.table.Collection>, Boolean> {
 
+                        @Throws(Exception::class)
+                        override fun apply(collections: List<com.sjl.bookmark.entity.table.Collection>): Boolean {
+                            return SerializeUtils.serialize("collection", collections)
+                        }
+                    })
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread()) //                    .as(MainActivity.this.<Boolean>bindLifecycle())//不知道为啥转换失败
+                    .`as`(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(this)))
+                    .subscribe(object : Observer<Boolean> {
 
-                            @Override
-                            public Boolean apply(List<Collection> collections) throws Exception {
-                                boolean ret = SerializeUtils.serialize("collection", collections);
-                                return ret;
+                        override fun onSubscribe(d: Disposable) {}
+                        override fun onNext(ret: Boolean) {
+                            notificationUtils = NotificationUtils(baseContext)
+                            var msg = ""
+                            msg = if (ret) {
+                                "本次备份我的收藏共" + collection.size + "条"
+                            } else {
+                                "备份我的收藏失败"
                             }
-                        })
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-//                    .as(MainActivity.this.<Boolean>bindLifecycle())//不知道为啥转换失败
-                        .as(AutoDispose.<Boolean>autoDisposable(AndroidLifecycleScopeProvider.from(this)))
-                        .subscribe(new Observer<Boolean>() {
-                            @Override
-                            public void onSubscribe(Disposable d) {
+                            notificationUtils!!.sendNotification(
+                                1,
+                                getString(R.string.auto_backup),
+                                msg,
+                                null,
+                                null
+                            )
+                            preferencesHelper.put(
+                                AppConstant.SETTING.AUTO_BACKUP_COLLECTION_TIME,
+                                System.currentTimeMillis()
+                            )
+                        }
 
-                            }
+                        override fun onError(e: Throwable) {
+                            LogUtils.e("备份收藏异常", e)
+                        }
 
-                            @Override
-                            public void onNext(Boolean ret) {
-                                notificationUtils = new NotificationUtils(getBaseContext());
-                                String msg = "";
-                                if (ret) {
-                                    msg = "本次备份我的收藏共" + collection.size() + "条";
-                                } else {
-                                    msg = "备份我的收藏失败";
-                                }
-                                notificationUtils.sendNotification(1, getString(R.string.auto_backup), msg, null, null);
-                                preferencesHelper.put(AppConstant.SETTING.AUTO_BACKUP_COLLECTION_TIME, System.currentTimeMillis());
-                            }
-
-                            @Override
-                            public void onError(Throwable e) {
-                                LogUtils.e("备份收藏异常", e);
-                            }
-
-                            @Override
-                            public void onComplete() {
-                                LogUtils.i("完成备份收藏");
-                            }
-                        });
+                        override fun onComplete() {
+                            LogUtils.i("完成备份收藏")
+                        }
+                    })
             }
-
         }
     }
 
-
-    Handler handler = new Handler();
-    Runnable runnable = new Runnable() {
-        @Override
-        public void run() {
-            String time = TimeUtils.getTimeDifference(new Date(), "2018-04-15 12:00:00", 0);
-            if ("-1".equals(time)) {
-                LogUtils.i("已经发完，欢迎下月再来");
+    var handler = Handler()
+    var runnable: Runnable = object : Runnable {
+        override fun run() {
+            val time = TimeUtils.getTimeDifference(Date(), "2018-04-15 12:00:00", 0)
+            if ("-1" == time) {
+                LogUtils.i("已经发完，欢迎下月再来")
             } else {
-                LogUtils.i("离发工资还剩：" + time);
+                LogUtils.i("离发工资还剩：$time")
             }
-
-            handler.postDelayed(this, 1000);
+            handler.postDelayed(this, 1000)
         }
-    };
+    }
 
-    private void initHeadImg() {
-
-        Observable.create(new ObservableOnSubscribe<Object>() {
-            @Override
-            public void subscribe(ObservableEmitter<Object> emitter) throws Exception {
-                File temp = new File(AppConstant.USER_HEAD_PATH + File.separator + "head_crop.jpg");
-                if (temp.exists()) {
-                    FileInputStream fis = new FileInputStream(temp);
-                    Bitmap bitmap = BitmapFactory.decodeStream(fis);///把流转化为Bitmap图片
-                    emitter.onNext(bitmap);
-                }
-                UserInfo userInfo = SerializeUtils.deserialize("userInfo", UserInfo.class);
-                if (userInfo != null) {
-                    emitter.onNext(userInfo);
-                }
-
+    private fun initHeadImg() {
+        Observable.create<Any> { emitter ->
+            val temp = File(AppConstant.USER_HEAD_PATH + File.separator + "head_crop.jpg")
+            if (temp.exists()) {
+                val fis = FileInputStream(temp)
+                val bitmap = BitmapFactory.decodeStream(fis) ///把流转化为Bitmap图片
+                emitter.onNext(bitmap)
             }
-        }).compose(RxSchedulers.applySchedulers())
-                .as(bindLifecycle())
-                .subscribe(new Consumer<Object>() {
-                    @Override
-                    public void accept(Object o) throws Exception {
-                        if (o instanceof Bitmap) {
-                            Bitmap bitmap = (Bitmap) o;
-                            circleImageView.setImageBitmap(bitmap);
-                            mToolBarIcon.setImageBitmap(bitmap);
-                        }
-                        if (o instanceof UserInfo) {
-                            UserInfo userInfo = (UserInfo) o;
-                            tvNickname.setText(userInfo.getName());
-                            tvPersonality.setText(userInfo.getPersonality());
-                        }
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
-                        LogUtils.e("初始化头像失败", throwable);
-                    }
-                });
+            val userInfo = SerializeUtils.deserialize<UserInfo>("userInfo", UserInfo::class.java)
+            if (userInfo != null) {
+                emitter.onNext(userInfo)
+            }
+        }.compose(RxSchedulers.applySchedulers())
+            .`as`(bindLifecycle())
+            .subscribe({ o ->
+                if (o is Bitmap) {
+                    val bitmap = o
+                    circleImageView!!.setImageBitmap(bitmap)
+                    tool_bar_icon!!.setImageBitmap(bitmap)
+                }
+                if (o is UserInfo) {
+                    val userInfo = o
+                    tvNickname!!.text = userInfo.name
+                    tvPersonality!!.text = userInfo.personality
+                }
+            }) { throwable -> LogUtils.e("初始化头像失败", throwable) }
     }
 
     /**
      * 监听头像更新
      */
-    public void registerUpdateHeadImg() {
+    fun registerUpdateHeadImg() {
         RxBus.getInstance()
-                .toObservable(AppConstant.RxBusFlag.FLAG_2, EventBusDto.class)
-                .compose(RxSchedulers.applySchedulers())
-                .as(bindLifecycle())
-                .subscribe(new Consumer<EventBusDto>() {
-                    @Override
-                    public void accept(EventBusDto s) throws Exception {
-                        LogUtils.i("接收到头像更新：" + s);
-                        if (s.getEventCode() == 0) {
-                            initHeadImg();
-                        }
-
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
-
-                    }
-                });
+            .toObservable(AppConstant.RxBusFlag.FLAG_2, EventBusDto::class.java)
+            .compose(RxSchedulers.applySchedulers())
+            .`as`(bindLifecycle())
+            .subscribe({ s ->
+                LogUtils.i("接收到头像更新：$s")
+                if (s.eventCode == 0) {
+                    initHeadImg()
+                }
+            }) { }
     }
 
-
-    private void loadBookmark() {
-        String fileName = "bookmarks/bookmarks_2021_12_12.html";
-        sharedPreferences = this.getSharedPreferences("bookmark", Context.MODE_PRIVATE);
-        boolean flag = sharedPreferences.getBoolean("readFlag", false);
-        String oldFileName = sharedPreferences.getString("fileName", "");
+    private fun loadBookmark() {
+        val fileName = "bookmarks/bookmarks_2021_12_12.html"
+        sharedPreferences = getSharedPreferences("bookmark", MODE_PRIVATE)
+        val flag = sharedPreferences.getBoolean("readFlag", false)
+        val oldFileName = sharedPreferences.getString("fileName", "")
         if (!flag) {
-            initBookmarkData(fileName);
+            initBookmarkData(fileName)
         } else {
-            if (!ObjectUtils.isEquals(fileName, oldFileName)) {//书签文本发生改变，重新解析
-                initBookmarkData(fileName);
+            if (!ObjectUtils.isEquals(fileName, oldFileName)) { //书签文本发生改变，重新解析
+                initBookmarkData(fileName)
             } else {
-                LogUtils.i("已经读取过书签");
+                LogUtils.i("已经读取过书签")
             }
-
         }
     }
 
-    private void initBookmarkData(String fileName) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    long start = System.currentTimeMillis();
-                    BookmarkParse bookmarkUtils = new BookmarkParse();
-
-                    bookmarkUtils.readBookmarkHtml(MainActivity.this, fileName);
-                    SharedPreferences.Editor editor = sharedPreferences.edit();
-                    editor.putBoolean("readFlag", true);
-                    editor.putString("fileName,", fileName);
-                    editor.apply();
-                    long end = System.currentTimeMillis();
-                    LogUtils.i("读取书签文件耗时：" + (end - start) / 1000.0 + "s");
-                } catch (IOException e) {
-                    Logger.e(e, "读取书签文件异常");
-                }
+    private fun initBookmarkData(fileName: String) {
+        Thread {
+            try {
+                val start = System.currentTimeMillis()
+                val bookmarkUtils = BookmarkParse()
+                bookmarkUtils.readBookmarkHtml(this@MainActivity, fileName)
+                val editor = sharedPreferences.edit()
+                editor.putBoolean("readFlag", true)
+                editor.putString("fileName,", fileName)
+                editor.apply()
+                val end = System.currentTimeMillis()
+                LogUtils.i("读取书签文件耗时：" + (end - start) / 1000.0 + "s")
+            } catch (e: IOException) {
+                Logger.e(e, "读取书签文件异常")
             }
-        }).start();
+        }.start()
     }
-
 
     /**
      * onCreate之后执行
@@ -628,283 +501,256 @@ public class MainActivity extends BaseActivity<BasePresenter>
      * @param menu
      * @return
      */
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        searchMenuItem = menu.getItem(0);
+    override fun onPrepareOptionsMenu(menu: Menu): Boolean {
+        searchMenuItem = menu.getItem(0)
         if (mLastFgIndex != 0) {
-            searchMenuItem.setVisible(false);
+            searchMenuItem?.isVisible = false
         }
-        return super.onPrepareOptionsMenu(menu);
+        return super.onPrepareOptionsMenu(menu)
     }
 
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-
-        return true;
+        menuInflater.inflate(R.menu.main, menu)
+        return true
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify item_bookmark_title parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
+        val id = item.itemId
         if (id == R.id.action_search) {
-            startActivity(new Intent(this, ArticleSearchActivity.class));
-            return true;
+            startActivity(Intent(this, ArticleSearchActivity::class.java))
+            return true
         }
-
-        return super.onOptionsItemSelected(item);
+        return super.onOptionsItemSelected(item)
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
+    override fun onNavigationItemSelected(item: MenuItem): Boolean {
         // Handle navigation view item clicks here.
-        int id = item.getItemId();
-
+        val id = item.itemId
         if (id == R.id.nav_business_card) {
-            startActivity(new Intent(this, MyCardActivity.class));
-        } else if (id == R.id.nav_my_collection) {//我的收藏
-            startActivity(new Intent(this, MyCollectionActivity.class));
+            startActivity(Intent(this, MyCardActivity::class.java))
+        } else if (id == R.id.nav_my_collection) { //我的收藏
+            startActivity(Intent(this, MyCollectionActivity::class.java))
         } else if (id == R.id.nav_bookmark) {
-            startActivity(new Intent(this, BookmarkActivity.class));
+            startActivity(Intent(this, BookmarkActivity::class.java))
         } else if (id == R.id.nav_skin) {
-            startActivity(new Intent(this, ChangeSkinActivity.class));
+            startActivity(Intent(this, ChangeSkinActivity::class.java))
         } else if (id == R.id.nav_scan) {
-            Intent intent = new Intent(this, CaptureActivity.class);
-            intent.putExtra("scan_title", getString(R.string.scan));
-            startActivityForResult(intent, REQUEST_SCAN);
-        } else if (id == R.id.nav_settings) {//设置
-            startActivity(new Intent(this, SettingActivity.class));
-//            String path = AppConstant.ROOT_PATH + "sample.pdf";
+            val intent = Intent(this, CaptureActivity::class.java)
+            intent.putExtra("scan_title", getString(R.string.scan))
+            startActivityForResult(intent, REQUEST_SCAN)
+        } else if (id == R.id.nav_settings) { //设置
+            startActivity(Intent(this, SettingActivity::class.java))
+            //            String path = AppConstant.ROOT_PATH + "sample.pdf";
 //            DocBrowserActivity.show(this,path);
         }
-//防止卡顿
+        //防止卡顿
 //        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 //        drawer.closeDrawer(GravityCompat.START);
-        return true;
+        return true
     }
 
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-
-        LogUtils.i("==========================================语言切换了");
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        LogUtils.i("==========================================语言切换了")
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        LogUtils.i("requestCode=" + requestCode + ",resultCode=" + resultCode);
-        switch (requestCode) {
-            case 300://原生裁剪后返回数据，暂时不用
-                if (data != null) {
-                    Bundle extras = data.getExtras();
-                    Bitmap head = extras.getParcelable("data");
-
-                    if (head != null) {
-                        /**
-                         * 上传服务器代码
-                         */
-                        saveHeadPic(head);// 保存在SD卡中
-                        circleImageView.setImageBitmap(head);// 用ImageView显示出来
-                        head.recycle();
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        LogUtils.i("requestCode=$requestCode,resultCode=$resultCode")
+        when (requestCode) {
+            300 -> if (data != null) {
+                val extras = data.extras
+                val head = extras.getParcelable<Bitmap>("data")
+                if (head != null) {
+                    /**
+                     * 上传服务器代码
+                     */
+                    saveHeadPic(head) // 保存在SD卡中
+                    circleImageView!!.setImageBitmap(head) // 用ImageView显示出来
+                    head.recycle()
+                }
+            }
+            REQUEST_SCAN -> if (resultCode == RESULT_OK) {
+                val barCode = data!!.getStringExtra("barCode")
+                if (!TextUtils.isEmpty(barCode)) {
+                    if (barCode.startsWith("http")) {
+                        scanResult(barCode, DialogInterface.OnClickListener { dialog, which ->
+                            dialog.dismiss()
+                            val intent = Intent(this@MainActivity, BrowserActivity::class.java)
+                            intent.putExtra(BrowserActivity.Companion.WEBVIEW_URL, barCode)
+                            startActivity(intent)
+                        }, DialogInterface.OnClickListener { dialog, which -> dialog.dismiss() })
+                    } else {
+                        scanResult(barCode, null, null)
                     }
                 }
-                break;
-
-            case REQUEST_SCAN://扫一扫结果
-                if (resultCode == RESULT_OK) {
-                    String barCode = data.getStringExtra("barCode");
-                    if (!TextUtils.isEmpty(barCode)) {
-                        if (barCode.startsWith("http")) {
-                            scanResult(barCode, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                    Intent intent = new Intent(MainActivity.this, BrowserActivity.class);
-                                    intent.putExtra(BrowserActivity.WEBVIEW_URL, barCode);
-                                    startActivity(intent);
-
-                                }
-                            }, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                }
-                            });
-
-                        } else {
-                            scanResult(barCode, null, null);
-                        }
-                    }
-
-                }
-                break;
-            default:
-                break;
-
+            }
+            else -> {}
         }
     }
 
-    private void scanResult(String text, final DialogInterface.OnClickListener okListener, final DialogInterface.OnClickListener cancelListener) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this)
-                .setTitle(R.string.nb_common_tip)
-                .setMessage(text);
-        builder.setPositiveButton(R.string.sure, okListener);
+    private fun scanResult(
+        text: String,
+        okListener: DialogInterface.OnClickListener?,
+        cancelListener: DialogInterface.OnClickListener?
+    ) {
+        val builder = AlertDialog.Builder(this)
+            .setTitle(R.string.nb_common_tip)
+            .setMessage(text)
+        builder.setPositiveButton(R.string.sure, okListener)
         if (cancelListener != null) {
-            builder.setPositiveButton(R.string.cancel, cancelListener);
+            builder.setPositiveButton(R.string.cancel, cancelListener)
         }
-        builder.show();
+        builder.show()
     }
-
 
     /**
      * 调用系统的裁剪功能,个别机型有bug,小米
      *
      * @param uri
      */
-    @Deprecated
-    public void cropPhoto(Uri uri) {
+    @Deprecated("")
+    fun cropPhoto(uri: Uri?) {
         try {
-            Intent intent = new Intent("com.android.camera.action.CROP");
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);//授权标志
+            val intent = Intent("com.android.camera.action.CROP")
+            if (Build.VERSION.SDK_INT >= VERSION_CODES.N) {
+                intent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION //授权标志
             }
-            intent.setDataAndType(uri, "image/*");
-            intent.putExtra("crop", "true");
+            intent.setDataAndType(uri, "image/*")
+            intent.putExtra("crop", "true")
             // aspectX aspectY 是裁剪框宽高的比例
-            intent.putExtra("aspectX", 1);
-            intent.putExtra("aspectY", 1);
+            intent.putExtra("aspectX", 1)
+            intent.putExtra("aspectY", 1)
             // outputX outputY 是裁剪图片宽高
-            intent.putExtra("outputX", 200);
-            intent.putExtra("outputY", 200);
-            intent.putExtra("return-data", true);
-            startActivityForResult(intent, 300);
-        } catch (Exception e) {
-            LogUtils.e("调用系统的裁剪功能异常", e);
+            intent.putExtra("outputX", 200)
+            intent.putExtra("outputY", 200)
+            intent.putExtra("return-data", true)
+            startActivityForResult(intent, 300)
+        } catch (e: Exception) {
+            LogUtils.e("调用系统的裁剪功能异常", e)
         }
     }
 
-    @Deprecated
-    private void saveHeadPic(Bitmap mBitmap) {
-        String sdStatus = Environment.getExternalStorageState();
-        if (!sdStatus.equals(Environment.MEDIA_MOUNTED)) { // 检测sd是否可用
-            return;
+    @Deprecated("")
+    private fun saveHeadPic(mBitmap: Bitmap) {
+        val sdStatus = Environment.getExternalStorageState()
+        if (sdStatus != Environment.MEDIA_MOUNTED) { // 检测sd是否可用
+            return
         }
-        FileOutputStream b = null;
-        File file = new File(AppConstant.USER_HEAD_PATH);
+        var b: FileOutputStream? = null
+        val file = File(AppConstant.USER_HEAD_PATH)
         if (!file.exists()) {
-            file.mkdirs();// 创建文件夹
+            file.mkdirs() // 创建文件夹
         }
-        String fileName = file + File.separator + "head.jpg";// 图片名字
+        val fileName = file.toString() + File.separator + "head.jpg" // 图片名字
         try {
-            b = new FileOutputStream(fileName);
-            mBitmap.compress(Bitmap.CompressFormat.JPEG, 100, b);// 把数据写入文件
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            b = FileOutputStream(fileName)
+            mBitmap.compress(Bitmap.CompressFormat.JPEG, 100, b) // 把数据写入文件
+        } catch (e: FileNotFoundException) {
+            e.printStackTrace()
         } finally {
             try {
                 // 关闭流
-                b.flush();
-                b.close();
-            } catch (IOException e) {
-                e.printStackTrace();
+                b!!.flush()
+                b.close()
+            } catch (e: IOException) {
+                e.printStackTrace()
             }
         }
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        mFragments = null;
+    override fun onDestroy() {
+        super.onDestroy()
+        mFragments.clear()
         if (!executeChangeLanguage) {
-            BrowseMapper.clearAll();
-            WebViewPool.destroyPool();
-            killAll();
-            System.exit(0);//退出虚拟机
+            BrowseMapper.clearAll()
+            WebViewPool.destroyPool()
+            killAll()
+            System.exit(0) //退出虚拟机
         }
     }
 
-    @Override
-    public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+    override fun onBackPressed() {
+        val drawer = findViewById<View>(R.id.drawer_layout) as DrawerLayout
         if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
+            drawer.closeDrawer(GravityCompat.START)
         } else {
             if (System.currentTimeMillis() - DOUBLE_CLICK_TIME > 2000) {
-                DOUBLE_CLICK_TIME = System.currentTimeMillis();
-
-                Toast.makeText(this, R.string.exit_app_hint, Toast.LENGTH_SHORT).show();
+                DOUBLE_CLICK_TIME = System.currentTimeMillis()
+                Toast.makeText(this, R.string.exit_app_hint, Toast.LENGTH_SHORT).show()
             } else {
-                mFragments = null;
-                super.onBackPressed();
+                mFragments.clear()
+                super.onBackPressed()
             }
-
         }
     }
 
     /**
      * 基于hook去除 Toast前面的应用名,https://mp.weixin.qq.com/s/B3ooLGa-uQK4pf9RrZvY5g
      */
-    @SuppressWarnings("停用")
-    private void hookToast() {
+    private fun hookToast() {
         try {
-            Class<Toast> toastClass = Toast.class;
+            val toastClass = Toast::class.java
             //获取sService的Field
-            Field sServiceField = toastClass.getDeclaredField("sService");
-            sServiceField.setAccessible(true);
+            val sServiceField = toastClass.getDeclaredField("sService")
+            sServiceField.isAccessible = true
             //获取sService原始对象
-            Method getServiceMethod = toastClass.getDeclaredMethod("getService", new Class[0]);
-            getServiceMethod.setAccessible(true);
-            Object service = getServiceMethod.invoke(null);
+            val getServiceMethod = toastClass.getDeclaredMethod("getService", *arrayOfNulls(0))
+            getServiceMethod.isAccessible = true
+            val service = getServiceMethod.invoke(null)
             //动态代理替换
-            Class<?> aClass = Class.forName("android.app.INotificationManager");
-            Object proxy = Proxy.newProxyInstance(Thread.class.getClassLoader(), new Class[]{aClass}, new InvocationHandler() {
-                @Override
-                public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-                    // 判断enqueueToast()方法时执行操作
-                    if (method.getName().equals("enqueueToast")) {
-                        Log.e("hook", method.getName());
-                        try {
-                            getContent(args[1]);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
+            val aClass = Class.forName("android.app.INotificationManager")
+            val proxy = Proxy.newProxyInstance(
+                Thread::class.java.classLoader,
+                arrayOf(aClass)
+            ) { proxy, method, args -> // 判断enqueueToast()方法时执行操作
+                if (method.name == "enqueueToast") {
+                    Log.e("hook", method.name)
+                    try {
+                        getContent(args[1])
+                    } catch (e: Exception) {
+                        e.printStackTrace()
                     }
-                    return method.invoke(service, args);
                 }
-            });
+                method.invoke(service, *args)
+            }
             // 用代理对象给sService赋值
-            sServiceField.set(null, proxy);
-        } catch (Exception e) {
-            e.printStackTrace();
+            sServiceField[null] = proxy
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
-
-
     }
 
-    private static void getContent(Object arg) throws ClassNotFoundException, NoSuchFieldException, IllegalAccessException {
-        // 获取TN的class
-        Class<?> tnClass = Class.forName(Toast.class.getName() + "$TN");
-        // 获取mNextView的Field
-        Field mNextViewField = tnClass.getDeclaredField("mNextView");
-        mNextViewField.setAccessible(true);
-        // 获取mNextView实例
-        LinearLayout mNextView = (LinearLayout) mNextViewField.get(arg);
-        // 获取textview
-        TextView childView = (TextView) mNextView.getChildAt(0);
-        // 获取文本内容
-        CharSequence text = childView.getText();
-//        LogUtils.i("hook toast content before: " + text);
-        // 替换文本并赋值
-        childView.setText(text.toString().split("：")[1]);
-//        LogUtils.i("hook toast content after: " + childView.getText());
+    companion object {
+        private const val REQUEST_SCAN = 0
+        private val MOURNING_DAYS: List<String> =
+            ArrayList(Arrays.asList("04-04", "05-12", "09-03", "12-13"))
+
+        @Throws(
+            ClassNotFoundException::class,
+            NoSuchFieldException::class,
+            IllegalAccessException::class
+        )
+        private fun getContent(arg: Any) {
+            // 获取TN的class
+            val tnClass = Class.forName(Toast::class.java.name + "\$TN")
+            // 获取mNextView的Field
+            val mNextViewField = tnClass.getDeclaredField("mNextView")
+            mNextViewField.isAccessible = true
+            // 获取mNextView实例
+            val mNextView = mNextViewField[arg] as LinearLayout
+            // 获取textview
+            val childView = mNextView.getChildAt(0) as TextView
+            // 获取文本内容
+            val text = childView.text
+            //        LogUtils.i("hook toast content before: " + text);
+            // 替换文本并赋值
+            childView.text = text.toString().split("：").toTypedArray()[1]
+            //        LogUtils.i("hook toast content after: " + childView.getText());
+        }
     }
 }

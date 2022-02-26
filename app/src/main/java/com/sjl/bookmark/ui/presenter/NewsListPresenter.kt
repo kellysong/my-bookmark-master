@@ -1,28 +1,21 @@
-package com.sjl.bookmark.ui.presenter;
+package com.sjl.bookmark.ui.presenter
 
-import com.sjl.bookmark.R;
-import com.sjl.bookmark.api.ZhiHuApiService;
-import com.sjl.bookmark.app.AppConstant;
-import com.sjl.bookmark.entity.zhihu.NewsDto;
-import com.sjl.bookmark.entity.zhihu.NewsList;
-import com.sjl.bookmark.entity.zhihu.Story;
-import com.sjl.bookmark.ui.adapter.NewsMultiDelegateAdapter;
-import com.sjl.bookmark.ui.contract.NewsListContract;
-import com.sjl.core.net.RetrofitHelper;
-import com.sjl.core.net.RxSchedulers;
-import com.sjl.core.util.BeanPropertiesUtils;
-import com.sjl.core.util.log.LogUtils;
-import com.sjl.core.util.PreferencesHelper;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Locale;
-
-import io.reactivex.functions.Consumer;
-import io.reactivex.functions.Function;
+import com.sjl.bookmark.R
+import com.sjl.bookmark.api.ZhiHuApiService
+import com.sjl.bookmark.app.AppConstant
+import com.sjl.bookmark.entity.zhihu.NewsDto
+import com.sjl.bookmark.entity.zhihu.NewsList
+import com.sjl.bookmark.ui.adapter.NewsMultiDelegateAdapter
+import com.sjl.bookmark.ui.contract.NewsListContract
+import com.sjl.core.net.RetrofitHelper
+import com.sjl.core.net.RxSchedulers
+import com.sjl.core.util.BeanPropertiesUtils
+import com.sjl.core.util.PreferencesHelper
+import com.sjl.core.util.log.LogUtils
+import io.reactivex.functions.Function
+import java.text.ParseException
+import java.text.SimpleDateFormat
+import java.util.*
 
 /**
  * TODO
@@ -33,130 +26,100 @@ import io.reactivex.functions.Function;
  * @time 2018/12/18 17:09
  * @copyright(C) 2018 song
  */
-public class NewsListPresenter extends NewsListContract.Presenter {
-
-    private int pageNum = 1;
-
-    @Override
-    public void loadNews() {
-        ZhiHuApiService apiService = RetrofitHelper.getInstance().getApiService(ZhiHuApiService.class);
-        apiService.getNews().map(new Function<NewsDto, List<NewsList>>() {
-            @Override
-            public List<NewsList> apply(NewsDto news) throws Exception {
-                List<NewsList> newsLists = new ArrayList<>();
-                NewsList top = new NewsList();
-                top.setItemType(NewsMultiDelegateAdapter.TYPE_HEADER);
-                top.setTop_stories(news.getTop_stories());
-                newsLists.add(top);
-                NewsList today = new NewsList();
-                today.setItemType(NewsMultiDelegateAdapter.TYPE_HEADER_SECOND);
-                today.setToday(mContext.getString(R.string.group_tile_today_news));
-                newsLists.add(today);
-                ArrayList<Story> stories = news.getStories();
-                NewsList item;
-                String[] excludeArray = new String[]{"today", "date", "top_stories"};
-                PreferencesHelper preferencesHelper = PreferencesHelper.getInstance(mContext);
-                int  firstId = preferencesHelper.getInteger(AppConstant.SETTING.FIRST_STORY_ID, -1);
+class NewsListPresenter : NewsListContract.Presenter() {
+    private var pageNum = 1
+    override fun loadNews() {
+        val apiService = RetrofitHelper.getInstance().getApiService(
+            ZhiHuApiService::class.java
+        )
+        apiService.news.map(object : Function<NewsDto, List<NewsList>> {
+            @Throws(Exception::class)
+            override fun apply(news: NewsDto): List<NewsList> {
+                val newsLists: MutableList<NewsList> = ArrayList()
+                val top = NewsList()
+                top.itemType = NewsMultiDelegateAdapter.TYPE_HEADER
+                top.setTop_stories(news.getTop_stories())
+                newsLists.add(top)
+                val today = NewsList()
+                today.itemType = NewsMultiDelegateAdapter.TYPE_HEADER_SECOND
+                today.today = mContext.getString(R.string.group_tile_today_news)
+                newsLists.add(today)
+                val stories = news.getStories()
+                var item: NewsList
+                val excludeArray = arrayOf("today", "date", "top_stories")
+                val preferencesHelper = PreferencesHelper.getInstance(mContext)
+                val firstId = preferencesHelper.getInteger(AppConstant.SETTING.FIRST_STORY_ID, -1)
                 try {
-                    for (Story story : stories) {
-                        item = new NewsList();
-                        item.setItemType(NewsMultiDelegateAdapter.TYPE_ITEM);
-                        BeanPropertiesUtils.copyPropertiesExclude(story, item, excludeArray);
-                        item.setImage(story.getImages().get(0));
-                        newsLists.add(item);
+                    for (story in stories) {
+                        item = NewsList()
+                        item.itemType = NewsMultiDelegateAdapter.TYPE_ITEM
+                        BeanPropertiesUtils.copyPropertiesExclude(story, item, excludeArray)
+                        item.image = story.images[0]
+                        newsLists.add(item)
                     }
-
-                    for (Story story : stories) {
-                        if (story.getId() == firstId){//说明不是第一次获取
-                            setFirstLoadFlag(false);
-                            break;
-                        }else{
-                            setFirstLoadFlag(true);
+                    for (story in stories) {
+                        if (story.id == firstId) { //说明不是第一次获取
+                            isFirstLoadFlag = false
+                            break
+                        } else {
+                            isFirstLoadFlag = true
                         }
                     }
-                    preferencesHelper.put(AppConstant.SETTING.FIRST_STORY_ID,stories.get(0).getId());
-                } catch (Exception e) {
-                    LogUtils.e("拷贝属性值异常", e);
+                    preferencesHelper.put(AppConstant.SETTING.FIRST_STORY_ID, stories[0].id)
+                } catch (e: Exception) {
+                    LogUtils.e("拷贝属性值异常", e)
                 }
-                return newsLists;
+                return newsLists
             }
-        }).
-                compose(RxSchedulers.<List<NewsList>>applySchedulers()).as(this.<List<NewsList>>bindLifecycle())
-                .subscribe(new Consumer<List<NewsList>>() {
-                    @Override
-                    public void accept(List<NewsList> newsLists) throws Exception {
-                        mView.refreshNewsList(newsLists);
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
-                        LogUtils.e("请求知乎最新日报异常", throwable);
-                    }
-                });
+        }).compose(RxSchedulers.applySchedulers()).`as`(bindLifecycle())
+            .subscribe({ newsLists -> mView.refreshNewsList(newsLists) }) { throwable ->
+                LogUtils.e(
+                    "请求知乎最新日报异常",
+                    throwable
+                )
+            }
     }
 
-
-    private boolean firstLoadFlag;
-
-    public boolean isFirstLoadFlag() {
-        return firstLoadFlag;
-    }
-
-    public void setFirstLoadFlag(boolean firstLoadFlag) {
-        this.firstLoadFlag = firstLoadFlag;
-    }
-
-    @Override
-    public void loadMore() {
-        final String beforeDate = getBeforeDate(-pageNum);
-        LogUtils.i("加载更多日报：" + beforeDate);
-        ZhiHuApiService apiService = RetrofitHelper.getInstance().getApiService(ZhiHuApiService.class);
-        apiService.getBeforeNews(beforeDate).map(new Function<NewsDto, List<NewsList>>() {
-            @Override
-            public List<NewsList> apply(NewsDto news) throws Exception {
-                //新闻列表
-                List<NewsList> newsLists = new ArrayList<>();
-                ArrayList<Story> stories = news.getStories();
-                if (stories == null || stories.size() == 0) {
-                    return newsLists;
+    var isFirstLoadFlag = false
+    override fun loadMore() {
+        val beforeDate = getBeforeDate(-pageNum)
+        LogUtils.i("加载更多日报：$beforeDate")
+        val apiService = RetrofitHelper.getInstance().getApiService(
+            ZhiHuApiService::class.java
+        )
+        apiService.getBeforeNews(beforeDate)
+            .map(Function<NewsDto, List<NewsList>> { news -> //新闻列表
+                val newsLists: MutableList<NewsList> = ArrayList()
+                val stories = news.getStories()
+                if (stories == null || stories.size == 0) {
+                    return@Function newsLists
                 }
                 //标题日期
-                NewsList date = new NewsList();
-                date.setItemType(NewsMultiDelegateAdapter.TYPE_DATE);
-                String titleDate = formatTitleDate(beforeDate);
-                date.setDate(titleDate);
-                newsLists.add(date);
-
-                NewsList item;
-                String[] excludeArray = new String[]{"today", "date", "top_stories"};
+                val date = NewsList()
+                date.itemType = NewsMultiDelegateAdapter.TYPE_DATE
+                val titleDate = formatTitleDate(beforeDate)
+                date.date = titleDate
+                newsLists.add(date)
+                var item: NewsList
+                val excludeArray = arrayOf("today", "date", "top_stories")
                 try {
-                    for (Story story : stories) {
-                        item = new NewsList();
-                        item.setItemType(NewsMultiDelegateAdapter.TYPE_ITEM);
-                        BeanPropertiesUtils.copyPropertiesExclude(story, item, excludeArray);
-                        item.setImage(story.getImages().get(0));
-                        item.setDate(titleDate);//方便滚动时直接设置toolBar日期
-                        newsLists.add(item);
+                    for (story in stories) {
+                        item = NewsList()
+                        item.itemType = NewsMultiDelegateAdapter.TYPE_ITEM
+                        BeanPropertiesUtils.copyPropertiesExclude(story, item, excludeArray)
+                        item.image = story.images[0]
+                        item.date = titleDate //方便滚动时直接设置toolBar日期
+                        newsLists.add(item)
                     }
-                } catch (Exception e) {
-                    LogUtils.e("拷贝属性值异常", e);
+                } catch (e: Exception) {
+                    LogUtils.e("拷贝属性值异常", e)
                 }
-                return newsLists;
-            }
-        }).
-                compose(RxSchedulers.<List<NewsList>>applySchedulers()).as(this.<List<NewsList>>bindLifecycle())
-                .subscribe(new Consumer<List<NewsList>>() {
-                    @Override
-                    public void accept(List<NewsList> newsLists) throws Exception {
-                        mView.showMoreNewsList(newsLists);
-                        pageNum++;
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
-                        LogUtils.e("加载更多日报异常", throwable);
-                    }
-                });
+                newsLists
+            }).compose(RxSchedulers.applySchedulers()).`as`(bindLifecycle())
+            .subscribe({ newsLists ->
+                mView.showMoreNewsList(newsLists)
+                pageNum++
+            }) { throwable -> LogUtils.e("加载更多日报异常", throwable) }
     }
 
     /**
@@ -165,11 +128,11 @@ public class NewsListPresenter extends NewsListContract.Presenter {
      * @param num
      * @return
      */
-    private String getBeforeDate(int num) {
-        SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd",Locale.getDefault());
-        Calendar calendar = Calendar.getInstance();
-        calendar.roll(Calendar.DAY_OF_YEAR, num);
-        return format.format(calendar.getTime());
+    private fun getBeforeDate(num: Int): String {
+        val format = SimpleDateFormat("yyyyMMdd", Locale.getDefault())
+        val calendar = Calendar.getInstance()
+        calendar.roll(Calendar.DAY_OF_YEAR, num)
+        return format.format(calendar.time)
     }
 
     /**
@@ -177,21 +140,21 @@ public class NewsListPresenter extends NewsListContract.Presenter {
      * @param yyyyMMdd
      * @return
      */
-    private  String formatTitleDate(String yyyyMMdd) {
+    private fun formatTitleDate(yyyyMMdd: String): String {
         try {
-            SimpleDateFormat format1 = new SimpleDateFormat("yyyyMMdd",Locale.getDefault());
+            val format1 = SimpleDateFormat("yyyyMMdd", Locale.getDefault())
             //MM月dd日 EEEE
-            String string = mContext.getString(R.string.date_format1);
-            SimpleDateFormat format2 = new SimpleDateFormat(string,Locale.getDefault());
-            return format2.format(format1.parse(yyyyMMdd));
-        } catch (ParseException e) {
-            e.printStackTrace();
+            val string = mContext.getString(R.string.date_format1)
+            val format2 = SimpleDateFormat(string, Locale.getDefault())
+            return format2.format(format1.parse(yyyyMMdd))
+        } catch (e: ParseException) {
+            e.printStackTrace()
         }
-        return yyyyMMdd;
+        return yyyyMMdd
     }
-    @Override
-    public void refresh() {
-        pageNum = 1;
-        loadNews();
+
+    override fun refresh() {
+        pageNum = 1
+        loadNews()
     }
 }

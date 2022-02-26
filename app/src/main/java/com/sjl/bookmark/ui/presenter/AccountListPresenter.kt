@@ -1,31 +1,27 @@
-package com.sjl.bookmark.ui.presenter;
+package com.sjl.bookmark.ui.presenter
 
-import android.content.Context;
-import android.view.View;
-
-import com.jakewharton.rxbinding2.view.RxView;
-import com.lid.lib.LabelTextView;
-import com.sjl.bookmark.R;
-import com.sjl.bookmark.app.AppConstant;
-import com.sjl.bookmark.app.MyApplication;
-import com.sjl.bookmark.dao.impl.AccountService;
-import com.sjl.bookmark.entity.table.Account;
-import com.sjl.bookmark.kotlin.language.I18nUtils;
-import com.sjl.bookmark.ui.activity.AccountEditActivity;
-import com.sjl.bookmark.ui.contract.AccountListContract;
-import com.sjl.core.entity.EventBusDto;
-import com.sjl.core.util.PreferencesHelper;
-import com.sjl.core.util.datetime.TimeUtils;
-import com.sjl.core.util.log.LogUtils;
-import com.sjl.core.util.security.DESUtils;
-import com.zhy.adapter.recyclerview.CommonAdapter;
-import com.zhy.adapter.recyclerview.base.ViewHolder;
-
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
-import androidx.recyclerview.widget.LinearLayoutManager;
-import io.reactivex.functions.Consumer;
+import android.content.Context
+import android.view.View
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.jakewharton.rxbinding2.view.RxView
+import com.lid.lib.LabelTextView
+import com.sjl.bookmark.R
+import com.sjl.bookmark.app.AppConstant
+import com.sjl.bookmark.app.MyApplication
+import com.sjl.bookmark.dao.impl.AccountService
+import com.sjl.bookmark.entity.table.Account
+import com.sjl.bookmark.kotlin.language.I18nUtils
+import com.sjl.bookmark.ui.activity.AccountEditActivity
+import com.sjl.bookmark.ui.contract.AccountListContract
+import com.sjl.core.entity.EventBusDto
+import com.sjl.core.util.PreferencesHelper
+import com.sjl.core.util.datetime.TimeUtils
+import com.sjl.core.util.log.LogUtils
+import com.sjl.core.util.security.DESUtils
+import com.zhy.adapter.recyclerview.CommonAdapter
+import com.zhy.adapter.recyclerview.base.ViewHolder
+import io.reactivex.functions.Consumer
+import java.util.concurrent.TimeUnit
 
 /**
  * TODO
@@ -36,111 +32,97 @@ import io.reactivex.functions.Consumer;
  * @time 2018/3/8 14:45
  * @copyright(C) 2018 song
  */
-public class AccountListPresenter extends AccountListContract.Presenter {
-    private AccountListAdapter mAdapter;
-    private List<Account> accounts;
-    private int position;//0在用，1闲置，2作废，和fragment对应
-    private boolean isOpenShow;
-
-    public AccountListPresenter() {
-        PreferencesHelper preferencesHelper = PreferencesHelper.getInstance(MyApplication.getContext());
-        isOpenShow = (Boolean) preferencesHelper.get(AppConstant.SETTING.OPEN_PASS_WORD_SHOW, false);
-    }
-
-    @Override
-    public void onFirstUserVisible() {//只触发一次
-        LogUtils.i("onFirstUserVisible");
-        accounts = queryAccount();
-        if (null != accounts && accounts.size() > 0) {
-            mView.hideEmptyView();
+class AccountListPresenter : AccountListContract.Presenter() {
+    private lateinit var mAdapter: AccountListAdapter
+    private var accounts: List<Account>? = null
+    private var position //0在用，1闲置，2作废，和fragment对应
+            : Int = 0
+    private val isOpenShow: Boolean
+    override fun onFirstUserVisible() { //只触发一次
+        LogUtils.i("onFirstUserVisible")
+        accounts = queryAccount()
+        if (null != accounts && accounts!!.size > 0) {
+            mView.hideEmptyView()
         } else {
-            mView.showEmptyView();
+            mView.showEmptyView()
         }
-        mAdapter = new AccountListAdapter(mContext, R.layout.accountlist_recycle_item, accounts);
-        mView.initRecycler(new LinearLayoutManager(mContext), mAdapter);
+        mAdapter = AccountListAdapter(mContext, R.layout.accountlist_recycle_item, accounts)
+        mView.initRecycler(LinearLayoutManager(mContext), mAdapter)
     }
 
-    @Override
-    public void onUserVisible() {//以后可见加载，需要实时更新在这里控制
-        LogUtils.i("onUserVisible");
-        accounts = queryAccount();
-        if (null != accounts && accounts.size() > 0) {
-            mAdapter.refreshData(accounts);
-            mView.hideEmptyView();
+    override fun onUserVisible() { //以后可见加载，需要实时更新在这里控制
+        LogUtils.i("onUserVisible")
+        accounts = queryAccount()
+        if (null != accounts && accounts!!.size > 0) {
+            mAdapter.refreshData(accounts)
+            mView.hideEmptyView()
         } else {
-            mView.showEmptyView();
+            mView.showEmptyView()
         }
-
     }
 
-    @Override
-    public void setPosition(int position) {
-        this.position = position;//当前fragment索引
+    override fun setPosition(position: Int) {
+        this.position = position //当前fragment索引
     }
 
     /**
      * 下拉刷新
      */
-    @Override
-    public void pullRefreshDown() {
-        onUserVisible();
+    override fun pullRefreshDown() {
+        onUserVisible()
     }
 
-
-    private class AccountListAdapter extends CommonAdapter<Account> {
-
-
-        public AccountListAdapter(Context context, int layoutId, List<Account> datas) {
-            super(context, layoutId, datas);
-        }
-
-        @Override
-        protected void convert(ViewHolder holder, final Account account, int position) {
-            holder.setText(R.id.tv_title, DESUtils.decryptBase64DES(AppConstant.DES_ENCRYPTKEY, account.getAccountTitle()));
-            String accountNo = I18nUtils.getString(R.string.account_number);
-            String pwd = I18nUtils.getString(R.string.password);
-            holder.setText(R.id.tv_account_no, accountNo + ":").setText(R.id.tv_account_pwd, pwd + ":");
-            holder.setText(R.id.tv_username, DESUtils.decryptBase64DES(AppConstant.DES_ENCRYPTKEY, account.getUsername()));
-            if (isOpenShow) {//密码可见
-                holder.setText(R.id.tv_password, DESUtils.decryptBase64DES(AppConstant.DES_ENCRYPTKEY, account.getPassword()));
+    private inner class AccountListAdapter constructor(
+        context: Context?,
+        layoutId: Int,
+        datas: List<Account>?
+    ) : CommonAdapter<Account>(context, layoutId, datas) {
+        override fun convert(holder: ViewHolder, account: Account, position: Int) {
+            holder.setText(
+                R.id.tv_title,
+                DESUtils.decryptBase64DES(AppConstant.DES_ENCRYPTKEY, account.accountTitle)
+            )
+            val accountNo: String = I18nUtils.getString(R.string.account_number)
+            val pwd: String = I18nUtils.getString(R.string.password)
+            holder.setText(R.id.tv_account_no, accountNo + ":")
+                .setText(R.id.tv_account_pwd, pwd + ":")
+            holder.setText(
+                R.id.tv_username,
+                DESUtils.decryptBase64DES(AppConstant.DES_ENCRYPTKEY, account.username)
+            )
+            if (isOpenShow) { //密码可见
+                holder.setText(
+                    R.id.tv_password,
+                    DESUtils.decryptBase64DES(AppConstant.DES_ENCRYPTKEY, account.password)
+                )
             } else {
-                holder.setText(R.id.tv_password, "*********");
+                holder.setText(R.id.tv_password, "*********")
             }
-
-            holder.setText(R.id.tv_date, TimeUtils.getRangeByDate(account.getDate()));
+            holder.setText(R.id.tv_date, TimeUtils.getRangeByDate(account.date))
             //"安全", "娱乐", "社会", "开发", "其它"
-            String labelMsg = "";
-
-            switch (account.getAccountType()) {
-                case 0:
-                    labelMsg = I18nUtils.getString(R.string.account_enum_security);
-                    break;
-                case 1:
-                    labelMsg = I18nUtils.getString(R.string.account_enum_entertainment);
-                    break;
-                case 2:
-                    labelMsg = I18nUtils.getString(R.string.account_enum_social);
-                    break;
-                case 3:
-                    labelMsg = I18nUtils.getString(R.string.account_enum_development);
-                    break;
-                case 4:
-                    labelMsg = I18nUtils.getString(R.string.account_enum_other);
-                    break;
-                default:
-                    break;
+            var labelMsg: String? = ""
+            when (account.accountType) {
+                0 -> labelMsg = I18nUtils.getString(R.string.account_enum_security)
+                1 -> labelMsg = I18nUtils.getString(R.string.account_enum_entertainment)
+                2 -> labelMsg = I18nUtils.getString(R.string.account_enum_social)
+                3 -> labelMsg = I18nUtils.getString(R.string.account_enum_development)
+                4 -> labelMsg = I18nUtils.getString(R.string.account_enum_other)
+                else -> {}
             }
-            LabelTextView labelTextView = (LabelTextView) holder.getView(R.id.tv_state);
-
-            labelTextView.setLabelText(labelMsg);
-
-            preventRepeatedClick(holder.getView(R.id.mrl_account_content), new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mView.readGo(AccountEditActivity.class, AppConstant.SETTING.VIEW_MODE, account);
-                }
-            });
-//            holder.setOnClickListener(R.id.mrl_account_content, new BaseView.OnClickListener() {
+            val labelTextView: LabelTextView = holder.getView<View>(R.id.tv_state) as LabelTextView
+            labelTextView.labelText = labelMsg
+            preventRepeatedClick(
+                holder.getView(R.id.mrl_account_content),
+                object : View.OnClickListener {
+                    override fun onClick(v: View) {
+                        mView.readGo(
+                            AccountEditActivity::class.java,
+                            AppConstant.SETTING.VIEW_MODE,
+                            account
+                        )
+                    }
+                })
+            //            holder.setOnClickListener(R.id.mrl_account_content, new BaseView.OnClickListener() {
 //                @Override
 //                public void onClick(BaseView v) {
 //                    mAccountListView.readGo(AccountEditActivity.class, AppConstant.SETTING.VIEW_MODE,account);
@@ -149,18 +131,16 @@ public class AccountListPresenter extends AccountListContract.Presenter {
 //            });
         }
 
-
         /**
          * 刷新数据
          *
          * @param accounts
          */
-        public void refreshData(List<Account> accounts) {
-            getDatas().clear();
-            getDatas().addAll(accounts);
-            notifyDataSetChanged();
+        fun refreshData(accounts: List<Account>?) {
+            datas.clear()
+            datas.addAll((accounts)!!)
+            notifyDataSetChanged()
         }
-
     }
 
     /**
@@ -169,44 +149,48 @@ public class AccountListPresenter extends AccountListContract.Presenter {
      * @param target   目标view
      * @param listener 监听器
      */
-    private void preventRepeatedClick(final View target, final View.OnClickListener listener) {
-        RxView.clicks(target).throttleFirst(1, TimeUnit.SECONDS).as(bindLifecycle()).subscribe(new Consumer<Object>() {
-            @Override
-            public void accept(Object o) throws Exception {
-                listener.onClick(target);
-            }//相当于onNext
-
-        });
-
+    private fun preventRepeatedClick(target: View, listener: View.OnClickListener) {
+        RxView.clicks(target).throttleFirst(1, TimeUnit.SECONDS).`as`(bindLifecycle())
+            .subscribe(object : Consumer<Any?> {
+                @Throws(Exception::class)
+                override fun accept(o: Any?) {
+                    listener.onClick(target)
+                } //相当于onNext
+            })
     }
-
 
     /***
      * 由于初始化了三个fragment，每个fragment里都注册了消息接受，故会触发三次事件
      * @param eventBusDto
      */
-    @Override
-    public void onEventComing(EventBusDto eventBusDto) {
-        if (eventBusDto.getEventCode() == AppConstant.ACCOUNT_REFRESH_EVENT_CODE && eventBusDto.getPosition() == position) {
-            LogUtils.i("正在刷新数据");
-            LogUtils.i("eventBusDto的position=" + eventBusDto.getPosition() + ",position=" + position);
-            boolean data = (boolean) eventBusDto.getData();
+    override fun onEventComing(eventBusDto: EventBusDto<*>) {
+        if (eventBusDto.eventCode == AppConstant.ACCOUNT_REFRESH_EVENT_CODE && eventBusDto.position == position) {
+            LogUtils.i("正在刷新数据")
+            LogUtils.i("eventBusDto的position=" + eventBusDto.position + ",position=" + position)
+            val data: Boolean = eventBusDto.data as Boolean
             if (data) {
-                accounts = queryAccount();
-                if (null != accounts && accounts.size() > 0) {
-                    mAdapter.refreshData(accounts);
-                    mView.hideEmptyView();
+                accounts = queryAccount()
+                if (null != accounts && accounts!!.size > 0) {
+                    mAdapter.refreshData(accounts)
+                    mView.hideEmptyView()
                 } else {
-                    mView.showEmptyView();
+                    mView.showEmptyView()
                 }
             }
         }
     }
 
-
-    private List<Account> queryAccount() {
-        return AccountService.getInstance(mContext).queryAccount(" where ACCOUNT_STATE =  ? order By date desc", new String[]{String.valueOf(position)});
+    private fun queryAccount(): List<Account> {
+        return AccountService.getInstance(mContext).queryAccount(
+            " where ACCOUNT_STATE =  ? order By date desc",
+            *arrayOf(position.toString())
+        )
     }
 
-
+    init {
+        val preferencesHelper: PreferencesHelper =
+            PreferencesHelper.getInstance(MyApplication.getContext())
+        isOpenShow =
+            preferencesHelper.get(AppConstant.SETTING.OPEN_PASS_WORD_SHOW, false) as Boolean
+    }
 }

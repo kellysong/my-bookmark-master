@@ -1,20 +1,17 @@
-package com.sjl.bookmark.ui.presenter;
+package com.sjl.bookmark.ui.presenter
 
-
-import android.content.Intent;
-import android.text.TextUtils;
-import android.util.ArrayMap;
-
-import com.sjl.bookmark.R;
-import com.sjl.bookmark.app.AppConstant;
-import com.sjl.bookmark.dao.impl.AccountService;
-import com.sjl.bookmark.entity.table.Account;
-import com.sjl.bookmark.kotlin.language.I18nUtils;
-import com.sjl.bookmark.ui.contract.AccountEditContract;
-import com.sjl.core.util.security.DESUtils;
-
-import java.util.Arrays;
-import java.util.List;
+import android.content.Intent
+import android.os.Build
+import android.text.TextUtils
+import android.util.ArrayMap
+import androidx.annotation.RequiresApi
+import com.sjl.bookmark.R
+import com.sjl.bookmark.app.AppConstant
+import com.sjl.bookmark.dao.impl.AccountService
+import com.sjl.bookmark.entity.table.Account
+import com.sjl.bookmark.kotlin.language.I18nUtils
+import com.sjl.bookmark.ui.contract.AccountEditContract
+import com.sjl.core.util.security.DESUtils
 
 /**
  * TODO
@@ -25,37 +22,42 @@ import java.util.List;
  * @time 2018/3/8 14:45
  * @copyright(C) 2018 song
  */
-public class AccountEditPresenter extends AccountEditContract.Presenter {
-    private List<String> accountTypes = Arrays.asList(I18nUtils.getString(R.string.account_enum_security), I18nUtils.getString(R.string.account_enum_entertainment),
-            I18nUtils.getString(R.string.account_enum_social), I18nUtils.getString(R.string.account_enum_development),
-            I18nUtils.getString(R.string.account_enum_other));
-    private List<String> accountStates = Arrays.asList(I18nUtils.getString(R.string.account_in_use), I18nUtils.getString(R.string.account_idle), I18nUtils.getString(R.string.account_invalid));
+class AccountEditPresenter : AccountEditContract.Presenter() {
+    private val accountTypes: List<String> = listOf(
+        I18nUtils.getString(R.string.account_enum_security),
+        I18nUtils.getString(R.string.account_enum_entertainment),
+        I18nUtils.getString(R.string.account_enum_social),
+        I18nUtils.getString(R.string.account_enum_development),
+        I18nUtils.getString(R.string.account_enum_other)
+    )
+    private val accountStates: List<String> = listOf(
+        I18nUtils.getString(R.string.account_in_use),
+        I18nUtils.getString(R.string.account_idle),
+        I18nUtils.getString(R.string.account_invalid)
+    )
+    private var createMode: Int = 0
+    private var mGodInfo: Account? = null
 
-    private int createMode;
-    private Account mGodInfo;
-
-    @Override
-    public void init(Intent intent) {
-        ArrayMap<String, List<String>> data = new ArrayMap<String, List<String>>();
-        data.put("accountType", accountTypes);
-        data.put("accountState", accountStates);
-        mView.initSpinner(data);
-
-        createMode = intent.getIntExtra("CREATE_MODE", 1);
-        switch (createMode) {
-            case 0:// 查看、修改、删除
+    @RequiresApi(Build.VERSION_CODES.KITKAT)
+    override fun init(intent: Intent) {
+        val data: ArrayMap<String, List<String>> = ArrayMap()
+        data.put("accountType", accountTypes)
+        data.put("accountState", accountStates)
+        mView.initSpinner(data)
+        createMode = intent.getIntExtra("CREATE_MODE", 1)
+        when (createMode) {
+            0 -> {
                 // 密码类型
-                long accountId = intent.getLongExtra("accountId", 0);
-                mGodInfo = AccountService.getInstance(mContext).loadAccount(accountId);
-                mView.initViewModel(mGodInfo);
-                break;
-            case 1:// 添加
-                int position = intent.getIntExtra("position", 0);
-                mView.initCreateModel(position);
-                break;
+                val accountId: Long = intent.getLongExtra("accountId", 0)
+                mGodInfo = AccountService.getInstance(mContext).loadAccount(accountId)
+                mView.initViewModel(mGodInfo)
+            }
+            1 -> {
+                val position: Int = intent.getIntExtra("position", 0)
+                mView.initCreateModel(position)
+            }
         }
     }
-
 
     /**
      * 新增或者修改账号信息
@@ -63,48 +65,73 @@ public class AccountEditPresenter extends AccountEditContract.Presenter {
      * @param account
      * @return 0修改, 1新增
      */
-    @Override
-    public long saveAccount(Account account) {
-        int temp = 0;
-        switch (createMode) {
-            case 0://修改
-                account.setId(mGodInfo.getId());
-                account.setAccountTitle(DESUtils.encodeDESToBase64(AppConstant.DES_ENCRYPTKEY, account.getAccountTitle()));
-                account.setUsername(DESUtils.encodeDESToBase64(AppConstant.DES_ENCRYPTKEY, account.getUsername()));
-                account.setPassword(DESUtils.encodeDESToBase64(AppConstant.DES_ENCRYPTKEY, account.getPassword()));
-                if (!TextUtils.isEmpty(account.getEmail())) {
-                    account.setEmail(DESUtils.encodeDESToBase64(AppConstant.DES_ENCRYPTKEY, account.getEmail()));
+    override fun saveAccount(account: Account): Long {
+        var temp: Int = 0
+        when (createMode) {
+            0 -> {
+                account.id = mGodInfo!!.id
+                account.accountTitle = DESUtils.encodeDESToBase64(
+                    AppConstant.DES_ENCRYPTKEY,
+                    account.accountTitle
+                )
+                account.username = DESUtils.encodeDESToBase64(
+                    AppConstant.DES_ENCRYPTKEY,
+                    account.username
+                )
+                account.password = DESUtils.encodeDESToBase64(
+                    AppConstant.DES_ENCRYPTKEY,
+                    account.password
+                )
+                if (!TextUtils.isEmpty(account.email)) {
+                    account.email = DESUtils.encodeDESToBase64(
+                        AppConstant.DES_ENCRYPTKEY,
+                        account.email
+                    )
                 }
-                if (!TextUtils.isEmpty(account.getPhone())) {
-                    account.setPhone(DESUtils.encodeDESToBase64(AppConstant.DES_ENCRYPTKEY, account.getPhone()));
+                if (!TextUtils.isEmpty(account.phone)) {
+                    account.phone = DESUtils.encodeDESToBase64(
+                        AppConstant.DES_ENCRYPTKEY,
+                        account.phone
+                    )
                 }
-                temp = 0;
-                break;
-            case 1:// 添加
-                temp = 1;
-                account.setAccountTitle(DESUtils.encodeDESToBase64(AppConstant.DES_ENCRYPTKEY, account.getAccountTitle()));
-                account.setUsername(DESUtils.encodeDESToBase64(AppConstant.DES_ENCRYPTKEY, account.getUsername()));
-                account.setPassword(DESUtils.encodeDESToBase64(AppConstant.DES_ENCRYPTKEY, account.getPassword()));
-                if (!TextUtils.isEmpty(account.getEmail())) {
-                    account.setEmail(DESUtils.encodeDESToBase64(AppConstant.DES_ENCRYPTKEY, account.getEmail()));
+                temp = 0
+            }
+            1 -> {
+                temp = 1
+                account.accountTitle = DESUtils.encodeDESToBase64(
+                    AppConstant.DES_ENCRYPTKEY,
+                    account.accountTitle
+                )
+                account.username = DESUtils.encodeDESToBase64(
+                    AppConstant.DES_ENCRYPTKEY,
+                    account.username
+                )
+                account.password = DESUtils.encodeDESToBase64(
+                    AppConstant.DES_ENCRYPTKEY,
+                    account.password
+                )
+                if (!TextUtils.isEmpty(account.email)) {
+                    account.email = DESUtils.encodeDESToBase64(
+                        AppConstant.DES_ENCRYPTKEY,
+                        account.email
+                    )
                 }
-                if (!TextUtils.isEmpty(account.getPhone())) {
-                    account.setPhone(DESUtils.encodeDESToBase64(AppConstant.DES_ENCRYPTKEY, account.getPhone()));
+                if (!TextUtils.isEmpty(account.phone)) {
+                    account.phone = DESUtils.encodeDESToBase64(
+                        AppConstant.DES_ENCRYPTKEY,
+                        account.phone
+                    )
                 }
-
-                break;
+            }
         }
-        AccountService.getInstance(mContext).saveAccount(account);
-        return temp;
+        AccountService.getInstance(mContext).saveAccount(account)
+        return temp.toLong()
     }
 
     /**
      * 删除账号信息
      */
-    @Override
-    public void deleteAccount() {
-        AccountService.getInstance(mContext).deleteAccount(mGodInfo);
+    override fun deleteAccount() {
+        AccountService.getInstance(mContext).deleteAccount(mGodInfo)
     }
-
-
 }

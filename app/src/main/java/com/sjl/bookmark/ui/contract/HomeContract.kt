@@ -1,11 +1,10 @@
-package com.sjl.bookmark.ui.contract;
+package com.sjl.bookmark.ui.contract
 
-import com.sjl.bookmark.entity.Article;
-import com.sjl.bookmark.entity.TopBanner;
-import com.sjl.core.mvp.BaseContract;
-import com.sjl.core.mvp.BasePresenter;
-
-import java.util.List;
+import com.sjl.bookmark.entity.Article
+import com.sjl.bookmark.entity.Article.DatasBean
+import com.sjl.bookmark.entity.TopBanner
+import com.sjl.core.mvp.BaseContract.IBaseView
+import com.sjl.core.mvp.BasePresenter
 
 /**
  * TODO
@@ -16,24 +15,24 @@ import java.util.List;
  * @time 2018/11/26 15:24
  * @copyright(C) 2018 song
  */
-public interface HomeContract {
-    interface View extends BaseContract.IBaseView {
+interface HomeContract {
+    interface View : IBaseView {
         /**
          * 显示下拉加载进度
          */
-        void showLoading();
+        fun showLoading()
 
         /**
          * 隐藏下拉加载进度
          */
-        void hideLoading();
+        fun hideLoading()
 
         /**
          * 设置头部轮播图
          *
          * @param banners
          */
-        void setHomeBanners(List<TopBanner> banners);
+        fun setHomeBanners(banners: List<TopBanner>)
 
         /**
          * 设置文章列表
@@ -41,32 +40,25 @@ public interface HomeContract {
          * @param article
          * @param loadType
          */
-        void setHomeArticles(Article article, int loadType);
-
-
-        void collectArticleSuccess(int position, Article.DatasBean bean);
-
-        void showFaild(String message);
-
+        fun setHomeArticles(article: Article, loadType: Int)
+        fun collectArticleSuccess(position: Int, bean: DatasBean)
+        fun showFaild(message: String?)
     }
 
-    abstract class Presenter extends BasePresenter<View> {
-
+    abstract class Presenter : BasePresenter<View>() {
         /**
-         *初始化首页数据
+         * 初始化首页数据
          */
-        public abstract void loadHomeData();
+        abstract fun loadHomeData()
 
         /**
          * 上拉加载更多
          */
-        public abstract void loadMore();
-
+        abstract fun loadMore()
 
         /**
          * 下拉刷新
          */
-        public abstract void refresh();
-
+        abstract fun refresh()
     }
 }

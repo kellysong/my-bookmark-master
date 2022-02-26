@@ -90,13 +90,13 @@
                         android:id="@+id/tv_toolbar_title"
                         android:layout_width="150dp"
                         android:layout_height="match_parent"
-                        android:maxWidth="200dp"
-                        android:gravity="center_vertical"
-                        android:singleLine="true"
                         android:ellipsize="marquee"
+                        android:gravity="center_vertical"
                         android:marqueeRepeatLimit="marquee_forever"
-                        android:textSize="@dimen/small"
+                        android:maxWidth="200dp"
+                        android:singleLine="true"
                         android:textColor="@color/white"
+                        android:textSize="@dimen/small"
                         tools:text="标题" />
 
                     <LinearLayout

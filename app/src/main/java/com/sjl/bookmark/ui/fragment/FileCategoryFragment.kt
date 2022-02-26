@@ -1,35 +1,27 @@
-package com.sjl.bookmark.ui.fragment;
+package com.sjl.bookmark.ui.fragment
 
-import android.os.Environment;
-import android.view.View;
-import android.widget.TextView;
-
-import com.sjl.bookmark.R;
-import com.sjl.bookmark.dao.impl.DaoFactory;
-import com.sjl.bookmark.entity.FileStack;
-import com.sjl.bookmark.ui.adapter.FileSystemAdapter;
-import com.sjl.bookmark.ui.adapter.RecyclerViewDivider;
-import com.sjl.bookmark.ui.base.extend.BaseFileFragment;
-import com.sjl.bookmark.widget.reader.BookManager;
-import com.sjl.core.net.RxSchedulers;
-import com.sjl.core.util.security.MD5Utils;
-import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
-
-import java.io.File;
-import java.io.FileFilter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import butterknife.BindView;
-import io.reactivex.Observable;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
-import io.reactivex.functions.Function;
+import android.os.Environment
+import android.view.View
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.sjl.bookmark.R
+import com.sjl.bookmark.dao.impl.DaoFactory
+import com.sjl.bookmark.entity.FileStack
+import com.sjl.bookmark.entity.FileStack.FileSnapshot
+import com.sjl.bookmark.ui.adapter.*
+import com.sjl.bookmark.ui.base.extend.BaseFileFragment
+import com.sjl.bookmark.widget.reader.BookManager
+import com.sjl.core.mvp.NoPresenter
+import com.sjl.core.net.RxSchedulers
+import com.sjl.core.util.security.MD5Utils
+import com.zhy.adapter.recyclerview.MultiItemTypeAdapter
+import io.reactivex.Observable
+import io.reactivex.functions.Consumer
+import io.reactivex.functions.Function
+import kotlinx.android.synthetic.main.fragment_file_category.*
+import java.io.File
+import java.io.FileFilter
+import java.util.*
 
 /**
  * 手机目录
@@ -40,192 +32,153 @@ import io.reactivex.functions.Function;
  * @time 2018/12/10 14:38
  * @copyright(C) 2018 song
  */
-public class FileCategoryFragment<BasePresenter> extends BaseFileFragment {
+class FileCategoryFragment : BaseFileFragment<NoPresenter>() {
 
-    @BindView(R.id.file_category_tv_path)
-    TextView mTvPath;
-    @BindView(R.id.file_category_tv_back_last)
-    TextView mTvBackLast;
-    @BindView(R.id.file_category_rv_content)
-    RecyclerView mRvContent;
-
-    private FileStack mFileStack;
-
-
-    @Override
-    protected int getLayoutId() {
-        return R.layout.fragment_file_category;
+    private lateinit var mFileStack: FileStack
+    override fun getLayoutId(): Int {
+        return R.layout.fragment_file_category
     }
 
-    @Override
-    protected void initView() {
-
+    override fun initView() {}
+    override fun initListener() {}
+    override fun initData() {
+        mFileStack = FileStack() //实例化文件栈
+        setUpAdapter()
     }
 
-    @Override
-    protected void initListener() {
-
-    }
-
-    @Override
-    protected void initData() {
-        mFileStack = new FileStack();//实例化文件栈
-        setUpAdapter();
-    }
-    private void setUpAdapter(){
-        mAdapter = new FileSystemAdapter(getContext(),R.layout.file_book_recycle_item,null);
-        mRvContent.setLayoutManager(new LinearLayoutManager(getContext()));
-        mRvContent.addItemDecoration(new RecyclerViewDivider(getContext(), LinearLayoutManager.VERTICAL));
-        mRvContent.setAdapter(mAdapter);
+    private fun setUpAdapter() {
+        mAdapter = FileSystemAdapter(context, R.layout.file_book_recycle_item, null)
+        file_category_rv_content.layoutManager = LinearLayoutManager(context)
+        file_category_rv_content.addItemDecoration(
+            RecyclerViewDivider(
+                context,
+                LinearLayoutManager.VERTICAL
+            )
+        )
+        file_category_rv_content.adapter = mAdapter
         /**
          * 文件条目点击
          */
-        mAdapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
-                File file = mAdapter.getItem(position);
-                if (file.isDirectory()){
+        mAdapter.setOnItemClickListener(object : MultiItemTypeAdapter.OnItemClickListener {
+            override fun onItemClick(view: View, holder: RecyclerView.ViewHolder, position: Int) {
+                val file = mAdapter.getItem(position)
+                if (file.isDirectory) {
                     //保存当前信息。
-                    FileStack.FileSnapshot snapshot = new FileStack.FileSnapshot();
-                    snapshot.filePath = mTvPath.getText().toString();
-                    snapshot.files = new ArrayList<File>(mAdapter.getDatas());
-                    snapshot.scrollOffset = mRvContent.computeVerticalScrollOffset();
-                    mFileStack.push(snapshot);
+                    val snapshot = FileSnapshot()
+                    snapshot.filePath = file_category_tv_path!!.text.toString()
+                    snapshot.files = ArrayList(mAdapter.datas)
+                    snapshot.scrollOffset = file_category_rv_content!!.computeVerticalScrollOffset()
+                    mFileStack.push(snapshot)
                     //切换下一个文件
-                    toggleFileTree(file);
-                }
-                else {
+                    toggleFileTree(file)
+                } else {
 
                     //如果是已加载的文件，则点击事件无效。
-                    String id = mAdapter.getItem(position).getAbsolutePath();
-                    if (DaoFactory.getCollectBookDao().getCollectBook(MD5Utils.strToMd5By16(id)) != null){
-                        return;
+                    val id = mAdapter.getItem(position).absolutePath
+                    if (DaoFactory.getCollectBookDao()
+                            .getCollectBook(MD5Utils.strToMd5By16(id)) != null
+                    ) {
+                        return
                     }
                     //点击选中
-                    mAdapter.setCheckedItem(position);
+                    mAdapter.setCheckedItem(position)
                     //反馈
-                    if (mListener != null){
-                        mListener.onItemCheckedChange(mAdapter.getItemIsChecked(position));
+                    if (mListener != null) {
+                        mListener.onItemCheckedChange(mAdapter.getItemIsChecked(position))
                     }
                 }
             }
 
-            @Override
-            public boolean onItemLongClick(View view, RecyclerView.ViewHolder holder, int position) {
-                return false;
+            override fun onItemLongClick(
+                view: View,
+                holder: RecyclerView.ViewHolder,
+                position: Int
+            ): Boolean {
+                return false
             }
-        });
-
+        })
         /**
          * 文件夹返回上一级
          */
-        mTvBackLast.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FileStack.FileSnapshot snapshot = mFileStack.pop();
-                int oldScrollOffset = mRvContent.computeHorizontalScrollOffset();
-                if (snapshot == null) return;
-                mTvPath.setText(snapshot.filePath);
-                mAdapter.refreshItems(snapshot.files);
-                mRvContent.scrollBy(0,snapshot.scrollOffset - oldScrollOffset);
-                //反馈
-                if (mListener != null){
-                    mListener.onCategoryChanged();
-                }
+        file_category_tv_back_last.setOnClickListener(View.OnClickListener {
+            val snapshot = mFileStack.pop()
+            val oldScrollOffset = file_category_rv_content!!.computeHorizontalScrollOffset()
+            if (snapshot == null) return@OnClickListener
+            file_category_tv_path.text = snapshot.filePath
+            mAdapter.refreshItems(snapshot.files)
+            file_category_rv_content!!.scrollBy(0, snapshot.scrollOffset - oldScrollOffset)
+            //反馈
+            if (mListener != null) {
+                mListener.onCategoryChanged()
             }
-        });
-
+        })
     }
 
-
-    @Override
-    protected void onFirstUserVisible() {
-        File root = Environment.getExternalStorageDirectory();
-        toggleFileTree(root);
+    override fun onFirstUserVisible() {
+        val root = Environment.getExternalStorageDirectory()
+        toggleFileTree(root)
     }
 
-    @Override
-    protected void onUserVisible() {
-
-    }
-
-    @Override
-    protected void onUserInvisible() {
-
-    }
-
-    private void toggleFileTree(File file){
+    override fun onUserVisible() {}
+    override fun onUserInvisible() {}
+    private fun toggleFileTree(file: File) {
         //路径名
-        mTvPath.setText(getString(R.string.nb_file_path,file.getPath()));
-        Disposable subscribe = Observable.just(file).map(new Function<File, List<File>>() {
-            @Override
-            public List<File> apply(File file) throws Exception {
-                //通过过滤获取数据
-                File[] files = file.listFiles(new SimpleFileFilter());
+        file_category_tv_path.text = getString(R.string.nb_file_path, file.path)
+        val subscribe = Observable.just(file).map(
+            Function<File, List<File>> { file -> //通过过滤获取数据
+                val files = file.listFiles(SimpleFileFilter())
                 //转换成List
-                List<File> rootFiles = Arrays.asList(files);
+                val rootFiles = Arrays.asList(*files)
                 //排序
-                Collections.sort(rootFiles, new FileComparator());
-                return rootFiles;
-            }
-        }).compose(RxSchedulers.applySchedulers())
-                .subscribe(new Consumer<List<File>>() {
-                    @Override
-                    public void accept(List<File> files) throws Exception {
-                        //加入列表
-                        mAdapter.refreshItems(files);
-                        //反馈
-                        if (mListener != null) {
-                            mListener.onCategoryChanged();
-                        }
+                Collections.sort(rootFiles, FileComparator())
+                rootFiles
+            }).compose(RxSchedulers.applySchedulers())
+            .subscribe(object : Consumer<List<File?>?> {
+                @Throws(Exception::class)
+                override fun accept(files: List<File?>?) {
+                    //加入列表
+                    mAdapter.refreshItems(files)
+                    //反馈
+                    if (mListener != null) {
+                        mListener.onCategoryChanged()
                     }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
-
-                    }
-                });
-
+                }
+            }, object : Consumer<Throwable?> {
+                @Throws(Exception::class)
+                override fun accept(throwable: Throwable?) {
+                }
+            })
     }
-
-
 
     /**
      * 对文件列表List按名称排序(升序)
      */
-    public class FileComparator implements Comparator<File> {
-        @Override
-        public int compare(File o1, File o2){
-            if (o1.isDirectory() && o2.isFile()) {
-                return -1;
+    inner class FileComparator : Comparator<File> {
+        override fun compare(o1: File, o2: File): Int {
+            if (o1.isDirectory && o2.isFile) {
+                return -1
             }
-            if (o2.isDirectory() && o1.isFile()) {
-                return 1;
-            }
-            return o1.getName().compareToIgnoreCase(o2.getName());
+            return if (o2.isDirectory && o1.isFile) {
+                1
+            } else o1.name.compareTo(o2.name, ignoreCase = true)
         }
     }
 
-    public class SimpleFileFilter implements FileFilter {
-        @Override
-        public boolean accept(File pathname) {
-            if (pathname.getName().startsWith(".")){
-                return false;
+    inner class SimpleFileFilter : FileFilter {
+        override fun accept(pathname: File): Boolean {
+            if (pathname.name.startsWith(".")) {
+                return false
             }
             //文件夹内部数量为0
-            if (pathname.isDirectory() && pathname.list().length == 0){
-                return false;
+            if (pathname.isDirectory && pathname.list().size == 0) {
+                return false
             }
-
             /**
              * 现在只支持TXT文件的显示
              */
             //文件内容为空,或者文件大小为0，或者不以txt为开头
-            if (!pathname.isDirectory() &&
-                    (pathname.length() == 0 || !pathname.getName().endsWith(BookManager.SUFFIX_TXT))){
-                return false;
-            }
-            return true;
+            return !(!pathname.isDirectory &&
+                    (pathname.length() == 0L || !pathname.name.endsWith(BookManager.SUFFIX_TXT)))
         }
     }
 }

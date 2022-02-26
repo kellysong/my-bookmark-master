@@ -1,10 +1,8 @@
-package com.sjl.bookmark.ui.contract;
+package com.sjl.bookmark.ui.contract
 
-import com.sjl.bookmark.entity.table.HistoryExpress;
-import com.sjl.core.mvp.BaseContract;
-import com.sjl.core.mvp.BasePresenter;
-
-import java.util.List;
+import com.sjl.bookmark.entity.table.HistoryExpress
+import com.sjl.core.mvp.BaseContract.IBaseView
+import com.sjl.core.mvp.BasePresenter
 
 /**
  * TODO
@@ -15,20 +13,20 @@ import java.util.List;
  * @time 2018/11/26 11:06
  * @copyright(C) 2018 song
  */
-public interface ExpressContract {
-    interface View extends BaseContract.IBaseView {
-        void setHistoryExpress(List<HistoryExpress> historyExpresses);
+interface ExpressContract {
+    interface View : IBaseView {
+        fun setHistoryExpress(historyExpresses: List<HistoryExpress>)
     }
 
-    abstract class Presenter extends BasePresenter<View> {
+    abstract class Presenter : BasePresenter<View>() {
         /**
          * 获取未验收的快递
          */
-        public abstract void getUnCheckList();
+        abstract  fun getUnCheckList()
 
         /**
          * 获取所有历史快递，包括已验收和未验收
          */
-        public abstract void getHistoryExpresses();
+        abstract fun getHistoryExpresses()
     }
 }

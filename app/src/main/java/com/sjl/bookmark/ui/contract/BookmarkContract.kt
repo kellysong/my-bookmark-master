@@ -1,12 +1,9 @@
-package com.sjl.bookmark.ui.contract;
+package com.sjl.bookmark.ui.contract
 
-import android.content.Intent;
-
-import com.sjl.bookmark.entity.table.Bookmark;
-import com.sjl.core.mvp.BaseContract;
-import com.sjl.core.mvp.BasePresenter;
-
-import java.util.List;
+import android.content.Intent
+import com.sjl.bookmark.entity.table.Bookmark
+import com.sjl.core.mvp.BaseContract.IBaseView
+import com.sjl.core.mvp.BasePresenter
 
 /**
  * TODO
@@ -17,28 +14,28 @@ import java.util.List;
  * @time 2018/11/26 10:59
  * @copyright(C) 2018 song
  */
-public interface BookmarkContract {
-    interface View extends BaseContract.IBaseView {
-        void showBookmarkData(List<Bookmark> bookmarks, int loadingState);
-
-        void setItemMenuVisible(boolean visible);
+interface BookmarkContract {
+    interface View : IBaseView {
+        fun showBookmarkData(bookmarks: List<Bookmark>?, loadingState: Int)
+        fun setItemMenuVisible(visible: Boolean)
     }
 
-    abstract class Presenter extends BasePresenter<View> {
-        public abstract void init(Intent intent);
+    abstract class Presenter : BasePresenter<View>() {
+        abstract fun init(intent: Intent)
 
         /**
          * 初始化数据
          */
-        public abstract List<Bookmark> initBookmarkList();
+        abstract fun initBookmarkList(): List<Bookmark>
 
         /**
          * 上拉加载
          */
-        public abstract void pullRefreshUp();
+        abstract fun pullRefreshUp()
+
         /**
          * 下拉刷新
          */
-        public abstract void pullRefreshDown();
+        abstract fun pullRefreshDown()
     }
 }
