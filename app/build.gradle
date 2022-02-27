@@ -30,7 +30,9 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         ndk {
-            abiFilters "armeabi", "armeabi-v7a", "x86"
+//            abiFilters "armeabi", "armeabi-v7a","x86"
+            abiFilters "armeabi-v7a","arm64-v8a", "x86"
+
             // 指定要ndk需要兼容的架构(这样其他依赖包里arm-v8之类的so会被过滤掉),意思是指定ndk需要兼容的架构，把除了v7a以外的兼容包都过滤掉，只剩下一个v7a的文件夹。用了这个方法之后，确实解决了问题。这就是解决方法
         }
         // 控制日志Log 输出打印

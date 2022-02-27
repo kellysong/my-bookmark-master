@@ -47,7 +47,7 @@ class NewsListActivity : BaseActivity<NewsListPresenter>(), NewsListContract.Vie
     override fun initData() {
         swipe_refresh_layout.setColorSchemeResources(R.color.blueStatus)
         swipe_refresh_layout.setOnRefreshListener(this)
-        newsMultiDelegateAdapter = NewsMultiDelegateAdapter(this, R.layout.news_list_activity, null)
+        newsMultiDelegateAdapter = NewsMultiDelegateAdapter(R.layout.news_list_activity, null)
         mPresenter.loadNews()
         layoutManager = LinearLayoutManager(this)
         recycler.layoutManager = layoutManager

@@ -34,6 +34,6 @@ interface BookSearchContract {
          * 搜索书籍
          * @param query
          */
-        abstract fun searchBook(query: String)
+        abstract fun searchBook(query: String?)
     }
 }

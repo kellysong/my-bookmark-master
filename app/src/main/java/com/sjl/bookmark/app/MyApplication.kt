@@ -19,6 +19,7 @@ import com.sjl.core.net.RetrofitParams
 import com.squareup.leakcanary.LeakCanary
 import com.tencent.bugly.crashreport.CrashReport
 import io.reactivex.plugins.RxJavaPlugins
+import java.util.concurrent.TimeUnit
 
 /**
  * @author song
@@ -100,13 +101,16 @@ class MyApplication : BaseApplication() {
     private fun initRetrofit() {
         val retrofitParams = RetrofitParams.Builder()
             .setBaseUrlAdapter(MyBaseUrlAdapter())
+                .setConnectTimeout(30)
+                .setReadTimeout(30)
+                .setWriteTimeout(30)
             .setRetrofitLogAdapter(object : RetrofitLogAdapter {
                 override fun printRequestUrl(): Boolean {
                     return false
                 }
 
                 override fun printHttpLog(): Boolean {
-                    return BuildConfig.DEBUG
+                    return false
                 }
             }) //                .setInterceptor(new WanAndroidCookieInterceptor())
             .build()

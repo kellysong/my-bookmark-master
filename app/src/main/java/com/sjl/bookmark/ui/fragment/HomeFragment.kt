@@ -109,8 +109,8 @@ class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.View,
     }
 
     override fun setHomeBanners(banners: List<TopBanner>) {
-        val images: MutableList<String?> = ArrayList()
-        val titles: MutableList<String?> = ArrayList()
+        val images: MutableList<String> = ArrayList()
+        val titles: MutableList<String> = ArrayList()
         //左右添加多一张图片
         for (banner in banners) {
             images.add(banner.imagePath)
@@ -133,9 +133,9 @@ class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.View,
         });*/
     }
 
-    private fun initBanner(images: List<String?>, banners: List<TopBanner>) {
+    private fun initBanner(images: List<String>, banners: List<TopBanner>) {
         if (mBannerAdapter == null) { //new一次适配器，否则下拉刷新后出现图片、指示器滑动过快
-            mBannerAdapter = ImagePagerAdapter(activity, images, mViewpager)
+            mBannerAdapter = ImagePagerAdapter(mActivity, images, mViewpager)
         } else {
             mBannerAdapter?.setData(images)
         }

@@ -69,7 +69,7 @@ class BookSearchPresenter : BookSearchContract.Presenter() {
             })
     }
 
-    override fun searchBook(query: String) {
+    override fun searchBook(query: String?) {
         val apiService: ZhuiShuShenQiApi = RetrofitHelper.getInstance().getApiService(
             ZhuiShuShenQiApi::class.java
         )

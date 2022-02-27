@@ -182,7 +182,7 @@ class BookSearchActivity : BaseActivity<BookSearchPresenter>(),
                 //显示正在加载
                 contentFlag = false
                 refresh_layout.showLoading()
-                val book: String = mKeyWordAdapter.getItem(position)
+                val book: String? = mKeyWordAdapter.getItem(position)
                 mPresenter.searchBook(book)
                 ViewUtils.toggleKeyboard(this@BookSearchActivity)
             }

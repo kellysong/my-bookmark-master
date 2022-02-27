@@ -47,11 +47,11 @@ class FileCategoryFragment : BaseFileFragment<NoPresenter>() {
     }
 
     private fun setUpAdapter() {
-        mAdapter = FileSystemAdapter(context, R.layout.file_book_recycle_item, null)
+        mAdapter = FileSystemAdapter(mActivity, R.layout.file_book_recycle_item, null)
         file_category_rv_content.layoutManager = LinearLayoutManager(context)
         file_category_rv_content.addItemDecoration(
             RecyclerViewDivider(
-                context,
+                    mActivity,
                 LinearLayoutManager.VERTICAL
             )
         )
@@ -133,9 +133,9 @@ class FileCategoryFragment : BaseFileFragment<NoPresenter>() {
                 Collections.sort(rootFiles, FileComparator())
                 rootFiles
             }).compose(RxSchedulers.applySchedulers())
-            .subscribe(object : Consumer<List<File?>?> {
+            .subscribe(object : Consumer<List<File>> {
                 @Throws(Exception::class)
-                override fun accept(files: List<File?>?) {
+                override fun accept(files: List<File>) {
                     //加入列表
                     mAdapter.refreshItems(files)
                     //反馈

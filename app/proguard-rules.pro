@@ -294,6 +294,8 @@ public static java.lang.String TABLENAME;
 #如果定义指定了泛型presenter，不调用方法，会出现混淆报错ClassCastException: ....Object cannot case to，https://blog.csdn.net/github_36217929/article/details/78414288
 #为了保险起见，如果不调用presenter中的方法，不混淆presenter,必须将下面的注释去掉
 #-keep class com.sjl.bookmark.ui.**.presenter.**
+-keep class com.sjl.core.mvp.NoPresenter{*;}
+
 
 
 

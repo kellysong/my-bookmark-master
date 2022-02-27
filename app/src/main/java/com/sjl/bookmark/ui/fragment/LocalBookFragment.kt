@@ -39,9 +39,9 @@ class LocalBookFragment : BaseFileFragment<NoPresenter>() {
     }
 
     private fun setUpAdapter() {
-        mAdapter = FileSystemAdapter(context, R.layout.file_book_recycle_item, null)
+        mAdapter = FileSystemAdapter(mActivity, R.layout.file_book_recycle_item, null)
         local_book_rv_content.layoutManager = LinearLayoutManager(context)
-        local_book_rv_content.addItemDecoration(RecyclerViewDivider(context, LinearLayoutManager.VERTICAL))
+        local_book_rv_content.addItemDecoration(RecyclerViewDivider(mActivity, LinearLayoutManager.VERTICAL))
         local_book_rv_content.adapter = mAdapter
         mAdapter.setOnItemClickListener(object : MultiItemTypeAdapter.OnItemClickListener {
             override fun onItemClick(view: View, holder: RecyclerView.ViewHolder, position: Int) {

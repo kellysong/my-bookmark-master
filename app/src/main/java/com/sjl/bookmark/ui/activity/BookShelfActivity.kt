@@ -20,12 +20,14 @@ import com.sjl.core.mvp.BaseActivity
 import com.sjl.core.net.RxBus
 import com.sjl.core.util.log.LogUtils
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.functions.Action
 import io.reactivex.functions.Consumer
 import kotlinx.android.synthetic.main.book_shelf_activity.*
 import kotlinx.android.synthetic.main.toolbar_default.*
 import kotlinx.android.synthetic.main.toolbar_default.common_toolbar
 import java.io.File
 import java.util.*
+import kotlin.collections.ArrayList
 
 /**
  * TODO
@@ -39,7 +41,7 @@ import java.util.*
 class BookShelfActivity : BaseActivity<BookShelfPresenter>(), BookShelfContract.View {
 
 
-    private var bookLists: List<CollectBook>? = null
+    private lateinit var bookLists: ArrayList<CollectBook>
     private lateinit var shelfAdapter: ShelfAdapter
 
     /**
@@ -78,33 +80,33 @@ class BookShelfActivity : BaseActivity<BookShelfPresenter>(), BookShelfContract.
                     if (file.exists() && file.length() != 0L) {
                         shelfAdapter.setItemToFirst(itemPosition)
                         BookReadActivity.Companion.startActivity(
-                            this@BookShelfActivity,
-                            collectBook,
-                            true
+                                this@BookShelfActivity,
+                                collectBook,
+                                true
                         ) //此时collectBook的排序id已经是最大
                     } else {
                         val tip: String =
-                            this@BookShelfActivity.getString(R.string.nb_bookshelf_book_not_exist)
+                                this@BookShelfActivity.getString(R.string.nb_bookshelf_book_not_exist)
                         //提示(从目录中移除这个文件)
                         AlertDialog.Builder(this@BookShelfActivity)
-                            .setTitle(resources.getString(R.string.nb_common_tip))
-                            .setMessage(tip)
-                            .setPositiveButton(
-                                resources.getString(R.string.nb_common_sure),
-                                object : DialogInterface.OnClickListener {
-                                    override fun onClick(dialog: DialogInterface, which: Int) {
-                                        mPresenter!!.deleteBook(collectBook)
-                                    }
-                                })
-                            .setNegativeButton(resources.getString(R.string.nb_common_cancel), null)
-                            .show()
+                                .setTitle(resources.getString(R.string.nb_common_tip))
+                                .setMessage(tip)
+                                .setPositiveButton(
+                                        resources.getString(R.string.nb_common_sure),
+                                        object : DialogInterface.OnClickListener {
+                                            override fun onClick(dialog: DialogInterface, which: Int) {
+                                                mPresenter!!.deleteBook(collectBook)
+                                            }
+                                        })
+                                .setNegativeButton(resources.getString(R.string.nb_common_cancel), null)
+                                .show()
                     }
                 } else {
                     shelfAdapter.setItemToFirst(itemPosition)
                     BookReadActivity.Companion.startActivity(
-                        this@BookShelfActivity,
-                        collectBook,
-                        true
+                            this@BookShelfActivity,
+                            collectBook,
+                            true
                     )
                 }
             }
@@ -122,24 +124,27 @@ class BookShelfActivity : BaseActivity<BookShelfPresenter>(), BookShelfContract.
         })
         //监听书架添加书籍
         val subscribe = RxBus.getInstance()
-            .toObservable(Boolean::class.java)
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(object : Consumer<Boolean> {
-                @Throws(Exception::class)
-                override fun accept(s: Boolean) {
-                    if (s) {
-                        LogUtils.i("书架更新，新增收藏$s")
-                    } else {
-                        LogUtils.i("书架更新，移除收藏$s")
+                .toObservable(Boolean::class.javaObjectType)
+//                .toObservable( Boolean::class) //使用这个无法接收到事件，因为必须使用包装类型才能注册
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(object : Consumer<Boolean> {
+                    @Throws(Exception::class)
+                    override fun accept(s: Boolean) {
+                        if (s) {
+                            LogUtils.i("书架更新，新增收藏$s")
+                        } else {
+                            LogUtils.i("书架更新，移除收藏$s")
+                        }
+                        mPresenter.getRecommendBook()
                     }
-                    mPresenter.getRecommendBook()
-                }
-            }, object : Consumer<Throwable?> {
-                @Throws(Exception::class)
-                override fun accept(throwable: Throwable?) {
-                }
-            })
+                }, object : Consumer<Throwable?> {
+                    @Throws(Exception::class)
+                    override fun accept(throwable: Throwable?) {
+                        LogUtils.e(throwable)
+                    }
+                })
         addDisposable(subscribe)
+
     }
 
     override fun initData() {
@@ -170,19 +175,19 @@ class BookShelfActivity : BaseActivity<BookShelfPresenter>(), BookShelfContract.
             startActivity(intent)
         } else if (id == R.id.action_clear) {
             AlertDialog.Builder(this@BookShelfActivity)
-                .setTitle(resources.getString(R.string.nb_common_tip))
-                .setMessage(R.string.book_shelf_hint)
-                .setPositiveButton(
-                    resources.getString(R.string.nb_common_sure),
-                    object : DialogInterface.OnClickListener {
-                        override fun onClick(dialog: DialogInterface, which: Int) {
-                            showLoadingDialog(getString(R.string.book_delete_hint))
-                            mPresenter.deleteAllBook()
-                            dialog.dismiss()
-                        }
-                    })
-                .setNegativeButton(resources.getString(R.string.nb_common_cancel), null)
-                .show()
+                    .setTitle(resources.getString(R.string.nb_common_tip))
+                    .setMessage(R.string.book_shelf_hint)
+                    .setPositiveButton(
+                            resources.getString(R.string.nb_common_sure),
+                            object : DialogInterface.OnClickListener {
+                                override fun onClick(dialog: DialogInterface, which: Int) {
+                                    showLoadingDialog(getString(R.string.book_delete_hint))
+                                    mPresenter.deleteAllBook()
+                                    dialog.dismiss()
+                                }
+                            })
+                    .setNegativeButton(resources.getString(R.string.nb_common_cancel), null)
+                    .show()
         } else if (id == R.id.action_refresh) {
             refreshShelfBook()
             return true
@@ -209,7 +214,7 @@ class BookShelfActivity : BaseActivity<BookShelfPresenter>(), BookShelfContract.
     }
 
     override fun showRecommendBook(collBookBeans: List<CollectBook>) {
-        shelfAdapter.setItems(collBookBeans) //刷新图书
+        shelfAdapter.setItems(ArrayList(collBookBeans)) //刷新图书
         hideLoadingDialog()
     }
 

@@ -309,6 +309,9 @@ class MainActivity : BaseActivity<NoPresenter>(),
         autoBackupCollection()
         //        CrashReport.testJavaCrash();
         autoLoginWanAndroid()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            LogUtils.i("SUPPORTED ABI:" + Arrays.toString(Build.SUPPORTED_ABIS));
+        }
     }
 
     /**

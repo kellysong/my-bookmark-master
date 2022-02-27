@@ -251,7 +251,7 @@ class ExpressDetailPresenter : ExpressDetailContract.Presenter() {
             val startTime: Date =
                 TimeUtils.strToDate(history.signTime, TimeUtils.DATE_FORMAT_1)
             val l: Long = TimeUtils.dateDiff(startTime, Date())
-            if (l > 30) { //如果超过一个月没有发生签收状态改变（可能签收，也有可能没有签收），都强制更新为签收状态
+            if (l > 15) { //如果超过15天没有发生签收状态改变（可能签收，也有可能没有签收），都强制更新为签收状态
                 history.checkStatus = AppConstant.SignStatus.SIGNED.toString()
             }
         }

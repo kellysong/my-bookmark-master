@@ -106,7 +106,7 @@ class SettingFragment : BasePreferenceFragment<SettingPresenter>(), SettingContr
         mProgressDialog.progress = percent
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         LogUtils.i("resultCode=$resultCode")
         if (requestCode == 0) {
