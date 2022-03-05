@@ -133,7 +133,7 @@ class BookmarkSearchActivity : BaseActivity<NoPresenter>(), View.OnClickListener
             override fun onEditorAction(
                 v: TextView,
                 actionId: Int,
-                event: KeyEvent
+                event: KeyEvent?
             ): Boolean {
                 if (actionId == EditorInfo.IME_ACTION_SEARCH || (event != null && event.keyCode == KeyEvent.KEYCODE_ENTER)) {
                     val keywords: String = cet_search_word.text.toString()

@@ -138,7 +138,6 @@ class MainActivity : BaseActivity<NoPresenter>(),
         circleImageView = headerView.findViewById<View>(R.id.iv_head_img) as CircleImageView
         tvNickname = headerView.findViewById<View>(R.id.tv_name) as TextView
         tvPersonality = headerView.findViewById<View>(R.id.tv_personality) as TextView
-        initFragment()
         initWaveView(waveView)
 
         //switchFragment(0);
@@ -183,16 +182,21 @@ class MainActivity : BaseActivity<NoPresenter>(),
         mFragments.add(instantiateFragment(vp_main, position, CategoryFragment()))
         position++
         mFragments.add(instantiateFragment(vp_main, position, ToolFragment()))
+        //为viewpager设置adapter
+        vp_main.offscreenPageLimit = 2
+        vp_main.adapter = MainViewPagerAdapter(supportFragmentManager, mFragments)
+        mLastFgIndex = 0
+        switchFragmentNew(mLastFgIndex)
     }
 
     private fun instantiateFragment(
-        viewPager: ViewPager?,
+        viewPager: ViewPager,
         position: Int,
         defaultResult: BaseFragment<*>
     ): BaseFragment<*> {
-        val tag = "android:switcher:" + viewPager!!.id + ":" + position
+        val tag = "android:switcher:" + viewPager.id + ":" + position
         val fragment = supportFragmentManager.findFragmentByTag(tag)
-        return if (fragment == null) defaultResult else (fragment as BaseFragment<*>?)!!
+        return if (fragment == null) defaultResult else (fragment as BaseFragment<*>)
     }
 
     /**
@@ -254,29 +258,29 @@ class MainActivity : BaseActivity<NoPresenter>(),
             }
             true
         }
-        vp_main.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
-            override fun onPageScrolled(
-                position: Int,
-                positionOffset: Float,
-                positionOffsetPixels: Int
-            ) {
-            }
+        vp_main.addOnPageChangeListener(pageChangeListener)
 
-            override fun onPageSelected(position: Int) {
-                //ViewPager和BottomNaviationView联动,当ViewPager的某个页面被选中了,同时设置BottomNaviationView对应的tab按钮被选中
-                when (position) {
-                    0 -> bnv_navigation!!.selectedItemId = R.id.nav_home
-                    1 -> bnv_navigation!!.selectedItemId = R.id.nav_category
-                    2 -> bnv_navigation!!.selectedItemId = R.id.nav_tool
-                    else -> {}
-                }
-            }
+    }
 
-            override fun onPageScrollStateChanged(state: Int) {}
-        })
-        //为viewpager设置adapter
-        vp_main.offscreenPageLimit = 2
-        vp_main.adapter = MainViewPagerAdapter(supportFragmentManager, mFragments)
+    var pageChangeListener = object : ViewPager.OnPageChangeListener {
+        override fun onPageScrolled(
+            position: Int,
+            positionOffset: Float,
+            positionOffsetPixels: Int
+        ) {
+        }
+
+        override fun onPageSelected(position: Int) {
+            //ViewPager和BottomNaviationView联动,当ViewPager的某个页面被选中了,同时设置BottomNaviationView对应的tab按钮被选中
+            when (position) {
+                0 -> bnv_navigation!!.selectedItemId = R.id.nav_home
+                1 -> bnv_navigation!!.selectedItemId = R.id.nav_category
+                2 -> bnv_navigation!!.selectedItemId = R.id.nav_tool
+                else -> {}
+            }
+        }
+
+        override fun onPageScrollStateChanged(state: Int) {}
     }
 
     /**
@@ -295,12 +299,11 @@ class MainActivity : BaseActivity<NoPresenter>(),
     }
 
     private fun switchFragmentNew(position: Int) {
-        vp_main!!.setCurrentItem(position, false)
+        vp_main.setCurrentItem(position, false)
     }
 
     override fun initData() {
-        mLastFgIndex = 0
-        switchFragmentNew(mLastFgIndex)
+        initFragment()
         loadBookmark()
         initHeadImg()
         registerUpdateHeadImg()
@@ -669,6 +672,7 @@ class MainActivity : BaseActivity<NoPresenter>(),
     override fun onDestroy() {
         super.onDestroy()
         mFragments.clear()
+        vp_main.removeOnPageChangeListener(pageChangeListener)
         if (!executeChangeLanguage) {
             BrowseMapper.clearAll()
             WebViewPool.destroyPool()

@@ -48,7 +48,7 @@ class MyNoteActivity : BaseActivity<NoPresenter>(), TextWatcher {
     override fun initData() {
         val intent = intent
         if (intent != null) {
-            tempCollection = intent.getSerializableExtra("collection") as Collection
+            tempCollection = intent.getSerializableExtra("collection") as Collection?
             noteFlag = if (tempCollection != null) {
                 et_title.setText(tempCollection!!.title)
                 et_content.setText(tempCollection!!.href)

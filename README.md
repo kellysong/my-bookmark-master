@@ -2,7 +2,9 @@
 
 ### 中文 | [English](README-en.md)
 
-技术架构：基于 Material Design + MVP + RxJava + Retrofit + Glide等开源框架开发
+技术架构：主要Kotlin语言，基于 Material Design + MVP + RxJava + Retrofit + Glide等开源框架开发
+，旧版4.0.0以下Java语言编写的[口袋书签](https://github.com/kellysong/my-bookmark-master/tree/master)停止维护
+
 特点：
 集学习、便民、娱乐于一体的综合软件，适合初中级Android开发者，能学到：
 1. 各种不同第三方库的各种用法

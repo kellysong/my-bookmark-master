@@ -1,12 +1,17 @@
 package com.sjl.bookmark.ui.activity
 
 import android.Manifest
+import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.content.pm.ShortcutInfo
+import android.content.pm.ShortcutManager
+import android.graphics.drawable.Icon
 import android.net.Uri
 import android.os.*
 import android.os.Build.VERSION_CODES
 import android.provider.Settings
+import android.text.TextUtils
 import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
@@ -19,12 +24,14 @@ import com.sjl.bookmark.app.AppConstant
 import com.sjl.bookmark.kotlin.language.LanguageManager.initAppLanguage
 import com.sjl.bookmark.ui.activity.MainActivity
 import com.sjl.bookmark.util.PermissionRequestUtils
+import com.sjl.core.manager.CachedThreadManager
 import com.sjl.core.mvp.BaseActivity
 import com.sjl.core.mvp.NoPresenter
 import com.sjl.core.util.PreferencesHelper
 import com.sjl.core.util.ShortcutUtils
 import com.sjl.core.util.ToastUtils
 import com.sjl.core.util.log.LogUtils
+import com.tencent.smtt.sdk.CacheManager
 import java.util.*
 
 /**
@@ -133,11 +140,25 @@ class SplashActivity : BaseActivity<NoPresenter>() {
             ShortcutUtils.addShortcut(this@SplashActivity, R.string.app_name, R.mipmap.ic_shortcut)
             ShortcutUtils.addDyShortcut(
                 this@SplashActivity,
-                NFCardActivity::class.java,
+                MyNfcActivity::class.java,
                 "nfc_id",
                 "余额查询",
-                R.mipmap.icon_nfc
+                R.mipmap.menu_card
             )
+            ShortcutUtils.addDyShortcut(
+                this@SplashActivity,
+                ExpressActivity::class.java,
+                "express_id",
+                "我的快递",
+                R.mipmap.menu_express_query
+            )
+            // fix NfcActivity bug
+            updateDyShortcut(this@SplashActivity,
+                MyNfcActivity::class.java,
+                "nfc_id",
+                "余额查询",
+                R.mipmap.menu_card)
+
             //            ivLogo.setImageResource(R.mipmap.ic_launcher);
         } else if (BuildConfig.appType == 1) {
 //            ivLogo.setImageResource(R.mipmap.ic_book);
@@ -171,6 +192,41 @@ class SplashActivity : BaseActivity<NoPresenter>() {
             }
         } else {
             openMainActivity()
+        }
+    }
+
+    fun updateDyShortcut(
+        activity: Activity,
+        targetClass: Class<*>,
+        shortCutId: String,
+        shortCutName: String,
+        iconId: Int
+    ) {
+        if (TextUtils.isEmpty(shortCutId) || TextUtils.isEmpty(shortCutName)) {
+            return
+        }
+        if (Build.VERSION.SDK_INT >= VERSION_CODES.N_MR1) {
+            val shortcutManager = activity.getSystemService(SHORTCUT_SERVICE) as ShortcutManager
+            val infoList = shortcutManager.dynamicShortcuts
+            var tempShortCutId: String? = null
+            for (shortcutInfo in infoList) {
+                if (shortcutInfo.id == shortCutId) {
+                    tempShortCutId = shortcutInfo.id
+                    break
+                }
+            }
+            if (tempShortCutId != null) {
+                val shortcutInfoIntent = Intent(activity, targetClass)
+                shortcutInfoIntent.action = Intent.ACTION_VIEW
+                val shortcut = ShortcutInfo.Builder(activity, shortCutId)
+                    .setShortLabel(shortCutName)
+                    .setLongLabel(shortCutName)
+                    .setIcon(Icon.createWithResource(activity, iconId))
+                    .setIntent(shortcutInfoIntent)
+                    .build()
+                val b = shortcutManager.updateShortcuts(Arrays.asList(shortcut))
+                LogUtils.i("updateDyShortcut result:$b")
+            }
         }
     }
 
