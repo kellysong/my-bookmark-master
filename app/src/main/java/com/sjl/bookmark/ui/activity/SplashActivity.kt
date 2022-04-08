@@ -135,37 +135,41 @@ class SplashActivity : BaseActivity<NoPresenter>() {
 
     override fun initListener() {}
     override fun initData() {
-        if (BuildConfig.appType == 0) { //默认应用
-            //创建快捷方式
-            ShortcutUtils.addShortcut(this@SplashActivity, R.string.app_name, R.mipmap.ic_shortcut)
-            ShortcutUtils.addDyShortcut(
-                this@SplashActivity,
-                MyNfcActivity::class.java,
-                "nfc_id",
-                "余额查询",
-                R.mipmap.menu_card
-            )
-            ShortcutUtils.addDyShortcut(
-                this@SplashActivity,
-                ExpressActivity::class.java,
-                "express_id",
-                "我的快递",
-                R.mipmap.menu_express_query
-            )
-            // fix NfcActivity bug
-            updateDyShortcut(this@SplashActivity,
-                MyNfcActivity::class.java,
-                "nfc_id",
-                "余额查询",
-                R.mipmap.menu_card)
+        when (BuildConfig.appType) {
+            0 -> { //默认应用
+                //创建快捷方式
+                ShortcutUtils.addShortcut(this@SplashActivity, R.string.app_name, R.mipmap.ic_shortcut)
+                ShortcutUtils.addDyShortcut(
+                    this@SplashActivity,
+                    MyNfcActivity::class.java,
+                    "nfc_id",
+                    "余额查询",
+                    R.mipmap.menu_card
+                )
+                ShortcutUtils.addDyShortcut(
+                    this@SplashActivity,
+                    ExpressActivity::class.java,
+                    "express_id",
+                    "我的快递",
+                    R.mipmap.menu_express_query
+                )
+                // fix NfcActivity bug
+                ShortcutUtils.updateDyShortcut(this@SplashActivity,
+                    MyNfcActivity::class.java,
+                    "nfc_id",
+                    "余额查询",
+                    R.mipmap.menu_card)
 
-            //            ivLogo.setImageResource(R.mipmap.ic_launcher);
-        } else if (BuildConfig.appType == 1) {
-//            ivLogo.setImageResource(R.mipmap.ic_book);
-        } else {
-            ToastUtils.showShort(this, "找不到合适的应用类型:" + BuildConfig.appType)
-            finish()
-            return
+                //            ivLogo.setImageResource(R.mipmap.ic_launcher);
+            }
+            1 -> {
+    //            ivLogo.setImageResource(R.mipmap.ic_book);
+            }
+            else -> {
+                ToastUtils.showShort(this, "找不到合适的应用类型:" + BuildConfig.appType)
+                finish()
+                return
+            }
         }
         /*        Calendar date = Calendar.getInstance();
         String year = String.valueOf(date.get(Calendar.YEAR));
@@ -195,40 +199,6 @@ class SplashActivity : BaseActivity<NoPresenter>() {
         }
     }
 
-    fun updateDyShortcut(
-        activity: Activity,
-        targetClass: Class<*>,
-        shortCutId: String,
-        shortCutName: String,
-        iconId: Int
-    ) {
-        if (TextUtils.isEmpty(shortCutId) || TextUtils.isEmpty(shortCutName)) {
-            return
-        }
-        if (Build.VERSION.SDK_INT >= VERSION_CODES.N_MR1) {
-            val shortcutManager = activity.getSystemService(SHORTCUT_SERVICE) as ShortcutManager
-            val infoList = shortcutManager.dynamicShortcuts
-            var tempShortCutId: String? = null
-            for (shortcutInfo in infoList) {
-                if (shortcutInfo.id == shortCutId) {
-                    tempShortCutId = shortcutInfo.id
-                    break
-                }
-            }
-            if (tempShortCutId != null) {
-                val shortcutInfoIntent = Intent(activity, targetClass)
-                shortcutInfoIntent.action = Intent.ACTION_VIEW
-                val shortcut = ShortcutInfo.Builder(activity, shortCutId)
-                    .setShortLabel(shortCutName)
-                    .setLongLabel(shortCutName)
-                    .setIcon(Icon.createWithResource(activity, iconId))
-                    .setIntent(shortcutInfoIntent)
-                    .build()
-                val b = shortcutManager.updateShortcuts(Arrays.asList(shortcut))
-                LogUtils.i("updateDyShortcut result:$b")
-            }
-        }
-    }
 
     /**
      * 提示用户该请求权限的弹出框

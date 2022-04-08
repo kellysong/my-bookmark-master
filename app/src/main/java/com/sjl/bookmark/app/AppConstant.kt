@@ -29,6 +29,7 @@ object AppConstant {
     val BOOKMARK_PATH =
         ROOT_PATH + MyApplication.getContext().packageName + File.separator + "bookmarkTemp"
 
+
     /**
      * 更新apk 路径
      */
@@ -41,6 +42,16 @@ object AppConstant {
      */
     @JvmField
     val BOOK_CACHE_PATH = FileUtils.getCachePath() + File.separator + "book_cache" + File.separator
+
+    /**
+     * 图片
+     */
+    val BOOKMARK_DCIM = Environment.DIRECTORY_DCIM+File.separator+"bookmark"
+
+    /**
+     * 下载
+     */
+    val BOOKMARK_DOWNLOADS = Environment.DIRECTORY_DOWNLOADS+File.separator+"bookmark"
 
     /**
      * 推荐书籍默认有效时间7天

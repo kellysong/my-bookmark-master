@@ -230,95 +230,86 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0'
-    implementation 'androidx.multidex:multidex:2.0.0'
+    implementation rootProject.ext.dependencies["multidex"]
 
     //个人类库，以project的引入是为了方便修改，其它示例工程全部以maven方式引入
     /*基础库*/
     //implementation project(':my-common-lib:base-core')
     //implementation project(':my-common-lib:base-adapter')
+    /*硬件相关*/
+    /*    implementation project (':my-hardware-lib:nfcard')
+    implementation project (':my-hardware-lib:zxing')*/
 
- /*   implementation 'com.github.kellysong.my-common:base-adapter:2.1.2'
-    implementation 'com.github.kellysong.my-common:base-core:2.1.2'
-    annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.1'
-    annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
-*/
     //基础库
-    implementation('com.github.kellysong.my-common:base-core:2.3.2') {
+    implementation('com.github.kellysong.my-common:base-core:2.3.3') {
         exclude group: 'com.github.CymChad', module: 'BaseRecyclerViewAdapterHelper'//最新版改变较大,使用本地版本
     }
-    implementation 'com.github.kellysong.my-common:base-adapter:2.3.2'
+    implementation 'com.github.kellysong.my-common:base-adapter:2.3.3'
     implementation rootProject.ext.dependencies["baseRecyclerViewAdapterHelper"]
-
     kapt 'com.jakewharton:butterknife-compiler:10.2.1'
     kapt 'com.github.bumptech.glide:compiler:4.11.0'
-
-
-    /*硬件相关*/
-/*    implementation project (':my-hardware-lib:nfcard')
-    implementation project (':my-hardware-lib:zxing')*/
-/*    implementation 'com.github.kellysong.my-hardware:nfcard:1.1.1'
-    implementation 'com.github.kellysong.my-hardware:zxing:1.1.1'*/
-
     implementation 'com.github.kellysong.my-hardware:nfcard:1.1.2'
     implementation 'com.github.kellysong.my-hardware:zxing:1.1.2'
+    //引入kotlin
+    implementation rootProject.ext.dependencies["kotlin"]
 
     /*今日头条屏幕适配*/
-    implementation 'me.jessyan:autosize:1.1.2'
+    implementation rootProject.ext.dependencies["autosize"]
+
     //以下是第三方库
 
     /*对View点击事件的Rx形式监听*/
-    implementation 'com.jakewharton.rxbinding2:rxbinding:2.1.1'
-
+    implementation rootProject.ext.dependencies["rxbinding2"]
 
     /*数据库orm*/
-    implementation 'org.greenrobot:greendao:3.3.0'
-    implementation 'org.greenrobot:greendao-generator:3.3.0'
-    implementation 'com.github.yuweiguocn:GreenDaoUpgradeHelper:v2.1.0'
+    implementation rootProject.ext.dependencies["greendao"]
+    implementation rootProject.ext.dependencies["greendao-generator"]
+    implementation rootProject.ext.dependencies["greenDaoUpgradeHelper"]
 
     //下面框架是用来提高开发效率
 
     /*activity滑动关闭库*/
-    implementation 'me.imid.swipebacklayout.lib:library:1.1.0'
+    implementation rootProject.ext.dependencies["swipebacklayout"]
 
     /*控件点击起波纹库*/
-    implementation 'com.balysv:material-ripple:1.0.2'
+    implementation rootProject.ext.dependencies["materialRipple"]
 
     /*material文本编辑框*/
-    implementation 'com.rengwuxian.materialedittext:library:2.1.4'
+    implementation rootProject.ext.dependencies["materialedittext"]
 
     /*下拉框库*/
-    implementation 'com.github.arcadefire:nice-spinner:1.3.1'
+    implementation rootProject.ext.dependencies["niceSpinner"]
 
     /*标签视图,利用该库，我们可以给视图添加上一个标签*/
-    implementation 'com.github.linger1216:labelview:v1.1.2'
+    implementation rootProject.ext.dependencies["labelview"]
 
     /*图片裁剪框架*/
-    implementation 'com.github.yalantis:ucrop:2.2.1'
+    implementation rootProject.ext.dependencies["ucrop"]
 
     /*图片轮播框架*/
-    implementation 'com.youth.banner:banner:1.4.10'
+    implementation rootProject.ext.dependencies["banner"]
 
     /*jsoup网页解析工具*/
-    implementation 'org.jsoup:jsoup:1.11.2'
+    implementation rootProject.ext.dependencies["jsoup"]
 
     /*腾讯x5内核*/
 //    implementation files('libs/tbs_sdk_thirdapp_v3.1.0.1034_43100_sharewithdownload_obfs_20170301_182143.jar')
     implementation files('libs/tbs_sdk_thirdapp_v4.3.0.39_43939_sharewithdownloadwithfile_withoutGame_obfs_20200713_223411.jar')
 
     // AndroidTagGroup
-    implementation 'me.gujun.android.taggroup:library:1.4@aar'
+    implementation rootProject.ext.dependencies["taggroup"]
 
     // OpenCC to convert Simp. Chinese to Trad. Chinese
-    implementation 'com.zqc.opencc.android.lib:lib-opencc-android:0.8.0@aar'
+    implementation rootProject.ext.dependencies["openccAndroid"]
     //新版崩溃https://github.com/qichuan/android-opencc
 //    implementation 'com.github.qichuan:android-opencc:1.2.0'
     //    compile 'com.scwang.smartrefresh:SmartRefreshLayout:1.1.0-alpha-16'
 
     //实现类似微博内容，@用户，链接高亮，@用户和链接可点击跳转，可展开和收回的TextView
-    implementation 'com.github.MZCretin:ExpandableTextView:v1.5.2'
+    implementation rootProject.ext.dependencies["expandableTextView"]
 
     //强大的指示器MagicIndicator https://github.com/hackware1993/MagicIndicator
-    implementation 'com.github.hackware1993:MagicIndicator:1.5.0'
+    implementation rootProject.ext.dependencies["magicIndicator"]
 
     /*图片预览框架*/
     implementation project(':photoview')
@@ -326,13 +317,12 @@ dependencies {
 //    implementation project(':spots-dialog-lib')
 
     /*指示器https://github.com/LinweiJ/ViewPagerIndicator*/
-    implementation 'com.github.LinweiJ:ViewPagerIndicator:0.1.0'
+    implementation rootProject.ext.dependencies["viewPagerIndicator"]
 
     /*弹幕*/
-    implementation 'com.github.ctiao:DanmakuFlameMaster:0.9.25'
-    implementation 'com.github.ctiao:ndkbitmap-armv7a:0.9.21'
-    //引入kotlin
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation rootProject.ext.dependencies["danmakuFlameMaster"]
+    implementation rootProject.ext.dependencies["ndkbitmapArmv7a"]
+
 
     //leakcanary
     debugImplementation rootProject.ext.dependencies["leakcanary-android"]

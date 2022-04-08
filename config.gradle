@@ -1,43 +1,116 @@
 ext {
     //android
     android = [
-            compileSdkVersion: 28,
-            buildToolsVersion: '28.0.3',
+            compileSdkVersion: 30,
+            buildToolsVersion: '30.0.3',
 
             minSdkVersion    : 14,
-            targetSdkVersion : 28,
+            targetSdkVersion : 30,
             versionCode      : 1047,//后面两位代表累计版本，如33表示第33个版本
             versionName      : "4.0.0-RC1",
     ]
     //dependVersion
     def dependVersion = [
-            support                 : "28.0.0",
+            support                      : "28.0.0",
+            constraintLayout             : "2.0.4",
+            multidex                     : "2.0.0",
+            appcompat                    : "1.2.0",
+            recyclerview                 : "1.2.0",
+            material                     : "1.3.0",
             baseRecyclerViewAdapterHelper: "2.9.49",
-            leakcanary              : "1.6.1",
-//            androidxAppcompat       : "1.1.0",
-//            androidxConstraintLayout: "1.1.3",
-            androidxAppcompat       : "1.2.0",
-            androidxConstraintLayout: "2.0.4",
-            buglySDK                : "3.2.422",
-            buglyNDK                : "3.7.5"
+            gson                         : "2.8.5",
+            kotlin                       : "1.3.10",
+            autosize                     : "1.1.2",
+            rxbinding2                   : "2.1.1",
+            greendao                     : "3.3.0",
+            greenDaoUpgradeHelper        : "v2.1.0",
+            swipebacklayout              : "1.1.0",
+            //第三方库
+            banner                       : "1.4.10",
+            taggroup                     : "1.4@aar",
+            expandableTextView           : "v1.5.2",
+            magicIndicator               : "1.5.0",
+            viewPagerIndicator           : "0.3.0",
+            flycoTabLayout               : "2.1.2@aar",
+            javaWebSocket                : "1.4.0",
+            xpopup                       : "2.0.8",
+            parcelerApi                  : "1.1.12",
+            yimagepicker                 : "3.0",
+            luban                        : "1.1.8",
+            shapedImageView              : "0.8.7",
+            tinypinyin                   : "2.0.3",
+            combineBitmap                : "1.0.5",
+            smartRefreshLayout           : "1.1.0-alpha-16",
+
+            materialRipple               : "1.0.2",
+            materialedittext             : "2.1.4",
+            niceSpinner                  : "1.3.1",
+            labelview                    : "v1.1.2",
+            ucrop                        : "2.2.1",
+            jsoup                        : "1.11.2",
+            openccAndroid                : "0.8.0@aar",
+            danmakuFlameMaster           : "0.9.25",
+            ndkbitmapArmv7a              : "0.9.21",
+
+            leakcanary                   : "1.6.1",
+            buglySDK                     : "3.2.422",
+            buglyNDK                     : "3.7.5"
     ]
 
     //dependencies
     dependencies = [
-            //base
-            "appcompat-v7"            : "com.android.support:appcompat-v7:${dependVersion.support}",
-            "cardview-v7"             : "com.android.support:cardview-v7:${dependVersion.support}",
-            "recyclerview-v7"         : "com.android.support:recyclerview-v7:${dependVersion.support}",
-            "design"                  : "com.android.support:design:${dependVersion.support}",
-            //androidx
-            androidxAppcompat         : "androidx.appcompat:appcompat:${dependVersion.androidxAppcompat}",
-            constraintLayout          : "androidx.constraintlayout:constraintlayout:${dependVersion.androidxConstraintLayout}",
+
+            "appcompat-v7"                 : "com.android.support:appcompat-v7:${dependVersion.support}",
+            "cardview-v7"                  : "com.android.support:cardview-v7:${dependVersion.support}",
+            "recyclerview-v7"              : "com.android.support:recyclerview-v7:${dependVersion.support}",
+            "design"                       : "com.android.support:design:${dependVersion.support}",
+            //AndroidX
+            "multidex"                       : "androidx.multidex:multidex:${dependVersion.multidex}",
+            "appcompat"                    : "androidx.appcompat:appcompat:${dependVersion.appcompat}",
+            "recyclerview"                 : "androidx.recyclerview:recyclerview:${dependVersion.recyclerview}",
+            "material"                     : "com.google.android.material:material:${dependVersion.material}",
+            "baseRecyclerViewAdapterHelper": "com.github.CymChad:BaseRecyclerViewAdapterHelper:${dependVersion.baseRecyclerViewAdapterHelper}",
+            "gson"                         : "com.google.code.gson:gson:${dependVersion.gson}",
+            "kotlin"                       : "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${dependVersion.kotlin}",
+
+            "autosize"                     : "me.jessyan:autosize:${dependVersion.autosize}",
+            "rxbinding2"                   : "com.jakewharton.rxbinding2:rxbinding:${dependVersion.rxbinding2}",
+            "greendao"                     : "org.greenrobot:greendao:${dependVersion.greendao}",
+            "greendao-generator"           : "org.greenrobot:greendao-generator:${dependVersion.greendao}",
+            "greenDaoUpgradeHelper"        : "com.github.yuweiguocn:GreenDaoUpgradeHelper:${dependVersion.greenDaoUpgradeHelper}",
+            "swipebacklayout"              : "me.imid.swipebacklayout.lib:library:${dependVersion.swipebacklayout}",
+            "banner"                       : "com.youth.banner:banner:${dependVersion.banner}",
+            "taggroup"                     : "me.gujun.android.taggroup:library:${dependVersion.taggroup}",
+            "expandableTextView"           : "com.github.MZCretin:ExpandableTextView:${dependVersion.expandableTextView}",
+            "magicIndicator"               : "com.github.hackware1993:MagicIndicator:${dependVersion.magicIndicator}",
+            "viewPagerIndicator"           : "com.github.LinweiJ:ViewPagerIndicator:${dependVersion.viewPagerIndicator}",
+            "flycoTabLayout"               : "com.flyco.tablayout:FlycoTabLayout_Lib:${dependVersion.flycoTabLayout}",
+            "javaWebSocket"                : "org.java-websocket:Java-WebSocket:${dependVersion.javaWebSocket}",
+            "xpopup"                       : "com.lxj:xpopup:${dependVersion.xpopup}",
+            "parcelerApi"                  : "org.parceler:parceler-api:${dependVersion.parcelerApi}",
+            "parcelerProcessor"            : "org.parceler:parceler:${dependVersion.parcelerApi}",
+            "yimagepicker"                 : "com.ypx.yimagepicker:support:${dependVersion.yimagepicker}",
+            "luban"                        : "top.zibin:Luban:${dependVersion.luban}",
+            "shapedImageView"              : "cn.gavinliu:ShapedImageView:${dependVersion.shapedImageView}",
+            "tinypinyin"                   : "com.github.promeg:tinypinyin:${dependVersion.tinypinyin}",
+            "combineBitmap"                : "com.github.Othershe:CombineBitmap:${dependVersion.combineBitmap}",
+            "smartRefreshLayout"           : "com.scwang.smartrefresh:SmartRefreshLayout:${dependVersion.smartRefreshLayout}",
+            //
+            "materialRipple"               : "com.balysv:material-ripple:${dependVersion.materialRipple}",
+            "materialedittext"             : "com.rengwuxian.materialedittext:library:${dependVersion.materialedittext}",
+            "niceSpinner"                  : "com.github.arcadefire:nice-spinner:${dependVersion.niceSpinner}",
+            "labelview"                    : "com.github.linger1216:labelview:${dependVersion.labelview}",
+            "ucrop"                        : "com.github.yalantis:ucrop:${dependVersion.ucrop}",
+            "jsoup"                        : "org.jsoup:jsoup:${dependVersion.jsoup}",
+            "openccAndroid"                : "com.zqc.opencc.android.lib:lib-opencc-android:${dependVersion.openccAndroid}",
+            "danmakuFlameMaster"           : "com.github.ctiao:DanmakuFlameMaster:${dependVersion.danmakuFlameMaster}",
+            "ndkbitmapArmv7a"              : "com.github.ctiao:ndkbitmap-armv7a:${dependVersion.ndkbitmapArmv7a}",
+
             //canary
-            "leakcanary-android"      : "com.squareup.leakcanary:leakcanary-android:${dependVersion.leakcanary}",
-            "leakcanary-android-no-op": "com.squareup.leakcanary:leakcanary-android-no-op:${dependVersion.leakcanary}",
+            "leakcanary-android"           : "com.squareup.leakcanary:leakcanary-android:${dependVersion.leakcanary}",
+            "leakcanary-android-no-op"     : "com.squareup.leakcanary:leakcanary-android-no-op:${dependVersion.leakcanary}",
             //bugly
-            "bugly"                   : "com.tencent.bugly:crashreport:${dependVersion.buglySDK}",
-            "bugly_nativecrashreport" : "com.tencent.bugly:nativecrashreport:${dependVersion.buglyNDK}",
-            "baseRecyclerViewAdapterHelper": "com.github.CymChad:BaseRecyclerViewAdapterHelper:${dependVersion.baseRecyclerViewAdapterHelper}"
+            "bugly"                        : "com.tencent.bugly:crashreport:${dependVersion.buglySDK}",
+            "bugly_nativecrashreport"      : "com.tencent.bugly:nativecrashreport:${dependVersion.buglyNDK}"
     ]
 }

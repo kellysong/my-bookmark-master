@@ -1,5 +1,5 @@
 include ':app', ':spots-dialog-lib', ':photoview'
-def useLocalDependenceMyCommon = false
+def useLocalDependenceMyCommon = true
 if (useLocalDependenceMyCommon){
     include ':my-common-lib'
     project(':my-common-lib').projectDir = new File('D:/workspace_android/my-lib/my-common-lib/')

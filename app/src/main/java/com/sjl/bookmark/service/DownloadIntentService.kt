@@ -50,8 +50,8 @@ class DownloadIntentService : IntentService("DownloadIntentService") {
     }
 
     override fun onHandleIntent(intent: Intent?) {
-        val fileName = intent!!.extras.getString("fileName")
-        val fileSize = intent.extras.getLong("fileSize")
+        val fileName = intent!!.extras?.getString("fileName")
+        val fileSize = intent.extras?.getLong("fileSize")
         LogUtils.i("fileName:$fileName")
         val file = File(AppConstant.UPDATE_APK_PATH + File.separator + fileName)
         if (file.exists() && file.isFile) {

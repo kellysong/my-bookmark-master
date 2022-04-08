@@ -11,6 +11,7 @@ import android.os.Build.VERSION_CODES
 import android.os.Bundle
 import android.view.*
 import android.widget.*
+import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.bumptech.glide.Glide
@@ -23,6 +24,7 @@ import com.sjl.bookmark.R
 import com.sjl.core.util.file.FileUtils
 import com.sjl.core.util.file.FileUtils.SaveResultCallback
 import kotlinx.android.synthetic.main.activity_photo_browser.*
+import java.io.File
 
 /**
  * webview图片浏览
@@ -30,16 +32,16 @@ import kotlinx.android.synthetic.main.activity_photo_browser.*
 class PhotoBrowserActivity : Activity(), View.OnClickListener {
 
     private var curImageUrl: String? = ""
-    private lateinit var imageUrls: ArrayList<String>
+    private lateinit var imageUrls: Array<String>
     private var curPosition: Int = -1
     private lateinit var initialedPositions: IntArray
     private var objectAnimator: ObjectAnimator? = null
     private var curPage: View? = null
-    override fun onCreate(savedInstanceState: Bundle) {
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         requestWindowFeature(Window.FEATURE_NO_TITLE)
         setContentView(R.layout.activity_photo_browser)
-        imageUrls = intent.getStringArrayExtra("imageUrls") as ArrayList<String>
+        imageUrls = intent.getStringArrayExtra("imageUrls") as Array<String>
         curImageUrl = intent.getStringExtra("curImageUrl")
         initialedPositions = IntArray(imageUrls.size)
         initInitialedPositions()
@@ -60,7 +62,7 @@ class PhotoBrowserActivity : Activity(), View.OnClickListener {
                 if (imageUrls[position] != null && "" != imageUrls[position]) {
                     view.scaleType = ImageView.ScaleType.FIT_CENTER
                     Glide.with(this@PhotoBrowserActivity)
-                        .load(imageUrls.get(position))
+                        .load(imageUrls[position])
                         .override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
                         .fitCenter()
                         .listener(object : RequestListener<Drawable?> {
@@ -218,39 +220,30 @@ class PhotoBrowserActivity : Activity(), View.OnClickListener {
 //        PhotoView photoViewTemp = (PhotoView) containerTemp.getChildAt(0);
         val photoViewTemp: PhotoView? = curPage as PhotoView?
         if (photoViewTemp != null) {
-            val glideBitmapDrawable: BitmapDrawable? =
-                photoViewTemp.drawable as BitmapDrawable?
-            if (glideBitmapDrawable == null) {
-                return
-            }
-            val bitmap: Bitmap? = glideBitmapDrawable.bitmap
-            if (bitmap == null) {
-                return
-            }
+            val glideBitmapDrawable: BitmapDrawable =
+                photoViewTemp.drawable as BitmapDrawable? ?: return
+            val bitmap: Bitmap = glideBitmapDrawable.bitmap ?: return
             FileUtils.savePhoto(this, bitmap, object : SaveResultCallback {
-                override fun onSavedSuccess() {
-                    runOnUiThread(object : Runnable {
-                        override fun run() {
-                            Toast.makeText(
-                                this@PhotoBrowserActivity,
-                                R.string.save_success,
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
-                    })
+                override fun onSavedSuccess(file: File) {
+                    runOnUiThread {
+                        Toast.makeText(
+                            this@PhotoBrowserActivity,
+                            R.string.save_success,
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
                 }
 
-                override fun onSavedFailed() {
-                    runOnUiThread(object : Runnable {
-                        override fun run() {
-                            Toast.makeText(
-                                this@PhotoBrowserActivity,
-                                R.string.save_failed,
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
-                    })
+                override fun onSavedFailed(e: Exception) {
+                    runOnUiThread {
+                        Toast.makeText(
+                            this@PhotoBrowserActivity,
+                            R.string.save_failed,
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
                 }
+
             })
         }
     }
