@@ -36,9 +36,9 @@ class ArticleTypeActivity : BaseActivity<NoPresenter>() {
     override fun initListener() {}
     override fun initData() {
         val intent: Intent = intent
-        val title: String = intent.getStringExtra(HttpConstant.CONTENT_TITLE_KEY)
-        val openFlag: String = intent.getStringExtra(HttpConstant.CONTENT_OPEN_FLAG)
-        searchMenuFlag = !("0" == openFlag)
+        val title: String? = intent.getStringExtra(HttpConstant.CONTENT_TITLE_KEY)
+        val openFlag: String? = intent.getStringExtra(HttpConstant.CONTENT_OPEN_FLAG)
+        searchMenuFlag = "0" != openFlag
         bindingToolbar(common_toolbar, title)
         childrenData = intent.getParcelableArrayListExtra(HttpConstant.CONTENT_CHILDREN_DATA_KEY)
         mArticleTypePagerListAdapter =

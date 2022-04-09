@@ -1,11 +1,46 @@
 ext {
+    //兼容本地依赖库引入start
+    compileSdkVersion = 30
+    buildToolsVersion = "30.0.3"
+    minSdkVersion = 14
+    targetSdkVersion = 30
+
+    //androidx Version
+    androidxAppcompat = "1.2.0"
+    androidxConstraintLayout = "2.0.4"
+    androidxRecyclerview = "1.2.0"
+    androidxDesign = "1.3.0"
+
+    androidxSwiperefreshlayout = "1.1.0"
+
+    androidxMultidex = "2.0.1"
+
+    //不在更新
+    androidxCardview = "1.0.0"
+    androidxPalette = "1.0.0"
+    androidxViewpager = "1.0.0"
+
+    //Jetpack
+    lifecycle = "2.2.0"
+    //other
+    retrofitVersion = "2.9.0"
+    loggingInterceptor = "3.10.0"
+    rxjava = "2.2.17"
+    rxandroid = "2.1.1"
+
+    autodispose="1.0.0"
+    eventbus ="3.1.1"
+    glide="4.11.0"
+    baseRecyclerViewAdapterHelper = "3.0.6"
+    //兼容本地依赖库引入end
+
     //android
     android = [
-            compileSdkVersion: 30,
-            buildToolsVersion: '30.0.3',
+            compileSdkVersion: compileSdkVersion,
+            buildToolsVersion: buildToolsVersion,
 
-            minSdkVersion    : 14,
-            targetSdkVersion : 30,
+            minSdkVersion    : minSdkVersion,
+            targetSdkVersion : targetSdkVersion,
             versionCode      : 1047,//后面两位代表累计版本，如33表示第33个版本
             versionName      : "4.0.0-RC1",
     ]
@@ -14,8 +49,8 @@ ext {
             support                      : "28.0.0",
             constraintLayout             : "2.0.4",
             multidex                     : "2.0.0",
-            appcompat                    : "1.2.0",
-            recyclerview                 : "1.2.0",
+            appcompat                    : androidxAppcompat,
+            recyclerview                 :androidxRecyclerview,
             material                     : "1.3.0",
             baseRecyclerViewAdapterHelper: "2.9.49",
             gson                         : "2.8.5",
@@ -69,7 +104,7 @@ ext {
             "appcompat"                    : "androidx.appcompat:appcompat:${dependVersion.appcompat}",
             "recyclerview"                 : "androidx.recyclerview:recyclerview:${dependVersion.recyclerview}",
             "material"                     : "com.google.android.material:material:${dependVersion.material}",
-            "baseRecyclerViewAdapterHelper": "com.github.CymChad:BaseRecyclerViewAdapterHelper:${dependVersion.baseRecyclerViewAdapterHelper}",
+            "baseRecyclerViewAdapterHelper2": "com.github.CymChad:BaseRecyclerViewAdapterHelper:${dependVersion.baseRecyclerViewAdapterHelper}",
             "gson"                         : "com.google.code.gson:gson:${dependVersion.gson}",
             "kotlin"                       : "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${dependVersion.kotlin}",
 
@@ -111,6 +146,62 @@ ext {
             "leakcanary-android-no-op"     : "com.squareup.leakcanary:leakcanary-android-no-op:${dependVersion.leakcanary}",
             //bugly
             "bugly"                        : "com.tencent.bugly:crashreport:${dependVersion.buglySDK}",
-            "bugly_nativecrashreport"      : "com.tencent.bugly:nativecrashreport:${dependVersion.buglyNDK}"
+            "bugly_nativecrashreport"      : "com.tencent.bugly:nativecrashreport:${dependVersion.buglyNDK}",
+
+
+
+
+
+
+
+            //兼容本地依赖库引入start
+            "androidxAppcompat"                    : "androidx.appcompat:appcompat:${dependVersion.appcompat}",
+
+            cardview          : "androidx.cardview:cardview:${androidxCardview}",
+            palette           : "androidx.palette:palette:${androidxPalette}",
+            design            : "com.google.android.material:material:${androidxDesign}",
+            viewpager         : "androidx.viewpager:viewpager:${androidxViewpager}",
+            swiperefreshlayout: "androidx.swiperefreshlayout:swiperefreshlayout:${androidxSwiperefreshlayout}",
+            constraintLayout  : "androidx.constraintlayout:constraintlayout:${androidxConstraintLayout}",
+            multidex          : "androidx.multidex:multidex:${androidxMultidex}",
+
+            //Jetpack
+//            lifecycleExtensions : "androidx.lifecycle:lifecycle-extensions:${lifecycle}",
+
+            // ViewModel
+            lifecycleViewmodel : "androidx.lifecycle:lifecycle-viewmodel:${lifecycle}",
+            // LiveData
+            lifecycleLivedata : "androidx.lifecycle:lifecycle-livedata:${lifecycle}",
+            // Saved state module for ViewModel
+            lifecycleRuntime : "androidx.lifecycle:lifecycle-runtime:${lifecycle}",
+            // Saved state module for ViewModel
+            lifecycleViewmodelSavedstate : "androidx.lifecycle:lifecycle-viewmodel-savedstate:${lifecycle}",
+            lifecycleViewmodelKtx : "androidx.lifecycle:lifecycle-viewmodel-ktx:${lifecycle}",
+            lifecycleRuntimeKtx : "androidx.lifecycle:lifecycle-runtime-ktx:${lifecycle}",
+
+            //retrofit
+            retrofit : "com.squareup.retrofit2:retrofit:${retrofitVersion}",
+            converterGson : "com.squareup.retrofit2:converter-gson:${retrofitVersion}",
+            adapterRxjava2 : "com.squareup.retrofit2:adapter-rxjava2:${retrofitVersion}",
+            loggingInterceptor : "com.squareup.okhttp3:logging-interceptor:${loggingInterceptor}",
+
+            //rxjava
+            rxjava : "io.reactivex.rxjava2:rxjava:${rxjava}",
+            rxandroid : "io.reactivex.rxjava2:rxandroid:${rxandroid}",
+            /*AutoDispose解决RxJava内存泄漏*/
+            //1.0.0安卓支持包改成了androidx
+            autodispose : "com.uber.autodispose:autodispose-android-archcomponents:${autodispose}",
+
+
+            /*EventBus是一款本地组件间通信框架*/
+            eventbus: "org.greenrobot:eventbus:${eventbus}",
+
+            /*图片加载*/
+            glide : "com.github.bumptech.glide:glide:${glide}",
+
+            /*强大的BaseRecyclerView适配器*/
+            baseRecyclerViewAdapterHelper : "com.github.CymChad:BaseRecyclerViewAdapterHelper:${baseRecyclerViewAdapterHelper}",
+
+            //兼容本地依赖库引入end
     ]
 }

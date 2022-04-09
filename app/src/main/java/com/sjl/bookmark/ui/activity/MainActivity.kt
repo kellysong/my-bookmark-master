@@ -570,7 +570,7 @@ class MainActivity : BaseActivity<NoPresenter>(),
         when (requestCode) {
             300 -> if (data != null) {
                 val extras = data.extras
-                val head = extras.getParcelable<Bitmap>("data")
+                val head = extras?.getParcelable<Bitmap>("data")
                 if (head != null) {
                     /**
                      * 上传服务器代码
@@ -582,18 +582,22 @@ class MainActivity : BaseActivity<NoPresenter>(),
             }
             REQUEST_SCAN -> if (resultCode == RESULT_OK) {
                 val barCode = data!!.getStringExtra("barCode")
-                if (!TextUtils.isEmpty(barCode)) {
-                    if (barCode.startsWith("http")) {
-                        scanResult(barCode, DialogInterface.OnClickListener { dialog, which ->
+                barCode?.let {
+                    if (it.trim().isEmpty()){
+                        return@let
+                    }
+                    if (it.startsWith("http")) {
+                        scanResult(it, DialogInterface.OnClickListener { dialog, which ->
                             dialog.dismiss()
                             val intent = Intent(this@MainActivity, BrowserActivity::class.java)
-                            intent.putExtra(BrowserActivity.Companion.WEBVIEW_URL, barCode)
+                            intent.putExtra(BrowserActivity.Companion.WEBVIEW_URL, it)
                             startActivity(intent)
                         }, DialogInterface.OnClickListener { dialog, which -> dialog.dismiss() })
                     } else {
-                        scanResult(barCode, null, null)
+                        scanResult(it, null, null)
                     }
                 }
+
             }
             else -> {}
         }

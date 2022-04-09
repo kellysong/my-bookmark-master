@@ -32,7 +32,7 @@ class BookmarkParse {
      * @throws IOException
      */
     @Throws(IOException::class)
-    fun readBookmarkHtml(context: Context, fileName: String?) {
+    fun readBookmarkHtml(context: Context, fileName: String) {
         val inputStream = context.assets.open(fileName)
         val str = inputStreamToStr(inputStream)
         val doc = Jsoup.parse(str)

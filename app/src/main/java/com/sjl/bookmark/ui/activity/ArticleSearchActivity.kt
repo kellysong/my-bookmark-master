@@ -144,7 +144,7 @@ class ArticleSearchActivity : BaseActivity<ArticleSearchPresenter>(),
                         Selection.setSelection(charSequence, charSequence.length)
                     }
                     ViewUtils.hideKeyBoard(this@ArticleSearchActivity, cet_word)
-                    mPresenter.searchData(cet_word.text.toString().trim({ it <= ' ' }))
+                    mPresenter.searchData(cet_word.text.toString().trim { it <= ' ' })
                 }
             })
             layout_hot_key.addView(tv)
@@ -156,7 +156,7 @@ class ArticleSearchActivity : BaseActivity<ArticleSearchPresenter>(),
      */
     fun initSearchHistory() {
         mPref = getSharedPreferences("search_config", MODE_PRIVATE)
-        val history: String = mPref.getString(KEY_SEARCH_HISTORY_KEYWORD, "")
+        val history: String = mPref.getString(KEY_SEARCH_HISTORY_KEYWORD, "")!!
         if (!TextUtils.isEmpty(history)) {
             val list: MutableList<String> = ArrayList()
             for (o: Any in history.split(",").toTypedArray()) {
@@ -195,7 +195,7 @@ class ArticleSearchActivity : BaseActivity<ArticleSearchPresenter>(),
      */
     fun save() {
         val text: String = cet_word.text.toString()
-        val oldText: String = mPref.getString(KEY_SEARCH_HISTORY_KEYWORD, "")
+        val oldText: String = mPref.getString(KEY_SEARCH_HISTORY_KEYWORD, "")!!
         LogUtils.i(
             "oldText:$oldText,$text,oldText.contains(text):" + oldText.contains(
                 text
@@ -271,7 +271,7 @@ class ArticleSearchActivity : BaseActivity<ArticleSearchPresenter>(),
     }
 
     override fun onLoadMoreRequested() {
-        val keyWord: String = cet_word!!.text.toString().trim({ it <= ' ' })
+        val keyWord: String = cet_word!!.text.toString().trim { it <= ' ' }
         if (!TextUtils.isEmpty(keyWord)) {
             mPresenter!!.getMoreData(keyWord)
         }

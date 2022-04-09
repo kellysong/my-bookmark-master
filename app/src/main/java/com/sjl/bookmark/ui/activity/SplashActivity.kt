@@ -27,6 +27,9 @@ import com.sjl.bookmark.util.PermissionRequestUtils
 import com.sjl.core.manager.CachedThreadManager
 import com.sjl.core.mvp.BaseActivity
 import com.sjl.core.mvp.NoPresenter
+import com.sjl.core.permission.PermissionsManager
+import com.sjl.core.permission.PermissionsResultAction
+import com.sjl.core.permission.SpecialPermission
 import com.sjl.core.util.PreferencesHelper
 import com.sjl.core.util.ShortcutUtils
 import com.sjl.core.util.ToastUtils
@@ -187,18 +190,30 @@ class SplashActivity : BaseActivity<NoPresenter>() {
                     toApplyList.add(perm) //把没有授权的权限放在数组里面
                 }
             }
-            if (!toApplyList.isEmpty()) {
+            if (toApplyList.isNotEmpty()) {
                 val tmpList = arrayOfNulls<String>(toApplyList.size)
                 permissions = toApplyList.toArray(tmpList)
                 showDialogTipUserRequestPermission() //如果没有授予该权限，就去提示用户请求
             } else { //已经有权限
-                openMainActivity()
+                requestFilePermission()
             }
         } else {
-            openMainActivity()
+            requestFilePermission()
         }
     }
+    private fun requestFilePermission() {
+        PermissionsManager.getInstance().requestSpecialPermission(SpecialPermission.MANAGE_ALL_FILES_ACCESS,this,object : PermissionsResultAction() {
+            override fun onGranted() {
+                LogUtils.d("MANAGE_EXTERNAL_STORAGE权限授权通过")
+                openMainActivity()
+            }
 
+            override fun onDenied(permission: String) {
+                LogUtils.d("MANAGE_EXTERNAL_STORAGE权限拒绝：$permission")
+                finish()
+            }
+        })
+    }
 
     /**
      * 提示用户该请求权限的弹出框
@@ -266,7 +281,7 @@ class SplashActivity : BaseActivity<NoPresenter>() {
         if (requestCode == PERMISSION_REQUEST_CODE) {
             if (Build.VERSION.SDK_INT >= VERSION_CODES.M) {
                 val denied = checkPermissionState(grantResults, permissions)
-                if (denied.size == 0) {
+                if (denied.isEmpty()) {
                     openMainActivity()
                 } else {
                     //只要权限没有全部授权

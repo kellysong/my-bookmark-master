@@ -379,7 +379,7 @@
     <string name="book_detail_add_shelf_hint2">加入书架失败，请检查网络</string>
     <string name="book_detail_add_shelf_hint3">加入书架成功</string>
     <string name="img_save_success">图片已保存成功</string>
-    <string name="save_failed">保存</string>
+    <string name="save_failed">保存失败</string>
     <string name="permission_open">立即开启</string>
     <string name="permission_set_hint">请在-应用设置-权限管理中，允许该应用使用%1$s权限</string>
     <string name="app_match_hint">找不到合适的应用类型:</string>

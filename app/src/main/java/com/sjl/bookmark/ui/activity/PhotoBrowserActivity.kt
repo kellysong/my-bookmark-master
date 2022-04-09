@@ -23,6 +23,7 @@ import com.github.chrisbanes.photoview.PhotoView
 import com.sjl.bookmark.R
 import com.sjl.core.util.file.FileUtils
 import com.sjl.core.util.file.FileUtils.SaveResultCallback
+import com.sjl.core.util.log.LogWriter
 import kotlinx.android.synthetic.main.activity_photo_browser.*
 import java.io.File
 
@@ -235,6 +236,7 @@ class PhotoBrowserActivity : Activity(), View.OnClickListener {
                 }
 
                 override fun onSavedFailed(e: Exception) {
+                    LogWriter.e("保存图片失败",e)
                     runOnUiThread {
                         Toast.makeText(
                             this@PhotoBrowserActivity,

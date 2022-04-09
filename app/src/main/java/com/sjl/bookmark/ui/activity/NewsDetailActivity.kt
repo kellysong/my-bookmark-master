@@ -41,7 +41,7 @@ class NewsDetailActivity : BaseActivity<NewsDetailPresenter>(),
     private var progressBar: ProgressBar? = null
     private var newsDetail: NewsDetailDto? = null
     private var scrollY: Int = 0
-    private var id: String = ""
+    private var id: String? = null
     private var title: String? = null
     private var image: String? = null
     private var longCommentsCount: Int = 0
@@ -270,9 +270,9 @@ class NewsDetailActivity : BaseActivity<NewsDetailPresenter>(),
              * 由于x5WebView的本质为FrameLayout，无法重载View的getScrollY()，调用系统的getScrollY()方法实际调用的是FrameLayout的getScrollY()，所以返回值为0。因此，提供了getWebScrollY的方法获取对应数值
              */
             scrollY = nsv_content!!.scrollY
-            LogUtils.i("scrollY...." + scrollY)
+            LogUtils.i("scrollY....$scrollY")
             if (scrollY >= 0) {
-                BrowseMapper.put(id, scrollY)
+                id?.let { BrowseMapper.put(it, scrollY) }
             }
         }
     }

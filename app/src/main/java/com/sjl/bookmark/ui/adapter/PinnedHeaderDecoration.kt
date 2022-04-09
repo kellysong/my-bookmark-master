@@ -30,33 +30,40 @@ class PinnedHeaderDecoration : ItemDecoration() {
 
     override fun onDraw(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
         createPinnedHeader(parent)
-        if (mPinnedHeaderView != null) {
-            val headerEndAt = mPinnedHeaderView!!.top + mPinnedHeaderView!!.height
+        mPinnedHeaderView?.apply {
+            val headerEndAt = top + height
             val v = parent.findChildViewUnder((c.width / 2).toFloat(), (headerEndAt + 1).toFloat())
             mPinnedHeaderTop = if (isPinnedView(parent, v)) {
-                v!!.top - mPinnedHeaderView!!.height
+                v!!.top - height
             } else {
                 0
             }
             mClipBounds = c.clipBounds
-            mClipBounds?.top = mPinnedHeaderTop + mPinnedHeaderView!!.height
-            c.clipRect(mClipBounds)
+            mClipBounds?.apply {
+                top = mPinnedHeaderTop + height
+                c.clipRect(this)
+            }
         }
+
     }
 
     override fun onDrawOver(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
-        if (mPinnedHeaderView != null) {
+        mPinnedHeaderView?.apply {
             c.save()
-            mClipBounds!!.top = 0
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                c.clipRect(mClipBounds)
-            } else {
-                c.clipRect(mClipBounds, Region.Op.UNION)
+            mClipBounds?.apply {
+                top = 0
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                    c.clipRect(this)
+                } else {
+                    c.clipRect(this, Region.Op.UNION)
+                }
             }
             c.translate(0f, mPinnedHeaderTop.toFloat())
-            mPinnedHeaderView!!.draw(c)
+            draw(c)
             c.restore()
+
         }
+
     }
 
     private fun createPinnedHeader(parent: RecyclerView) {

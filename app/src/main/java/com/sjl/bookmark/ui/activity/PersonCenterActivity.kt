@@ -128,7 +128,7 @@ class PersonCenterActivity : BaseSwipeBackActivity() {
                     .setPositiveButton(R.string.sure, object : DialogInterface.OnClickListener {
                         override fun onClick(dialog: DialogInterface, which: Int) {
                             tv_nickname.text = etNickname.text
-                            if (!(etNickname.text.toString() == oldName)) {
+                            if (etNickname.text.toString() != oldName) {
                                 tv_nickname.setTextColor(resources.getColor(R.color.colorPrimary))
                             } else {
                                 tv_nickname.setTextColor(resources.getColor(R.color.gray))
@@ -138,11 +138,14 @@ class PersonCenterActivity : BaseSwipeBackActivity() {
                     })
                     .setNegativeButton(R.string.cancel, null)
                     .create()
-                val window: Window = dialog.window
-                val params: WindowManager.LayoutParams = window.attributes
-                params.gravity = Gravity.TOP
-                params.y = ViewUtils.getScreenHeight(this) / 4
-                window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
+                val window: Window? = dialog.window
+                window?.apply {
+                    val params: WindowManager.LayoutParams = attributes
+                    params.gravity = Gravity.TOP
+                    params.y = ViewUtils.getScreenHeight(mContext) / 4
+                    setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
+                }
+
                 dialog.show()
             }
             R.id.rl_sex -> {
@@ -153,7 +156,7 @@ class PersonCenterActivity : BaseSwipeBackActivity() {
                 var index: Int = 0
                 var i: Int = 0
                 while (i < sexArr.size) {
-                    if ((sexArr.get(i) == sex)) {
+                    if ((sexArr[i] == sex)) {
                         index = i
                         break
                     }
@@ -163,7 +166,7 @@ class PersonCenterActivity : BaseSwipeBackActivity() {
                     .setSingleChoiceItems(sexArr, index, object : DialogInterface.OnClickListener {
                         override fun onClick(dialog: DialogInterface, which: Int) {
                             tv_sex.text = sexArr.get(which)
-                            if (!(sexArr.get(which) == oldSex)) {
+                            if (sexArr[which] != oldSex) {
                                 tv_sex.setTextColor(resources.getColor(R.color.colorPrimary))
                             } else {
                                 tv_sex.setTextColor(resources.getColor(R.color.gray))
@@ -315,7 +318,8 @@ class PersonCenterActivity : BaseSwipeBackActivity() {
                         startActivityForResult(intent2, 200)
                         dialog.dismiss()
                     }
-                    else -> {}
+                    else -> {
+                    }
                 }
             }
         })
@@ -341,7 +345,7 @@ class PersonCenterActivity : BaseSwipeBackActivity() {
                 }
             }
             200 -> if (resultCode == RESULT_OK) {
-                cropPhotoNew(data!!.data) // 裁剪图片
+                data!!.data?.let { cropPhotoNew(it) } // 裁剪图片
             }
             UCrop.REQUEST_CROP -> if (resultCode == RESULT_OK) {
                 val resultUri: Uri? = UCrop.getOutput((data)!!)
@@ -380,15 +384,16 @@ class PersonCenterActivity : BaseSwipeBackActivity() {
                 if (resultCode != RESULT_OK) {
                     return
                 }
-                val personality: String = data!!.getStringExtra("personality")
+                val personality: String? = data!!.getStringExtra("personality")
                 tv_personality.text = personality
-                if (!(personality == oldPersonality)) {
+                if (personality != oldPersonality) {
                     tv_personality.setTextColor(resources.getColor(R.color.colorPrimary))
                 } else {
                     tv_personality.setTextColor(resources.getColor(R.color.gray))
                 }
             }
-            else -> {}
+            else -> {
+            }
         }
         if (resultCode == RESULT_OK) {
             showSaveButton()

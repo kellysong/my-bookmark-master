@@ -232,24 +232,31 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0'
     implementation rootProject.ext.dependencies["multidex"]
 
-    //个人类库，以project的引入是为了方便修改，其它示例工程全部以maven方式引入
-    /*基础库*/
-    //implementation project(':my-common-lib:base-core')
-    //implementation project(':my-common-lib:base-adapter')
-    /*硬件相关*/
-    /*    implementation project (':my-hardware-lib:nfcard')
-    implementation project (':my-hardware-lib:zxing')*/
-
     //基础库
-    implementation('com.github.kellysong.my-common:base-core:2.3.3') {
-        exclude group: 'com.github.CymChad', module: 'BaseRecyclerViewAdapterHelper'//最新版改变较大,使用本地版本
+    if(project.useLocalDependenceMyCommon.toBoolean()){
+        implementation (project(':my-common-lib:base-core')){
+            exclude group: 'com.github.CymChad', module: 'BaseRecyclerViewAdapterHelper'//最新版改变较大,使用本地版本
+        }
+        implementation project(':my-common-lib:base-adapter')
+    }else {
+        implementation('com.github.kellysong.my-common:base-core:2.3.3') {
+            exclude group: 'com.github.CymChad', module: 'BaseRecyclerViewAdapterHelper'//最新版改变较大,使用本地版本
+        }
+        implementation 'com.github.kellysong.my-common:base-adapter:2.3.3'
     }
-    implementation 'com.github.kellysong.my-common:base-adapter:2.3.3'
-    implementation rootProject.ext.dependencies["baseRecyclerViewAdapterHelper"]
+    implementation rootProject.ext.dependencies["baseRecyclerViewAdapterHelper2"]
     kapt 'com.jakewharton:butterknife-compiler:10.2.1'
     kapt 'com.github.bumptech.glide:compiler:4.11.0'
-    implementation 'com.github.kellysong.my-hardware:nfcard:1.1.2'
-    implementation 'com.github.kellysong.my-hardware:zxing:1.1.2'
+
+    if(project.useLocalDependenceMyHardware.toBoolean()){
+        implementation project (':my-hardware-lib:nfcard')
+        implementation project (':my-hardware-lib:zxing')
+    }else {
+        implementation 'com.github.kellysong.my-hardware:nfcard:1.1.2'
+        implementation 'com.github.kellysong.my-hardware:zxing:1.1.2'
+    }
+
+
     //引入kotlin
     implementation rootProject.ext.dependencies["kotlin"]
 

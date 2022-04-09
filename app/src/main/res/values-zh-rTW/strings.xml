@@ -378,7 +378,7 @@
     <string name="book_detail_add_shelf_hint2">加入書架失敗，請檢查網絡</string>
     <string name="book_detail_add_shelf_hint3">加入書架成功</string>
     <string name="img_save_success">圖片已保存成功</string>
-    <string name="save_failed">保存</string>
+    <string name="save_failed">保存失敗</string>
     <string name="permission_open">立即開啟</string>
     <string name="permission_set_hint">請在-應用設置-權限管理中，允許該應用使用%1$s權限</string>
     <string name="app_match_hint">找不到合適的應用類型:</string>

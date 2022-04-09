@@ -65,7 +65,7 @@ class PersonalityActivity : BaseActivity<NoPresenter>() {
     }
 
     override fun initData() {
-        val personality: String = intent.getStringExtra("personality")
+        val personality: String? = intent.getStringExtra("personality")
         if (!TextUtils.isEmpty(personality)) {
             et_personality.setText(personality)
             tv_msg.text = getString(

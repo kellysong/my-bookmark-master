@@ -115,12 +115,12 @@ class ExpressSearchActivity : BaseActivity<ExpressSearchPresenter>(), TextWatche
         when (requestCode) {
             AppConstant.REQUEST_CAPTURE -> {
                 // 运单号扫描处理
-                val barCode: String = data.getStringExtra("barCode")
+                val barCode: String? = data.getStringExtra("barCode")
                 if (TextUtils.isEmpty(barCode)) {
                     Toast.makeText(this, R.string.express_scan_fail, Toast.LENGTH_SHORT).show()
                     return
                 }
-                et_post_id!!.setText(barCode.trim({ it <= ' ' }))
+                et_post_id!!.setText(barCode?.trim { it <= ' ' })
                 et_post_id!!.setSelection(et_post_id!!.length())
             }
             AppConstant.REQUEST_COMPANY -> {
@@ -150,7 +150,7 @@ class ExpressSearchActivity : BaseActivity<ExpressSearchPresenter>(), TextWatche
         val noQuery: String = getString(R.string.no_query)
         val select: String = getString(R.string.select_hint)
         val label: String =
-            "<font color='%1\$s'>" + noQuery + "</font> <font color='%2\$s'>" + select + "</font>"
+            "<font color='%1\$s'>$noQuery</font> <font color='%2\$s'>$select</font>"
         val grey: String =
             String.format("#%06X", 0xFFFFFF and resources.getColor(R.color.grey))
         val blue: String =
@@ -167,7 +167,7 @@ class ExpressSearchActivity : BaseActivity<ExpressSearchPresenter>(), TextWatche
             val noQuery: String = getString(R.string.no_query)
             val select: String = getString(R.string.select_hint2)
             val label: String =
-                "<font color='%1\$s'>" + noQuery + "</font> <font color='%2\$s'>" + select + "</font>"
+                "<font color='%1\$s'>$noQuery</font> <font color='%2\$s'>$select</font>"
             val grey: String =
                 String.format("#%06X", 0xFFFFFF and resources.getColor(R.color.grey))
             val blue: String =
