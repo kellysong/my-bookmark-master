@@ -4,8 +4,10 @@ import android.app.IntentService
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.content.Context
 import android.content.Intent
 import android.os.Build
+import androidx.core.app.NotificationCompat
 import com.sjl.core.util.log.LogUtils
 import com.tencent.smtt.sdk.QbSdk
 import com.tencent.smtt.sdk.QbSdk.PreInitCallback
@@ -28,19 +30,19 @@ class X5CoreService
     override fun onHandleIntent(intent: Intent?) {
         //在这里添加我们要执行的代码，Intent中可以保存我们所需的数据，
         //每一次通过Intent发送的命令将被顺序执行
-        initX5()
+        initX5(applicationContext)
     }
 
-    private fun initX5() {
+    fun initX5(context: Context) {
         if (QbSdk.isTbsCoreInited()) {
             // preinit只需要调用一次，如果已经完成了初始化，那么就直接构造view
-            QbSdk.preInit(applicationContext, cb) // 设置X5初始化完成的回调接口
+            QbSdk.preInit(context, cb) // 设置X5初始化完成的回调接口
             return
         }
         //x5内核初始化
         //非 Wifi 状态下是默认不会下载的,可以通过以下方法设置
         // QbSdk.setDownloadWithoutWifi(true);
-        QbSdk.initX5Environment(applicationContext, cb)
+        QbSdk.initX5Environment(context, cb)
         QbSdk.setTbsListener(object : TbsListener {
             //监听内核下载
             override fun onDownloadFinish(i: Int) {
@@ -58,7 +60,7 @@ class X5CoreService
     }
 
     //搜集本地tbs内核信息并上报服务器，服务器返回结果决定使用哪个内核。
-    var cb: PreInitCallback = object : PreInitCallback {
+    private var cb: PreInitCallback = object : PreInitCallback {
         override fun onViewInitFinished(arg0: Boolean) {
             //x5內核初始化完成的回调，为true表示x5内核加载成功，否则表示x5内核加载失败，会自动切换到系统内核。
             LogUtils.i("x5内核初始化标志：arg0=$arg0")
@@ -78,8 +80,14 @@ class X5CoreService
                 "x5core",
                 NotificationManager.IMPORTANCE_HIGH
             )
+            var long = LongArray(1){0}
+            mChannel.enableVibration(false)
+            mChannel.enableLights(false)
+            mChannel.vibrationPattern = long
+
             notificationManager!!.createNotificationChannel(mChannel)
-            val notification = Notification.Builder(applicationContext, CHANNEL_ID_STRING).build()
+            val notification = Notification.Builder(applicationContext, CHANNEL_ID_STRING)
+            .build()
             startForeground(
                 1,
                 notification

@@ -122,12 +122,16 @@ class MyApplication : BaseApplication() {
      */
     private fun preInitX5Core() {
         //预加载x5内核
-        val intent = Intent(this, X5CoreService::class.java)
+       /* val intent = Intent(this, X5CoreService::class.java)
         //开启服务兼容
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             startForegroundService(intent)
         } else {
             startService(intent)
+        }*/
+        CachedThreadManager.getInstance().execute{
+            var service = X5CoreService()
+            service.initX5(getContext())
         }
     }
 

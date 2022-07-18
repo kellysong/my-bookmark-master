@@ -490,7 +490,7 @@ class MainActivity : BaseActivity<NoPresenter>(),
                 bookmarkUtils.readBookmarkHtml(this@MainActivity, fileName)
                 val editor = sharedPreferences.edit()
                 editor.putBoolean("readFlag", true)
-                editor.putString("fileName,", fileName)
+                editor.putString("fileName", fileName)
                 editor.apply()
                 val end = System.currentTimeMillis()
                 LogUtils.i("读取书签文件耗时：" + (end - start) / 1000.0 + "s")
@@ -694,7 +694,6 @@ class MainActivity : BaseActivity<NoPresenter>(),
                 DOUBLE_CLICK_TIME = System.currentTimeMillis()
                 Toast.makeText(this, R.string.exit_app_hint, Toast.LENGTH_SHORT).show()
             } else {
-                mFragments.clear()
                 super.onBackPressed()
             }
         }

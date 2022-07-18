@@ -1,7 +1,9 @@
 package com.sjl.bookmark.ui.activity
 
+import android.app.ActivityOptions
 import android.content.*
 import android.graphics.*
+import android.os.Build
 import android.os.Build.VERSION_CODES
 import android.text.TextUtils
 import android.view.*
@@ -24,6 +26,8 @@ import com.tencent.smtt.sdk.WebSettings
 import com.tencent.smtt.sdk.WebView
 import com.tencent.smtt.sdk.WebViewClient
 import kotlinx.android.synthetic.main.news_detail_activity.*
+import android.content.Intent
+
 
 /**
  * 知乎日报详情
@@ -76,8 +80,8 @@ class NewsDetailActivity : BaseActivity<NewsDetailPresenter>(),
             }
         }
         webView.webViewClient = object : WebViewClient() {
-            override fun shouldOverrideUrlLoading(webView: WebView, s: String): Boolean {
-                return super.shouldOverrideUrlLoading(webView, s)
+            override fun shouldOverrideUrlLoading(webView: WebView, url: String): Boolean {
+                return super.shouldOverrideUrlLoading(webView, url)
             }
 
             override fun onPageFinished(view: WebView, url: String) {
@@ -89,17 +93,15 @@ class NewsDetailActivity : BaseActivity<NewsDetailPresenter>(),
                 }
                 webView.addImageClickListenerByClass("content") //绑定图片点击事件
                 //smoothScrollTo无效的解决办法
-                view.postDelayed(object : Runnable {
-                    override fun run() {
-                        val positionY: Int = BrowseMapper.get(newsDetail!!.id.toString())
-                        LogUtils.i("positionY...." + positionY)
-                        if (positionY > 0) {
-                            scrollY = positionY
-                            nsv_content!!.smoothScrollTo(
-                                0,
-                                scrollY
-                            ) //不能通过WebView滚动，发现无法得到理想效果
-                        }
+                view.postDelayed({
+                    val positionY: Int = BrowseMapper[newsDetail!!.id.toString()]
+                    LogUtils.i("positionY....$positionY")
+                    if (positionY > 0) {
+                        scrollY = positionY
+                        nsv_content!!.smoothScrollTo(
+                            0,
+                            scrollY
+                        ) //不能通过WebView滚动，发现无法得到理想效果
                     }
                 }, 100)
             }
@@ -156,14 +158,14 @@ class NewsDetailActivity : BaseActivity<NewsDetailPresenter>(),
             override fun onStateChanged(appBarLayout: AppBarLayout, state: State) {
                 if (state == State.EXPANDED) {
                     //展开状态
-                    tv_toolbar_title!!.text = ""
+                    tv_toolbar_title.text = ""
                     //                    setStatusBar(Color.TRANSPARENT);
 //                    toolbar.setBackgroundColor(Color.TRANSPARENT);
                 } else if (state == State.COLLAPSED) {
                     //折叠状态
-                    collapsing_toolbar_layout!!.title = title
-                    tv_toolbar_title!!.text = title
-                    tv_toolbar_title!!.isSelected = true //跑马灯效果必须加
+                    collapsing_toolbar_layout.title = title
+                    tv_toolbar_title.text = title
+                    tv_toolbar_title.isSelected = true //跑马灯效果必须加
 
 //                    int color = SkinManager.getInstance().getColorPrimary();
 //                    if (color != -1) {//不能少，否则状态栏无效
@@ -180,6 +182,10 @@ class NewsDetailActivity : BaseActivity<NewsDetailPresenter>(),
                 }
             }
         })
+
+        if (Build.VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP) {
+            story_detail_image.transitionName="image"
+        }
     }
 
     /**
@@ -223,12 +229,12 @@ class NewsDetailActivity : BaseActivity<NewsDetailPresenter>(),
         if (newsDetail.image != null) {
             Glide.with(this@NewsDetailActivity)
                 .load(newsDetail.image)
-                .into((story_detail_image)!!)
-            story_detail_description!!.text = newsDetail.title
-            image_source!!.text = newsDetail.image_source
+                .into(story_detail_image)
+            story_detail_description.text = newsDetail.title
+            image_source.text = newsDetail.image_source
         } else {
-            story_detail_description!!.setTextColor(Color.BLACK)
-            story_detail_description!!.text = newsDetail.title
+            story_detail_description.setTextColor(Color.BLACK)
+            story_detail_description.text = newsDetail.title
         }
         /**
          * 第一个参数需要传入与HTML相关的路径，由于我们的CSS文件存放在assets文件下，
@@ -236,7 +242,7 @@ class NewsDetailActivity : BaseActivity<NewsDetailPresenter>(),
          * 所以第一和第五个参数为空时，两个方法是等价的。
          * 第五个参数，我目前也不是很理解，传入空即可
          */
-        webView!!.loadDataWithBaseURL(
+        webView.loadDataWithBaseURL(
             "file:///android_asset/",
             newsDetail.contentBody,
             "text/html",
@@ -254,8 +260,8 @@ class NewsDetailActivity : BaseActivity<NewsDetailPresenter>(),
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
         if ((keyCode == KeyEvent.KEYCODE_BACK)) {
             hideLoadingDialog()
-            if (webView!!.canGoBack()) {
-                webView!!.goBack()
+            if (webView.canGoBack()) {
+                webView.goBack()
                 return true
             }
         }
@@ -294,7 +300,7 @@ class NewsDetailActivity : BaseActivity<NewsDetailPresenter>(),
          * @param image   图片url
          */
         @kotlin.jvm.JvmStatic
-        fun startActivity(context: Context, id: Int, title: String?, image: String?) {
+        fun startActivity(context: Context, id: Int, title: String?, image: String?,iv :ImageView?) {
             val intent: Intent = Intent(context, NewsDetailActivity::class.java)
             intent.putExtra("id", id.toString()) //整形是传不过去的，要转成字符串
             if (!TextUtils.isEmpty(title)) {
@@ -303,7 +309,15 @@ class NewsDetailActivity : BaseActivity<NewsDetailPresenter>(),
             if (!TextUtils.isEmpty(image)) {
                 intent.putExtra("image", image)
             }
-            context.startActivity(intent)
+
+            if (Build.VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP && iv != null) {
+                val pair1 = android.util.Pair<View, String>(iv, "image")
+                val options: ActivityOptions =  ActivityOptions.makeSceneTransitionAnimation(context as NewsListActivity, pair1)
+                context.startActivity(intent, options.toBundle())
+            } else {
+                context.startActivity(intent)
+            }
+
         }
     }
 }

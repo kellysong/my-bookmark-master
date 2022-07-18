@@ -108,32 +108,26 @@ class SplashActivity : BaseActivity<NoPresenter>() {
      * 打开Google书签应用
      */
     private fun openGoogleBookmark() {
-        Handler().postDelayed({ //                ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-//                int memorySize = activityManager.getMemoryClass();
-//                LogUtils.i("分配给应用的内存上限：" + memorySize);
-            val preferencesHelper = PreferencesHelper.getInstance(this@SplashActivity)
-            val intent: Intent
-            val isOpen = preferencesHelper[AppConstant.SETTING.OPEN_GESTURE, false] as Boolean
-            intent = if (isOpen) {
-                Intent(this@SplashActivity, CheckLockActivity::class.java)
-            } else {
-                Intent(this@SplashActivity, MainActivity::class.java)
-            }
-            startActivity(intent)
-            overridePendingTransition(R.anim.splash_fade_in, R.anim.splash_fade_out)
-            finish()
-        }, 100)
+        val preferencesHelper = PreferencesHelper.getInstance(this@SplashActivity)
+        val intent: Intent
+        val isOpen = preferencesHelper[AppConstant.SETTING.OPEN_GESTURE, false] as Boolean
+        intent = if (isOpen) {
+            Intent(this@SplashActivity, CheckLockActivity::class.java)
+        } else {
+            Intent(this@SplashActivity, MainActivity::class.java)
+        }
+        startActivity(intent)
+        overridePendingTransition(R.anim.splash_fade_in, R.anim.splash_fade_out)
+        finish()
     }
 
     /**
      * 打开小说阅读应用
      */
     private fun openAPPReader() {
-        Handler().postDelayed({
-            startActivity(Intent(this@SplashActivity, BookShelfActivity::class.java))
-            overridePendingTransition(R.anim.splash_fade_in, R.anim.splash_fade_out)
-            finish()
-        }, 200)
+        startActivity(Intent(this@SplashActivity, BookShelfActivity::class.java))
+        overridePendingTransition(R.anim.splash_fade_in, R.anim.splash_fade_out)
+        finish()
     }
 
     override fun initListener() {}
@@ -282,7 +276,7 @@ class SplashActivity : BaseActivity<NoPresenter>() {
             if (Build.VERSION.SDK_INT >= VERSION_CODES.M) {
                 val denied = checkPermissionState(grantResults, permissions)
                 if (denied.isEmpty()) {
-                    openMainActivity()
+                    requestFilePermission()
                 } else {
                     //只要权限没有全部授权
                     showDialogTipUserGoToAppSetting(denied)

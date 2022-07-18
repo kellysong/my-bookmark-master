@@ -18,6 +18,13 @@ import com.sjl.core.widget.imageview.CustomRoundAngleImageView
 import com.youth.banner.Banner
 import com.youth.banner.BannerConfig
 import java.util.*
+import androidx.core.content.ContextCompat.startActivity
+
+import android.app.ActivityOptions
+
+import android.content.Intent
+import android.widget.ImageView
+
 
 /**
  * 日志日报首页多条目适配器
@@ -48,7 +55,13 @@ class NewsMultiDelegateAdapter(layoutResId: Int, data: List<NewsList>?) : BaseQu
                         .start()
                 mBannerAds.setOnBannerListener { position ->
                     val topStory = item.getTop_stories()[position]
-                    startActivity(mContext, topStory.id, topStory.title, topStory.image)
+                /*    val javaClass = mBannerAds.javaClass
+                    val childAt = javaClass.getDeclaredField("imageViews")
+                    childAt.isAccessible = true
+                    var views:List<View> = childAt.get(mBannerAds) as List<View>
+                    val imageView:ImageView = views[0] as ImageView
+                    */
+                    startActivity(mContext, topStory.id, topStory.title, topStory.image,null)
                 }
             }
             TYPE_HEADER_SECOND -> helper.setVisible(R.id.red_dot_indicator, firstLoadFlag)
@@ -69,9 +82,10 @@ class NewsMultiDelegateAdapter(layoutResId: Int, data: List<NewsList>?) : BaseQu
                         .load(item.image)
                         .placeholder(R.mipmap.img_loading_placehoder)
                         .error(R.mipmap.ic_load_error)
-                        .into(helper.getView<View>(R.id.title_image) as CustomRoundAngleImageView)
+                        .into(helper.getView<ImageView>(R.id.title_image) as CustomRoundAngleImageView)
                 helper.getView<View>(R.id.cardview).setOnClickListener { v ->
-                    startActivity(mContext, item.id, item.title, item.image)
+                    startActivity(mContext, item.id, item.title, item.image,helper.getView<ImageView>(R.id.title_image))
+
                     v.postDelayed({
                         helper.setTextColor(R.id.title_text, ContextCompat.getColor(mContext, R.color.gray_600))
                         val ret = DaoFactory.getBrowseTrackDao().saveBrowseTrackByType(1, item.id.toString())

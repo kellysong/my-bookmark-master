@@ -19,6 +19,9 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.main.news_list_activity.*
 import kotlinx.android.synthetic.main.toolbar_default.*
 import java.util.concurrent.TimeUnit
+import androidx.core.app.ActivityCompat.setExitSharedElementCallback
+import androidx.core.app.SharedElementCallback
+
 
 /**
  * 知乎日报列表
@@ -42,6 +45,7 @@ class NewsListActivity : BaseActivity<NewsListPresenter>(), NewsListContract.Vie
     override fun initListener() {
         bindingToolbar(common_toolbar, I18nUtils.getString(R.string.tool_zhihu_daily))
         doubleClickDetect(common_toolbar)
+
     }
 
     override fun initData() {
@@ -141,4 +145,6 @@ class NewsListActivity : BaseActivity<NewsListPresenter>(), NewsListContract.Vie
             newsMultiDelegateAdapter.loadMoreComplete() //注意不是加载结束，而是本次数据加载结束并且还有下页数据
         }
     }
+
+
 }
