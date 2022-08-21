@@ -16,6 +16,11 @@ import java.io.File
 object AppConstant {
     const val DES_ENCRYPTKEY = "ab11223344556677" //8字节密钥
     val ROOT_PATH = Environment.getExternalStorageDirectory().toString() + File.separator // sd路径
+    /**
+     * 启动页文件路径
+     */
+    val SPLASH_PATH =
+        ROOT_PATH + MyApplication.getContext().packageName + File.separator + "splash"
 
     /**
      * 头像sd路径

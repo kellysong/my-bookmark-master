@@ -4,7 +4,7 @@
     <style name="AppTheme.Launcher" parent="AppTheme.NoActionBar">
         <!--禁用窗口的预览动画-->
 <!--        <item name="android:windowDisablePreview">true</item>-->
-        <item name="android:windowBackground">@drawable/layer_splash</item>
+        <item name="android:windowBackground">@drawable/splash</item>
 
     </style>
 

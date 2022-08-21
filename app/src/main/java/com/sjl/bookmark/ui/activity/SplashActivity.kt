@@ -64,14 +64,8 @@ class SplashActivity : BaseActivity<NoPresenter>() {
     }
 
     override fun getLayoutId(): Int {
-        //        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-//                WindowManager.LayoutParams.FLAG_FULLSCREEN);// 设置全屏
-        /*    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-           getWindow().getDecorView().setBackground(null);
-        }
-        setStatusBar(0xffAFAFAF);*/
         initAppLanguage(this) //初始化语言
-        //        return R.layout.activity_splash;
+//        return R.layout.activity_splash
         return 0 //不需要布局
     }
 

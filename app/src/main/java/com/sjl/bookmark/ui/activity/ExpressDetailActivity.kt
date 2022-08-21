@@ -1,8 +1,6 @@
 package com.sjl.bookmark.ui.activity
 
-import android.content.Context
-import android.content.DialogInterface
-import android.content.Intent
+import android.content.*
 import android.text.TextUtils
 import android.view.View
 import android.widget.EditText
@@ -50,6 +48,7 @@ class ExpressDetailActivity : BaseActivity<ExpressDetailPresenter>(),
         btn_remark.setOnClickListener(this)
         btn_save.setOnClickListener(this)
         btn_retry.setOnClickListener(this)
+        tv_copy.setOnClickListener(this)
     }
 
     override fun initData() {
@@ -91,6 +90,11 @@ class ExpressDetailActivity : BaseActivity<ExpressDetailPresenter>(),
                 ll_error.visibility = View.GONE
                 tv_searching.visibility = View.VISIBLE
                 mPresenter.queryExpressDetail((searchInfo)!!)
+            }
+            R.id.tv_copy -> {
+                val cmd = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+                cmd.setPrimaryClip( ClipData.newPlainText(getString(R.string.no_copy_label),searchInfo?.post_id))
+                SnackbarUtils.makeShort(window.decorView, R.string.no_copy_success).show()
             }
             else -> {}
         }

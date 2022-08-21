@@ -432,7 +432,7 @@ class BrowserActivity : BaseActivity<NoPresenter>() {
                             return
                         }
                         val result = data.data
-                        uploadFiles!!.onReceiveValue(arrayOf<Uri>(result))
+                        uploadFiles!!.onReceiveValue(arrayOf<Uri>(result!!))
                         uploadFiles = null
                     }
                 }
@@ -499,7 +499,7 @@ class BrowserActivity : BaseActivity<NoPresenter>() {
             return true
         } else if (id == R.id.nav_copy_href) {
             val cmd = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
-            cmd.primaryClip = ClipData.newPlainText(getString(R.string.copy_link), url)
+            cmd.setPrimaryClip(ClipData.newPlainText(getString(R.string.copy_link), url))
             SnackbarUtils.makeShort(mWebView, R.string.copy_link_to_clipboard).show()
             return true
         } else if (id == R.id.nav_open_on_browser) {

@@ -411,4 +411,7 @@
     <string name="unknown">未知</string>
     <string name="no_root_permission">无Root权限</string>
     <string name="max_char_10">最多输入10个字符</string>
+    <string name="no_copy">复制</string>
+    <string name="no_copy_label">单号复制</string>
+    <string name="no_copy_success">复制成功</string>
 </resources>

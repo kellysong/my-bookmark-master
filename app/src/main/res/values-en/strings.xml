@@ -406,4 +406,7 @@
     <string name="unknown">Unknown</string>
     <string name="no_root_permission">No Root Permission</string>
     <string name="max_char_10">You can input 10 characters.</string>
+    <string name="no_copy">Copy</string>
+    <string name="no_copy_label">Single number copy</string>
+    <string name="no_copy_success">Copy succeeded</string>
 </resources>

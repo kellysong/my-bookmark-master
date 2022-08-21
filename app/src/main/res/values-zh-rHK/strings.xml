@@ -410,4 +410,7 @@
     <string name="unknown">未知</string>
     <string name="no_root_permission">無Root權限</string>
     <string name="max_char_10">最多輸入10個字符</string>
+    <string name="no_copy">複製</string>
+    <string name="no_copy_label">單號複製</string>
+    <string name="no_copy_success">複製成功</string>
 </resources>

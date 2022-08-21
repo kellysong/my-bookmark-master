@@ -41,13 +41,27 @@
                 android:textColor="@color/black"
                 android:textSize="@dimen/big_small" />
 
-            <TextView
-                android:id="@+id/tv_post_id"
-                android:layout_width="wrap_content"
+
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
-                android:text="12345678"
-                android:textColor="@color/grey" />
+                android:gravity="center_vertical">
+                <TextView
+                    android:id="@+id/tv_post_id"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="12345678"
+                    android:textColor="@color/grey" />
+                <TextView
+                    android:id="@+id/tv_copy"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:text="@string/no_copy"
+                    android:textColor="@color/gray_900"
+                    />
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
 
