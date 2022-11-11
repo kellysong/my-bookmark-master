@@ -54,9 +54,9 @@ class NewsCommentFragment : BaseFragment<NewsCommentPresenter>(), NewsCommentCon
         comment_recyclerview.layoutManager = LinearLayoutManager(mActivity)
         if (position == 0) {
             danmuControl = DanMuControl(MyApplication.getContext(), sv_danmaku)
-            mPresenter.loadShortComment(newsId)
+            newsId?.let { mPresenter.loadShortComment(it) }
         } else {
-            mPresenter.loadLongComment(newsId)
+            newsId?.let { mPresenter.loadLongComment(it) }
         }
     }
 

@@ -352,12 +352,11 @@ class WifiQueryPresenter : WifiQueryContract.Presenter() {
      * @param password
      */
     override fun copyWifiPassword(password: String) {
-        val cmb: ClipboardManager =
-            mContext.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-        cmb.primaryClip = ClipData.newPlainText(
+        val cmb: ClipboardManager = mContext.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        cmb.setPrimaryClip(ClipData.newPlainText(
             mContext.getString(R.string.item_pasword_hint),
             password
-        )
+        ))
         Toast.makeText(mContext, R.string.copy_success, Toast.LENGTH_SHORT).show()
     }
 
@@ -372,7 +371,7 @@ class WifiQueryPresenter : WifiQueryContract.Presenter() {
             mWifiManager!!.isWifiEnabled = true
             mHandler = Handler()
             mOpenWifiRunnable = OpenWifiRunnable(wifiInfo)
-            mHandler!!.post(mOpenWifiRunnable)
+            mHandler!!.post(mOpenWifiRunnable!!)
         } else {
             startConnectWifi(wifiInfo)
         }
@@ -391,7 +390,7 @@ class WifiQueryPresenter : WifiQueryContract.Presenter() {
                     LogUtils.e("连接wifi异常", e)
                 }
             } else {
-                mHandler!!.postDelayed(mOpenWifiRunnable, 1000)
+                mOpenWifiRunnable?.let { mHandler!!.postDelayed(it, 1000) }
             }
         }
     }

@@ -82,8 +82,8 @@ class RecyclerViewDivider(context: Context, orientation: Int) : ItemDecoration()
                 mDivider!!.setBounds(left, top, right, bottom)
                 mDivider!!.draw(canvas)
             }
-            if (mPaint != null) {
-                canvas.drawRect(left.toFloat(), top.toFloat(), right.toFloat(), bottom.toFloat(), mPaint)
+            mPaint?.let {
+                canvas.drawRect(left.toFloat(), top.toFloat(), right.toFloat(), bottom.toFloat(), it)
             }
         }
     }
@@ -102,9 +102,10 @@ class RecyclerViewDivider(context: Context, orientation: Int) : ItemDecoration()
                 mDivider!!.setBounds(left, top, right, bottom)
                 mDivider!!.draw(canvas)
             }
-            if (mPaint != null) {
-                canvas.drawRect(left.toFloat(), top.toFloat(), right.toFloat(), bottom.toFloat(), mPaint)
+            mPaint?.let {
+                canvas.drawRect(left.toFloat(), top.toFloat(), right.toFloat(), bottom.toFloat(), it)
             }
+
         }
     }
 

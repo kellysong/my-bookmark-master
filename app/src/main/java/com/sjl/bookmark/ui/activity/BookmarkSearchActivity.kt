@@ -154,7 +154,7 @@ class BookmarkSearchActivity : BaseActivity<NoPresenter>(), View.OnClickListener
      */
     fun initSearchHistory() {
         mPref = getSharedPreferences("search_config", MODE_PRIVATE)
-        val history: String = mPref.getString(KEY_SEARCH_HISTORY_KEYWORD, "")
+        val history: String = mPref.getString(KEY_SEARCH_HISTORY_KEYWORD, "").toString()
         if (!TextUtils.isEmpty(history)) {
             val list: MutableList<String> = ArrayList()
             for (o: Any in history.split(",").toTypedArray()) {
@@ -187,7 +187,7 @@ class BookmarkSearchActivity : BaseActivity<NoPresenter>(), View.OnClickListener
      */
     fun save() {
         val text: String = cet_search_word!!.text.toString()
-        val oldText: String = mPref.getString(KEY_SEARCH_HISTORY_KEYWORD, "")
+        val oldText: String = mPref.getString(KEY_SEARCH_HISTORY_KEYWORD, "").toString()
         LogUtils.i(
             "oldText:$oldText,$text,oldText.contains(text):" + oldText.contains(
                 text

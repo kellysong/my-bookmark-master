@@ -1,7 +1,6 @@
 <resources>
-<!--
-    <string name="app_name">Google书签</string>
--->
+
+    <string name="about_app_name">口袋书签</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -172,7 +171,7 @@
     <string name="setting_local_backup">本地备份</string>
     <string name="setting_local_recover">本地恢复</string>
     <!--页面标题-->
-    <string name="title_about">标题</string>
+    <string name="title_about">@string/setting_about</string>
     <string name="title_setting">设置</string>
     <string name="title_setting_gesture_pwd">设置手势密码</string>
     <string name="title_change_subject">更换主题</string>

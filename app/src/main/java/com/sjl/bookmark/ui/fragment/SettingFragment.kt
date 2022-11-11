@@ -25,7 +25,7 @@ class SettingFragment : BasePreferenceFragment<SettingPresenter>(), SettingContr
     private lateinit var mCircleDialog: ProgressDialog
     private var loadingType = 0
     override fun setClickPreferenceKey(preference: Preference, key: String) {
-        mPresenter!!.setClickPreferenceKey(preference, key)
+        mPresenter.setClickPreferenceKey(preference, key)
     }
 
     override fun getPreferencesResId(): Int {
@@ -127,6 +127,6 @@ class SettingFragment : BasePreferenceFragment<SettingPresenter>(), SettingContr
     }
 
     private fun showSnackBar(msg: String) {
-        Snackbar.make(view, msg, Snackbar.LENGTH_SHORT).show()
+        view?.let { Snackbar.make(it, msg, Snackbar.LENGTH_SHORT).show() }
     }
 }
