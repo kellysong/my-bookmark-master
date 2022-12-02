@@ -31,6 +31,7 @@ public class BookmarkDao extends AbstractDao<Bookmark, Long> {
         public final static Property Icon = new Property(4, String.class, "icon", false, "ICON");
         public final static Property Text = new Property(5, String.class, "text", false, "TEXT");
         public final static Property Date = new Property(6, java.util.Date.class, "date", false, "DATE");
+        public final static Property SourceFile = new Property(7, String.class, "sourceFile", false, "SOURCE_FILE");
     }
 
 
@@ -52,12 +53,15 @@ public class BookmarkDao extends AbstractDao<Bookmark, Long> {
                 "\"HREF\" TEXT," + // 3: href
                 "\"ICON\" TEXT," + // 4: icon
                 "\"TEXT\" TEXT," + // 5: text
-                "\"DATE\" INTEGER NOT NULL );"); // 6: date
+                "\"DATE\" INTEGER NOT NULL ," + // 6: date
+                "\"SOURCE_FILE\" TEXT);"); // 7: sourceFile
         // Add Indexes
         db.execSQL("CREATE INDEX " + constraint + "IDX_BOOKMARK_TITLE ON \"BOOKMARK\"" +
                 " (\"TITLE\" ASC);");
         db.execSQL("CREATE INDEX " + constraint + "IDX_BOOKMARK_TEXT ON \"BOOKMARK\"" +
                 " (\"TEXT\" ASC);");
+        db.execSQL("CREATE INDEX " + constraint + "IDX_BOOKMARK_SOURCE_FILE ON \"BOOKMARK\"" +
+                " (\"SOURCE_FILE\" ASC);");
     }
 
     /** Drops the underlying database table. */
@@ -92,6 +96,11 @@ public class BookmarkDao extends AbstractDao<Bookmark, Long> {
             stmt.bindString(6, text);
         }
         stmt.bindLong(7, entity.getDate().getTime());
+ 
+        String sourceFile = entity.getSourceFile();
+        if (sourceFile != null) {
+            stmt.bindString(8, sourceFile);
+        }
     }
 
     @Override
@@ -120,6 +129,11 @@ public class BookmarkDao extends AbstractDao<Bookmark, Long> {
             stmt.bindString(6, text);
         }
         stmt.bindLong(7, entity.getDate().getTime());
+ 
+        String sourceFile = entity.getSourceFile();
+        if (sourceFile != null) {
+            stmt.bindString(8, sourceFile);
+        }
     }
 
     @Override
@@ -136,7 +150,8 @@ public class BookmarkDao extends AbstractDao<Bookmark, Long> {
             cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // href
             cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // icon
             cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // text
-            new java.util.Date(cursor.getLong(offset + 6)) // date
+            new java.util.Date(cursor.getLong(offset + 6)), // date
+            cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7) // sourceFile
         );
         return entity;
     }
@@ -150,6 +165,7 @@ public class BookmarkDao extends AbstractDao<Bookmark, Long> {
         entity.setIcon(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
         entity.setText(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
         entity.setDate(new java.util.Date(cursor.getLong(offset + 6)));
+        entity.setSourceFile(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
      }
     
     @Override

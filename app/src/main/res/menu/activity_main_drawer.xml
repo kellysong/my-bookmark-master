@@ -14,7 +14,10 @@
             android:id="@+id/nav_bookmark"
             android:icon="@mipmap/menu_bookmark"
             android:title="@string/google_bookmark" />
-
+        <item
+            android:id="@+id/nav_data_statistics"
+            android:icon="@drawable/menu_data_statistics"
+            android:title="@string/menu_data_statistics" />
     </group>
 
     <item android:title="@string/other">

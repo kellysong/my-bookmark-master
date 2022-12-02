@@ -7,6 +7,7 @@ import android.view.View
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.lxj.xpopup.interfaces.OnSelectListener
 import com.sjl.bookmark.R
 import com.sjl.bookmark.entity.table.Bookmark
 import com.sjl.bookmark.kotlin.language.I18nUtils
@@ -14,7 +15,9 @@ import com.sjl.bookmark.ui.activity.BookmarkSearchActivity
 import com.sjl.bookmark.ui.adapter.BookmarkAdapter
 import com.sjl.bookmark.ui.adapter.RecyclerViewDivider
 import com.sjl.bookmark.ui.contract.BookmarkContract
+import com.sjl.bookmark.ui.listener.OnItemSelectListener
 import com.sjl.bookmark.ui.presenter.BookmarkPresenter
+import com.sjl.bookmark.widget.popupview.BookmarkMenuPopupView
 import com.sjl.core.mvp.BaseActivity
 import com.sjl.core.util.log.LogUtils
 import kotlinx.android.synthetic.main.activity_bookmark.*
@@ -67,9 +70,10 @@ class BookmarkActivity : BaseActivity<BookmarkPresenter>(), BookmarkContract.Vie
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
-        menuInflater.inflate(R.menu.main, menu)
+        menuInflater.inflate(R.menu.bookmark_menu, menu)
         return true
     }
+    var bookmarkMenuPopupView:BookmarkMenuPopupView ?= null
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         // Handle action bar item clicks here. The action bar will
@@ -78,6 +82,20 @@ class BookmarkActivity : BaseActivity<BookmarkPresenter>(), BookmarkContract.Vie
         val id = item.itemId
         if (id == R.id.action_search) {
             startActivity(Intent(this, BookmarkSearchActivity::class.java))
+            return true
+        } else if (id == R.id.action_bookmark_source) {
+            if (bookmarkMenuPopupView == null){
+                bookmarkMenuPopupView = BookmarkMenuPopupView(this,common_toolbar)
+            }
+            bookmarkMenuPopupView?.run {
+                setOnSelectListener(OnItemSelectListener { position, item ->
+                        mPresenter.reset()
+                        val bookmarks =   mPresenter.initBookmarkList(item.sourceFile).toMutableList()
+                        mBookmarkAdapter.setData(bookmarks)
+
+                    })
+                show()
+            }
             return true
         }
         return super.onOptionsItemSelected(item)
@@ -143,7 +161,7 @@ class BookmarkActivity : BaseActivity<BookmarkPresenter>(), BookmarkContract.Vie
 
     public override fun initData() {
         mPresenter.init(intent)
-        val bookmarks = mPresenter.initBookmarkList().toMutableList()
+        val bookmarks = mPresenter.initBookmarkList("").toMutableList()
         mBookmarkAdapter = BookmarkAdapter(this, bookmarks)
         mBookmarkAdapter.setLoadingState(mPresenter.getLoadState(bookmarks))
         mLinearLayoutManager = LinearLayoutManager(this)

@@ -35,6 +35,11 @@ public class Bookmark implements Serializable{
 
     @NotNull
     private java.util.Date date; //插入数据库时间
+    /**
+     * 源文件md5
+     */
+    @Index
+    private String sourceFile;
 
     @Generated(hash = 1206029275)
     public Bookmark() {
@@ -42,17 +47,6 @@ public class Bookmark implements Serializable{
 
     public Bookmark(Long id) {
         this.id = id;
-    }
-
-    @Generated(hash = 703156870)
-    public Bookmark(Long id, int type, @NotNull String title, String href, String icon, String text, @NotNull java.util.Date date) {
-        this.id = id;
-        this.type = type;
-        this.title = title;
-        this.href = href;
-        this.icon = icon;
-        this.text = text;
-        this.date = date;
     }
 
     public Bookmark(int type, String title) {
@@ -68,6 +62,19 @@ public class Bookmark implements Serializable{
         this.icon = icon;
         this.text = text;
         this.date = new Date();
+    }
+
+    @Generated(hash = 736671795)
+    public Bookmark(Long id, int type, @NotNull String title, String href, String icon, String text, @NotNull java.util.Date date,
+            String sourceFile) {
+        this.id = id;
+        this.type = type;
+        this.title = title;
+        this.href = href;
+        this.icon = icon;
+        this.text = text;
+        this.date = date;
+        this.sourceFile = sourceFile;
     }
 
 
@@ -129,6 +136,14 @@ public class Bookmark implements Serializable{
     /** Not-null value; ensure this value is available before it is saved to the database. */
     public void setDate(@NotNull java.util.Date date) {
         this.date = date;
+    }
+
+    public String getSourceFile() {
+        return this.sourceFile;
+    }
+
+    public void setSourceFile(String sourceFile) {
+        this.sourceFile = sourceFile;
     }
 
 }

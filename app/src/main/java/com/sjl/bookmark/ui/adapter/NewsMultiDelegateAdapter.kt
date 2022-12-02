@@ -88,7 +88,7 @@ class NewsMultiDelegateAdapter(layoutResId: Int, data: List<NewsList>?) : BaseQu
 
                     v.postDelayed({
                         helper.setTextColor(R.id.title_text, ContextCompat.getColor(mContext, R.color.gray_600))
-                        val ret = DaoFactory.getBrowseTrackDao().saveBrowseTrackByType(1, item.id.toString())
+                        val ret = DaoFactory.getBrowseTrackDao().saveBrowseTrackByType(1, item.id.toString(),item.title)
                         if (ret) { //新增刷新
                             browseTrackMap = DaoFactory.getBrowseTrackDao().browseTrackToMap(1)
                         }

@@ -325,22 +325,22 @@ class MyCollectionActivity : BaseActivity<MyCollectionPresenter>(),
             .create()
         builder.show()
         if (builder.window == null) return
-        builder.window.setContentView(R.layout.dialog_confirm) //设置弹出框加载的布局
-        val msg: TextView? = builder.findViewById<View>(R.id.tv_msg) as TextView?
-        val cancel: Button? = builder.findViewById<View>(R.id.btn_cancle) as Button?
-        val sure: Button? = builder.findViewById<View>(R.id.btn_sure) as Button?
+        builder.window?.setContentView(R.layout.dialog_confirm) //设置弹出框加载的布局
+        val msg: TextView = builder.findViewById<View>(R.id.tv_msg) as TextView
+        val cancel: Button = builder.findViewById<View>(R.id.btn_cancle) as Button
+        val sure: Button = builder.findViewById<View>(R.id.btn_sure) as Button
         if (index == 1) {
-            msg!!.setText(R.string.delete_hint)
+            msg.setText(R.string.delete_hint)
         } else {
-            msg!!.text = resources.getString(R.string.delete_hint2, index)
+            msg.text = resources.getString(R.string.delete_hint2, index)
         }
-        cancel!!.setOnClickListener(object : View.OnClickListener {
+        cancel.setOnClickListener(object : View.OnClickListener {
             override fun onClick(v: View) {
                 builder.dismiss()
             }
         })
         //确认删除
-        sure!!.setOnClickListener(object : View.OnClickListener {
+        sure.setOnClickListener(object : View.OnClickListener {
             override fun onClick(v: View) {
                 val size: Int = myCollectionAdapter.data.size
                 var i: Int = size

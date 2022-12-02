@@ -61,12 +61,12 @@ class ArticleAdapter(layoutResId: Int, data: List<DatasBean>?) : BaseQuickAdapte
      * @param id
      * @param position
      */
-    fun addBrowseTrack(id: String, position: Int) {
-        val ret = DaoFactory.getBrowseTrackDao().saveBrowseTrackByType(0, id)
+    fun addBrowseTrack(item: DatasBean, position: Int) {
+        val ret = DaoFactory.getBrowseTrackDao().saveBrowseTrackByType(0, item.id.toString(),item.link,item.title, Html.fromHtml(formatChapterName(item.superChapterName, item.chapterName)).toString())
         if (!ret) { //已经存在，不用刷新
             return
         }
-        browseTrackMap[id] = true
+        browseTrackMap[item.id.toString()] = true
         refreshNotifyItemChanged(position) //使用封装好的方法刷新指定位置Item，否则报错
     }
 

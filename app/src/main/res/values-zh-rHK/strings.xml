@@ -413,4 +413,10 @@
     <string name="no_copy">複製</string>
     <string name="no_copy_label">單號複製</string>
     <string name="no_copy_success">複製成功</string>
+    <string name="bookmark_source">书签源</string>
+    <string name="menu_browse_history">浏览历史</string>
+    <string name="no_browse_history">暂无浏览历史</string>
+    <string name="menu_history_clear">清空</string>
+    <string name="delete_browse_history_confirm">确定要删除所有的浏览历史？</string>
+    <string name="menu_data_statistics">数据统计</string>
 </resources>

@@ -81,13 +81,16 @@ public class BookmarkService {
      * @param pageSize 每页大小
      * @return
      */
-    public List<Bookmark> queryBookmarkByPage(String title,String text,int pageOffset, int pageSize) {
+    public List<Bookmark> queryBookmarkByPage(String sourceFile,String title,String text,int pageOffset, int pageSize) {
         if (pageSize <= 0 || pageSize >=50) {
             pageSize = 12;
         }
         QueryBuilder<Bookmark> builder = bookmarkDao.queryBuilder();
 //        WhereCondition.StringCondition condition = new WhereCondition.StringCondition("1=1");
-//        builder.where(condition);
+        if (!TextUtils.isEmpty(sourceFile)){
+            builder.where(BookmarkDao.Properties.SourceFile.eq(sourceFile));
+        }
+
         builder.whereOr(BookmarkDao.Properties.Title.like("%" + title + "%"),BookmarkDao.Properties.Text.like("%" + text + "%"));
         //表示从第nBaseRow行(基于0的索引)(包括该行)开始,取其后的nNumRecord  条记录
         List<Bookmark> bookmarks = builder.offset((pageOffset -1) * pageSize).limit(pageSize).orderAsc(BookmarkDao.Properties.Id).list();
@@ -135,6 +138,7 @@ public class BookmarkService {
     /**
      * 删除所有数据
      */
+    @Deprecated
     public void deleteAllBookmark() {
         bookmarkDao.deleteAll();
     }
@@ -155,5 +159,14 @@ public class BookmarkService {
      */
     public void deleteBookmark(Bookmark bookmark) {
         bookmarkDao.delete(bookmark);
+    }
+
+    /**
+     * 根据源文件删除
+     * @param sourceFile
+     */
+    public void deleteBookmark(String sourceFile) {
+        List<Bookmark> list = bookmarkDao.queryBuilder().whereOr(BookmarkDao.Properties.SourceFile.eq(sourceFile),BookmarkDao.Properties.SourceFile.isNull()).list();
+        bookmarkDao.deleteInTx(list);
     }
 }

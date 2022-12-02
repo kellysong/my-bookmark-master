@@ -110,7 +110,7 @@ class ArticleListFragment : BaseFragment<ArticleListPresenter>(), ArticleListCon
     override fun onItemChildClick(adapter: BaseQuickAdapter<*, *>?, view: View, position: Int) {}
     override fun onItemClick(adapter: BaseQuickAdapter<*, *>?, view: View, position: Int) {
         val item = mArticleAdapter.getItem(position)
-        mArticleAdapter.addBrowseTrack(item?.id.toString(), position)
+        item?.let { mArticleAdapter.addBrowseTrack(it, position) }
         BrowserActivity.startWithParams(
             mActivity, mArticleAdapter.getItem(position)?.title,
             mArticleAdapter.getItem(position)?.link

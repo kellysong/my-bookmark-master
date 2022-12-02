@@ -27,6 +27,10 @@ public class BrowseTrackDao extends AbstractDao<BrowseTrack, Long> {
         public final static Property Id = new Property(0, Long.class, "id", true, "_id");
         public final static Property ArticleId = new Property(1, String.class, "articleId", false, "ARTICLE_ID");
         public final static Property Type = new Property(2, int.class, "type", false, "TYPE");
+        public final static Property Href = new Property(3, String.class, "href", false, "HREF");
+        public final static Property Text = new Property(4, String.class, "text", false, "TEXT");
+        public final static Property Category = new Property(5, String.class, "category", false, "CATEGORY");
+        public final static Property CreateTime = new Property(6, java.util.Date.class, "createTime", false, "CREATE_TIME");
     }
 
 
@@ -44,10 +48,16 @@ public class BrowseTrackDao extends AbstractDao<BrowseTrack, Long> {
         db.execSQL("CREATE TABLE " + constraint + "\"BROWSE_TRACK\" (" + //
                 "\"_id\" INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: id
                 "\"ARTICLE_ID\" TEXT NOT NULL ," + // 1: articleId
-                "\"TYPE\" INTEGER NOT NULL );"); // 2: type
+                "\"TYPE\" INTEGER NOT NULL ," + // 2: type
+                "\"HREF\" TEXT," + // 3: href
+                "\"TEXT\" TEXT," + // 4: text
+                "\"CATEGORY\" TEXT," + // 5: category
+                "\"CREATE_TIME\" INTEGER);"); // 6: createTime
         // Add Indexes
         db.execSQL("CREATE INDEX " + constraint + "IDX_BROWSE_TRACK_TYPE ON \"BROWSE_TRACK\"" +
                 " (\"TYPE\" ASC);");
+        db.execSQL("CREATE INDEX " + constraint + "IDX_BROWSE_TRACK_TEXT ON \"BROWSE_TRACK\"" +
+                " (\"TEXT\" ASC);");
     }
 
     /** Drops the underlying database table. */
@@ -66,6 +76,26 @@ public class BrowseTrackDao extends AbstractDao<BrowseTrack, Long> {
         }
         stmt.bindString(2, entity.getArticleId());
         stmt.bindLong(3, entity.getType());
+ 
+        String href = entity.getHref();
+        if (href != null) {
+            stmt.bindString(4, href);
+        }
+ 
+        String text = entity.getText();
+        if (text != null) {
+            stmt.bindString(5, text);
+        }
+ 
+        String category = entity.getCategory();
+        if (category != null) {
+            stmt.bindString(6, category);
+        }
+ 
+        java.util.Date createTime = entity.getCreateTime();
+        if (createTime != null) {
+            stmt.bindLong(7, createTime.getTime());
+        }
     }
 
     @Override
@@ -78,6 +108,26 @@ public class BrowseTrackDao extends AbstractDao<BrowseTrack, Long> {
         }
         stmt.bindString(2, entity.getArticleId());
         stmt.bindLong(3, entity.getType());
+ 
+        String href = entity.getHref();
+        if (href != null) {
+            stmt.bindString(4, href);
+        }
+ 
+        String text = entity.getText();
+        if (text != null) {
+            stmt.bindString(5, text);
+        }
+ 
+        String category = entity.getCategory();
+        if (category != null) {
+            stmt.bindString(6, category);
+        }
+ 
+        java.util.Date createTime = entity.getCreateTime();
+        if (createTime != null) {
+            stmt.bindLong(7, createTime.getTime());
+        }
     }
 
     @Override
@@ -90,7 +140,11 @@ public class BrowseTrackDao extends AbstractDao<BrowseTrack, Long> {
         BrowseTrack entity = new BrowseTrack( //
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
             cursor.getString(offset + 1), // articleId
-            cursor.getInt(offset + 2) // type
+            cursor.getInt(offset + 2), // type
+            cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // href
+            cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // text
+            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // category
+            cursor.isNull(offset + 6) ? null : new java.util.Date(cursor.getLong(offset + 6)) // createTime
         );
         return entity;
     }
@@ -100,6 +154,10 @@ public class BrowseTrackDao extends AbstractDao<BrowseTrack, Long> {
         entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
         entity.setArticleId(cursor.getString(offset + 1));
         entity.setType(cursor.getInt(offset + 2));
+        entity.setHref(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
+        entity.setText(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
+        entity.setCategory(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
+        entity.setCreateTime(cursor.isNull(offset + 6) ? null : new java.util.Date(cursor.getLong(offset + 6)));
      }
     
     @Override

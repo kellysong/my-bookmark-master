@@ -228,8 +228,11 @@ class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.View,
      */
     override fun onItemClick(adapter: BaseQuickAdapter<*, *>?, view: View, position: Int) {
         val item = mArticleAdapter.getItem(position)
-        mArticleAdapter.addBrowseTrack(item!!.id.toString(), position)
-        BrowserActivity.startWithParams(mActivity, item.title, item.link)
+        item?.let {
+            mArticleAdapter.addBrowseTrack(it, position)
+            BrowserActivity.startWithParams(mActivity, it.title, it.link)
+        }
+
     }
 
     /**

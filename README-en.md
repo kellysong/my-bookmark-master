@@ -14,7 +14,7 @@ Set learning, convenience, entertainment in one of the comprehensive software, s
 - Google Browser bookmark parsing;
 - Implement part of wanAndroid interface;
 - Support uploading my collections to my own service
-- Personal account management, bus card balance query, WIFI password view (Root mobile phones below 8.0 only)
+- Personal account management, bus card balance query, WIFI password view (Root access)
 - Realize part of zhihu news interface
 - Realize express query (integrate and modify the third party), novel reading (integrate and modify the third party)
 - Other functions: article backup and synchronization, theme change, language change, gesture password setting, etc

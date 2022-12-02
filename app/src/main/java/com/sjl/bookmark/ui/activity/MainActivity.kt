@@ -60,6 +60,7 @@ import io.reactivex.Observable
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
+import io.reactivex.functions.Consumer
 import io.reactivex.functions.Function
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.*
@@ -68,6 +69,7 @@ import kotlinx.android.synthetic.main.content_main.*
 import java.io.*
 import java.lang.reflect.Proxy
 import java.util.*
+import java.util.concurrent.Callable
 import kotlin.collections.ArrayList
 
 
@@ -81,7 +83,6 @@ class MainActivity : BaseActivity<NoPresenter>(),
     private var tvPersonality: TextView? = null
     private lateinit var mFragments: MutableList<BaseFragment<*>>
     private var mLastFgIndex = 0
-    private var searchMenuItem: MenuItem? = null
     private val mToggle: ActionBarDrawerToggle? = null
     private var DOUBLE_CLICK_TIME: Long = 0
     private var notificationUtils: NotificationUtils? = null
@@ -220,6 +221,7 @@ class MainActivity : BaseActivity<NoPresenter>(),
 //        ft.show(targetFg);
 //        ft.commit();
     }
+    private val menuItems: MutableList<MenuItem> = mutableListOf<MenuItem>()
 
     override fun initListener() {
         //设置mToolBarIcon监听
@@ -232,24 +234,24 @@ class MainActivity : BaseActivity<NoPresenter>(),
             when (item.itemId) {
                 R.id.nav_home -> {
                     //                        mToggle.setDrawerIndicatorEnabled(true);//隐藏侧滑菜单按钮
-                    if (searchMenuItem != null) {
-                        searchMenuItem!!.isVisible = true
+                    for (item in menuItems) {
+                        item.isVisible = true
                     }
                     setToolbarTitle(getString(R.string.bottom_tab_home), true)
                     switchFragmentNew(0)
                 }
                 R.id.nav_category -> {
                     //                        mToggle.setDrawerIndicatorEnabled(false);
-                    if (searchMenuItem != null) {
-                        searchMenuItem!!.isVisible = false
+                    for (item in menuItems) {
+                        item.isVisible = false
                     }
                     setToolbarTitle(getString(R.string.bottom_tab_category), false)
                     switchFragmentNew(1)
                 }
                 R.id.nav_tool -> {
                     //                        mToggle.setDrawerIndicatorEnabled(false);
-                    if (searchMenuItem != null) {
-                        searchMenuItem!!.isVisible = false
+                    for (item in menuItems) {
+                        item.isVisible = false
                     }
                     setToolbarTitle(getString(R.string.bottom_tab_tool), false)
                     switchFragmentNew(2)
@@ -467,37 +469,38 @@ class MainActivity : BaseActivity<NoPresenter>(),
     }
 
     private fun loadBookmark() {
-        val fileName = "bookmarks/bookmarks_2021_12_12.html"
         sharedPreferences = getSharedPreferences("bookmark", MODE_PRIVATE)
         val flag = sharedPreferences.getBoolean("readFlag", false)
-        val oldFileName = sharedPreferences.getString("fileName", "")
+//         val oldFileName = sharedPreferences.getString("fileName", "")
         if (!flag) {
-            initBookmarkData(fileName)
+            initBookmarkData()
         } else {
-            if (!ObjectUtils.isEquals(fileName, oldFileName)) { //书签文本发生改变，重新解析
-                initBookmarkData(fileName)
-            } else {
-                LogUtils.i("已经读取过书签")
-            }
+            LogUtils.i("已经读取过书签")
         }
     }
 
-    private fun initBookmarkData(fileName: String) {
-        Thread {
-            try {
-                val start = System.currentTimeMillis()
-                val bookmarkUtils = BookmarkParse()
-                bookmarkUtils.readBookmarkHtml(this@MainActivity, fileName)
-                val editor = sharedPreferences.edit()
-                editor.putBoolean("readFlag", true)
-                editor.putString("fileName", fileName)
-                editor.apply()
-                val end = System.currentTimeMillis()
-                LogUtils.i("读取书签文件耗时：" + (end - start) / 1000.0 + "s")
-            } catch (e: IOException) {
-                Logger.e(e, "读取书签文件异常")
+    private fun initBookmarkData() {
+        Observable.fromCallable(Callable<Boolean>(){
+            val start = System.currentTimeMillis()
+            val bookmarkUtils = BookmarkParse()
+            val listBookmarkHtml = BookmarkParse.listBookmarkHtmlPath(mContext)
+            listBookmarkHtml.forEach {
+                bookmarkUtils.readBookmarkHtml(mContext, it)
             }
-        }.start()
+            val editor = sharedPreferences.edit()
+            editor.putBoolean("readFlag", true)
+            editor.remove("fileName")
+            editor.apply()
+            val end = System.currentTimeMillis()
+            LogUtils.i("读取书签文件耗时：" + (end - start) / 1000.0 + "s")
+            true
+        }).compose(RxSchedulers.applySchedulers())
+            .`as`(bindLifecycle())
+            .subscribe(Consumer {
+
+            }, Consumer {
+                Logger.e(it, "读取书签文件异常")
+            })
     }
 
     /**
@@ -508,9 +511,9 @@ class MainActivity : BaseActivity<NoPresenter>(),
      * @return
      */
     override fun onPrepareOptionsMenu(menu: Menu): Boolean {
-        searchMenuItem = menu.getItem(0)
-        if (mLastFgIndex != 0) {
-            searchMenuItem?.isVisible = false
+        val size = menu.size()
+        for (i in 0 until size) {
+            menuItems.add(menu.getItem(i))
         }
         return super.onPrepareOptionsMenu(menu)
     }
@@ -528,6 +531,9 @@ class MainActivity : BaseActivity<NoPresenter>(),
         val id = item.itemId
         if (id == R.id.action_search) {
             startActivity(Intent(this, ArticleSearchActivity::class.java))
+            return true
+        }else if (id == R.id.action_history_record) {
+            startActivity(Intent(this, BrowseHistoryActivity::class.java))
             return true
         }
         return super.onOptionsItemSelected(item)
@@ -676,6 +682,7 @@ class MainActivity : BaseActivity<NoPresenter>(),
     override fun onDestroy() {
         super.onDestroy()
         mFragments.clear()
+        menuItems.clear()
         vp_main.removeOnPageChangeListener(pageChangeListener)
         if (!executeChangeLanguage) {
             BrowseMapper.clearAll()

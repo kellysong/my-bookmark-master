@@ -56,7 +56,7 @@ ext {
             viewPagerIndicator           : "0.3.0",
             flycoTabLayout               : "2.1.2@aar",
             javaWebSocket                : "1.4.0",
-            xpopup                       : "2.0.8",
+            xpopup                       : "2.8.4",
             parcelerApi                  : "1.1.12",
             yimagepicker                 : "3.0",
             luban                        : "1.1.8",
@@ -164,7 +164,7 @@ ext {
             "viewPagerIndicator"           : "com.github.LinweiJ:ViewPagerIndicator:${version.viewPagerIndicator}",
             "flycoTabLayout"               : "com.flyco.tablayout:FlycoTabLayout_Lib:${version.flycoTabLayout}",
             "javaWebSocket"                : "org.java-websocket:Java-WebSocket:${version.javaWebSocket}",
-            "xpopup"                       : "com.lxj:xpopup:${version.xpopup}",
+            "xpopup"                       : "com.github.li-xiaojun:XPopup:${version.xpopup}",
             "parcelerApi"                  : "org.parceler:parceler-api:${version.parcelerApi}",
             "parcelerProcessor"            : "org.parceler:parceler:${version.parcelerApi}",
             "yimagepicker"                 : "com.ypx.yimagepicker:support:${version.yimagepicker}",
@@ -183,7 +183,6 @@ ext {
             "openccAndroid"                : "com.zqc.opencc.android.lib:lib-opencc-android:${version.openccAndroid}",
             "danmakuFlameMaster"           : "com.github.ctiao:DanmakuFlameMaster:${version.danmakuFlameMaster}",
             "ndkbitmapArmv7a"              : "com.github.ctiao:ndkbitmap-armv7a:${version.ndkbitmapArmv7a}",
-
 
             //bugly
             "bugly"                        : "com.tencent.bugly:crashreport:${version.buglySDK}",

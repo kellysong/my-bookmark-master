@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+
     <item
         android:id="@+id/action_search"
-        android:title="搜索"
+        android:title="@string/search"
         android:icon="@mipmap/ic_search_white_48dp"
         app:showAsAction="ifRoom" />
     <item
-        android:id="@+id/action_history_record"
-        android:title="@string/menu_browse_history"
-        android:icon="@drawable/ic_menu_history_record"
+        android:id="@+id/action_bookmark_source"
+        android:icon="@drawable/ic_menu_overflow"
+        android:title="@string/bookmark_source"
         app:showAsAction="ifRoom" />
 </menu>

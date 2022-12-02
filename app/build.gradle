@@ -214,7 +214,7 @@ def buildTime() {
 
 greendao {
     //数据库版本号，升级时进行修改,递增加1即可
-    schemaVersion 6
+    schemaVersion 7
     daoPackage 'com.sjl.bookmark.dao'
     targetGenDir 'src/main/java'
 }
@@ -257,7 +257,7 @@ dependencies {
         implementation 'com.github.kellysong.my-hardware:nfcard:1.1.2'
         implementation 'com.github.kellysong.my-hardware:zxing:1.1.2'
     }
-
+    implementation 'com.github.kellysong:common-utils:1.1.0'
 
     //引入kotlin
     implementation rootProject.ext.dependencies["kotlin"]
@@ -332,6 +332,8 @@ dependencies {
     implementation rootProject.ext.dependencies["danmakuFlameMaster"]
     implementation rootProject.ext.dependencies["ndkbitmapArmv7a"]
 
+    //xpopup
+    implementation rootProject.ext.dependencies["xpopup"]
 
     //leakcanary
     debugImplementation rootProject.ext.debugDependencies["leakcanary"]

@@ -25,8 +25,9 @@ interface BookmarkContract {
 
         /**
          * 初始化数据
+         * @param sourceFile
          */
-        abstract fun initBookmarkList(): List<Bookmark>
+        abstract fun initBookmarkList(sourceFile:String): List<Bookmark>
 
         /**
          * 上拉加载

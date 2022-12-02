@@ -5,6 +5,7 @@ import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Index;
 import org.greenrobot.greendao.annotation.NotNull;
 import org.greenrobot.greendao.annotation.Generated;
+import java.util.Date;
 
 /**
  * 文章浏览足迹表
@@ -24,11 +25,34 @@ public class BrowseTrack {
     @NotNull
     @Index
     private int type; //0玩安卓，1知乎日报
-    @Generated(hash = 181846352)
-    public BrowseTrack(Long id, @NotNull String articleId, int type) {
+    /**
+     * 链接
+     */
+    private String href;
+
+    /**
+     * 链接文本
+     */
+    @Index
+    private String text;
+
+    private String category;
+    /**
+     * 创建时间
+     */
+    private java.util.Date createTime;
+
+
+    @Generated(hash = 887519129)
+    public BrowseTrack(Long id, @NotNull String articleId, int type, String href,
+            String text, String category, java.util.Date createTime) {
         this.id = id;
         this.articleId = articleId;
         this.type = type;
+        this.href = href;
+        this.text = text;
+        this.category = category;
+        this.createTime = createTime;
     }
     @Generated(hash = 761130463)
     public BrowseTrack() {
@@ -50,6 +74,30 @@ public class BrowseTrack {
     }
     public void setType(int type) {
         this.type = type;
+    }
+    public String getHref() {
+        return this.href;
+    }
+    public void setHref(String href) {
+        this.href = href;
+    }
+    public String getText() {
+        return this.text;
+    }
+    public void setText(String text) {
+        this.text = text;
+    }
+    public String getCategory() {
+        return this.category;
+    }
+    public void setCategory(String category) {
+        this.category = category;
+    }
+    public java.util.Date getCreateTime() {
+        return this.createTime;
+    }
+    public void setCreateTime(java.util.Date createTime) {
+        this.createTime = createTime;
     }
 
 }

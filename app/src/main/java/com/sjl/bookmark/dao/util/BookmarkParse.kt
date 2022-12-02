@@ -6,7 +6,10 @@ import com.sjl.bookmark.entity.table.Bookmark
 import com.sjl.core.util.SerializeUtils
 import com.sjl.bookmark.dao.impl.BookmarkService
 import android.text.TextUtils
+import com.sjl.bookmark.entity.BookmarkMenu
 import com.sjl.core.util.log.LogUtils
+import com.sjl.util.ByteUtils
+import com.tencent.smtt.utils.Md5Utils
 import org.jsoup.nodes.Document
 import org.jsoup.select.Elements
 import java.io.*
@@ -24,6 +27,43 @@ import java.util.ArrayList
  * @copyright(C) 2018 song
  */
 class BookmarkParse {
+
+    companion object {
+        val ROOT_PATH = "bookmarks"
+
+        @JvmStatic
+        fun listBookmarkHtmlPath(context: Context): MutableList<String> {
+            val list = context.assets.list(ROOT_PATH)
+            val bookmarkList: MutableList<String> = ArrayList()
+            if (list.isNullOrEmpty()){
+                 return bookmarkList
+            }else{
+                list.forEach {
+                    bookmarkList.add("$ROOT_PATH/$it")
+                }
+            }
+            return bookmarkList
+        }
+
+        @JvmStatic
+        fun listBookmarkMenu(context: Context): MutableList<BookmarkMenu> {
+            val list = context.assets.list(ROOT_PATH)
+            val bookmarkList: MutableList<BookmarkMenu> = ArrayList()
+            if (list.isNullOrEmpty()){
+                return bookmarkList
+            }else{
+                list.forEach {
+                    val inputStream = context.assets.open("$ROOT_PATH/$it")
+                    val mD5 = ByteUtils.byteArrToHexString(Md5Utils.getMD5(inputStream))
+                    val lastIndexOf = it.lastIndexOf(".")
+                    bookmarkList.add(BookmarkMenu(it.substring(0,lastIndexOf),mD5))
+                }
+            }
+            return bookmarkList
+        }
+    }
+
+
     /**
      * 读取书签文件
      *
@@ -33,15 +73,20 @@ class BookmarkParse {
      */
     @Throws(IOException::class)
     fun readBookmarkHtml(context: Context, fileName: String) {
+
         val inputStream = context.assets.open(fileName)
         val str = inputStreamToStr(inputStream)
+        //获取文件的md5
+        val mD5 = ByteUtils.byteArrToHexString(Md5Utils.getMD5(context.assets.open(fileName)))
+        LogUtils.i("开始解析文件：$fileName - $mD5")
+
         val doc = Jsoup.parse(str)
         val bookmarkList: MutableList<Bookmark> = ArrayList()
-        parseBookmarkHtml(bookmarkList, doc)
+        parseBookmarkHtml(bookmarkList, doc,mD5)
         LogUtils.i("解析结果集合大小：" + bookmarkList.size)
         SerializeUtils.serialize("bookmark", bookmarkList)
         val bookmarkService = BookmarkService.getInstance(context)
-        bookmarkService.deleteAllBookmark()
+        bookmarkService.deleteBookmark(mD5)
         bookmarkService.saveBookmarkLists(bookmarkList)
     }
 
@@ -60,10 +105,11 @@ class BookmarkParse {
             val str = inputStreamToStr(inputStream)
             val doc = Jsoup.parse(str)
             val bookmarkList: MutableList<Bookmark> = ArrayList()
-            parseBookmarkHtml(bookmarkList, doc)
+            val mD5 = Md5Utils.getMD5(file)
+            parseBookmarkHtml(bookmarkList, doc, mD5)
             LogUtils.i("本次更新书签集合大小：" + bookmarkList.size)
             val bookmarkService = BookmarkService.getInstance(context)
-            bookmarkService.deleteAllBookmark()
+            bookmarkService.deleteBookmark(mD5)
             bookmarkService.saveBookmarkLists(bookmarkList)
             inputStream.close()
             true
@@ -79,7 +125,11 @@ class BookmarkParse {
      * @param bookmarkList
      * @param doc
      */
-    private fun parseBookmarkHtml(bookmarkList: MutableList<Bookmark>, doc: Document) {
+    private fun parseBookmarkHtml(
+        bookmarkList: MutableList<Bookmark>,
+        doc: Document,
+        fileName: String
+    ) {
         val dls = doc.select("DL")
         var dlSize = dls.size
         LogUtils.i("dls节点个数：$dlSize") //89
@@ -113,11 +163,11 @@ class BookmarkParse {
                             }
                         }
                         val elements = children.select("A")
-                        processBookmark(title, elements, bookmark, bookmarkList)
+                        processBookmark(title, elements, bookmark, bookmarkList,fileName)
                         continue
                     } else { //直接书签
                         val filterDl = dl.select("DT > A")
-                        processBookmark(title, filterDl, bookmark, bookmarkList)
+                        processBookmark(title, filterDl, bookmark, bookmarkList,fileName)
                     }
                 }
             } else {
@@ -140,7 +190,8 @@ class BookmarkParse {
         title: String,
         filterDl: Elements,
         bookmark: Bookmark?,
-        bookmarkList: MutableList<Bookmark>
+        bookmarkList: MutableList<Bookmark>,
+        fileName: String
     ) {
         var bookmark = bookmark
         val filterDlSize = filterDl.size
@@ -151,7 +202,9 @@ class BookmarkParse {
         // LogUtils.i("filterDl：" + filterDl.text());//查找某个父元素下的直接子元素
         var base64 = ""
         bookmark = Bookmark(0, title)
+        bookmark.sourceFile = fileName
         bookmarkList.add(bookmark)
+
         for (j in 0 until filterDlSize) {
             val a = filterDl[j]
             val text = a.text()
@@ -161,6 +214,7 @@ class BookmarkParse {
                 base64 = iconAttr.split(",").toTypedArray()[1]
             }
             bookmark = Bookmark(title, hrefAttr, base64, text)
+            bookmark.sourceFile = fileName
             bookmarkList.add(bookmark)
         }
     }

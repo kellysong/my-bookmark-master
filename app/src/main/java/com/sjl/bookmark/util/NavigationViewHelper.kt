@@ -30,7 +30,7 @@ object NavigationViewHelper {
                 val item = menuView.getChildAt(i) as BottomNavigationItemView
                 item.setShifting(false)
                 // set once again checked value, so view will be updated
-                item.setChecked(item.itemData.isChecked)
+                item.itemData?.let { item.setChecked(it.isChecked) }
             }
         } catch (e: NoSuchFieldException) {
             Log.e("BNVHelper", "Unable to get shift mode field", e)

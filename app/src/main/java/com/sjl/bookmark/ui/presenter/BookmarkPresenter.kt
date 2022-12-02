@@ -27,25 +27,30 @@ class BookmarkPresenter : BookmarkContract.Presenter() {
     private var isLock = false
     private var currentPage = 1
     private var keyWord = ""
+    private var sourceFile = ""
     override fun init(intent: Intent) {
         handler = Handler()
         bookmarkList = ArrayList()
         val bundle = intent.extras
         if (bundle != null) {
-            keyWord = bundle.getString(BookmarkSearchActivity.KEY_SEARCH_TEXT)
+            keyWord = bundle.getString(BookmarkSearchActivity.KEY_SEARCH_TEXT).toString()
             if (!TextUtils.isEmpty(keyWord)) {
                 mView.setItemMenuVisible(false)
             }
         }
     }
 
+    fun reset(){
+        bookmarkList.clear()
+        currentPage = 1
+    }
     /**
      * 初始化数据
      */
-    override fun initBookmarkList(): List<Bookmark> {
+    override fun initBookmarkList(sourceFile:String): List<Bookmark> {
+        this.sourceFile = sourceFile
         LogUtils.i("当前页码：currentPage=$currentPage,搜索字符：$keyWord")
-        val bookmarks = BookmarkService.getInstance(mContext)
-            .queryBookmarkByPage(keyWord, keyWord, currentPage, PAGE_SIZE)
+        val bookmarks = BookmarkService.getInstance(mContext).queryBookmarkByPage(this.sourceFile,keyWord, keyWord, currentPage, PAGE_SIZE)
         bookmarkList.addAll(bookmarks)
         return bookmarks
     }
@@ -60,8 +65,8 @@ class BookmarkPresenter : BookmarkContract.Presenter() {
                 isLock = true
                 if (isHasMore) {
                     currentPage++
-                    handler!!.postDelayed({
-                        val bookmarks = initBookmarkList()
+                    handler?.postDelayed({
+                        val bookmarks = initBookmarkList(this.sourceFile)
                         mView.showBookmarkData(bookmarkList, getLoadState(bookmarks))
                         isLock = false
                     }, 500)
@@ -76,9 +81,9 @@ class BookmarkPresenter : BookmarkContract.Presenter() {
     override fun pullRefreshDown() {
         currentPage = 1
         isLock = false
-        handler!!.postDelayed({
+        handler?.postDelayed({
             bookmarkList!!.clear()
-            val bookmarks = initBookmarkList()
+            val bookmarks = initBookmarkList(this.sourceFile)
             if (mView != null) {
                 mView.showBookmarkData(bookmarkList, getLoadState(bookmarks))
             }

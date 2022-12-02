@@ -9,6 +9,7 @@ import com.sjl.core.util.AppUtils;
 
 import org.greenrobot.greendao.query.QueryBuilder;
 
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -80,10 +81,14 @@ public class BrowseTrackDaoImpl extends BaseDao<BrowseTrack> {
 
     /**
      * 保存单条足迹
-     *  @param type      0玩安卓，1知乎日报
+     *
+     * @param type      0玩安卓，1知乎日报
      * @param articleId 文章id
+     * @param href
+     * @param text
+     * @param category
      */
-    public boolean saveBrowseTrackByType(int type, String articleId) {
+    public boolean saveBrowseTrackByType(int type, String articleId, String href, String text, String category) {
         if (isExistBrowseTrack(type, articleId)) {
 //            LogUtils.i("已经存在该记录");
             return false;
@@ -91,9 +96,17 @@ public class BrowseTrackDaoImpl extends BaseDao<BrowseTrack> {
         BrowseTrack browseTrack = new BrowseTrack();
         browseTrack.setType(type);
         browseTrack.setArticleId(articleId);
+        browseTrack.setHref(href);
+        browseTrack.setText(text);
+        browseTrack.setCategory(category);
+        browseTrack.setCreateTime(new Date());
         insert(browseTrack);
 
         return true;
+    }
+
+    public boolean saveBrowseTrackByType(int type, String articleId,String text) {
+        return saveBrowseTrackByType(type,articleId,null,text,null);
     }
 
     /**
