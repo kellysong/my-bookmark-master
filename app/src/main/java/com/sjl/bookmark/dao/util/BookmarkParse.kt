@@ -8,7 +8,7 @@ import com.sjl.bookmark.dao.impl.BookmarkService
 import android.text.TextUtils
 import com.sjl.bookmark.entity.BookmarkMenu
 import com.sjl.core.util.log.LogUtils
-import com.sjl.util.ByteUtils
+import com.sjl.core.util.ByteUtils
 import com.tencent.smtt.utils.Md5Utils
 import org.jsoup.nodes.Document
 import org.jsoup.select.Elements

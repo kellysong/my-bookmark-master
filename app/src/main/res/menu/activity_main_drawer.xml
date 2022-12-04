@@ -8,11 +8,11 @@
             android:title="@string/my_card" />
         <item
             android:id="@+id/nav_my_collection"
-            android:icon="@mipmap/menu_my_collection"
+            android:icon="@drawable/menu_my_collection"
             android:title="@string/my_collection" />
         <item
             android:id="@+id/nav_bookmark"
-            android:icon="@mipmap/menu_bookmark"
+            android:icon="@drawable/menu_bookmark"
             android:title="@string/google_bookmark" />
         <item
             android:id="@+id/nav_data_statistics"

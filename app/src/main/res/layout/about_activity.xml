@@ -66,9 +66,9 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/app_name"
                     android:layout_centerHorizontal="true"
-                    tools:text="@string/version"
                     android:textColor="@color/white"
-                    android:textSize="@dimen/micro" />
+                    android:textSize="@dimen/micro"
+                    tools:text="@string/version" />
 
             </RelativeLayout>
 

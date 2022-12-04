@@ -240,11 +240,11 @@ dependencies {
         }
         implementation project(':my-common-lib:base-adapter')
     }else {
-        implementation('com.github.kellysong.my-common:base-core:2.3.3') {
+        implementation('com.github.kellysong.my-common:base-core:2.3.5') {
             //最新版改变较大,使用本地版本
             exclude group: 'com.github.CymChad', module: 'BaseRecyclerViewAdapterHelper'
         }
-        implementation 'com.github.kellysong.my-common:base-adapter:2.3.3'
+        implementation 'com.github.kellysong.my-common:base-adapter:2.3.5'
     }
     implementation rootProject.ext.dependencies["baseRecyclerViewAdapterHelper"]
     kapt 'com.jakewharton:butterknife-compiler:10.2.1'
@@ -254,8 +254,8 @@ dependencies {
         implementation project (':my-hardware-lib:nfcard')
         implementation project (':my-hardware-lib:zxing')
     }else {
-        implementation 'com.github.kellysong.my-hardware:nfcard:1.1.2'
-        implementation 'com.github.kellysong.my-hardware:zxing:1.1.2'
+        implementation 'com.github.kellysong.my-hardware:nfcard:1.1.3'
+        implementation 'com.github.kellysong.my-hardware:zxing:1.1.3'
     }
     implementation 'com.github.kellysong:common-utils:1.1.0'
 

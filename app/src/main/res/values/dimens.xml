@@ -27,4 +27,6 @@
     <dimen name="text_notes">12sp</dimen>
     <dimen name="text_time">11sp</dimen>
 
+    <dimen name="list_item_bottom_margin">@dimen/dp_4</dimen>
+
 </resources>

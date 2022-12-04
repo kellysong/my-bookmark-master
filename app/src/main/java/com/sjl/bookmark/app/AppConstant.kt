@@ -85,6 +85,9 @@ object AppConstant {
      */
     const val RESULT_CODE = 200
 
+    const val SETTING_PWD = "123123"
+
+
     object SETTING {
         const val VIEW_MODE = 0 //查询
         const val CREATE_MODE = 1 //新增

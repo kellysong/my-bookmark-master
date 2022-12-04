@@ -1,6 +1,7 @@
 package com.sjl.bookmark.dao.impl;
 
 import android.content.Context;
+import android.database.Cursor;
 
 import com.sjl.bookmark.dao.BrowseTrackDao;
 import com.sjl.bookmark.dao.db.BaseDao;
@@ -9,6 +10,7 @@ import com.sjl.core.util.AppUtils;
 
 import org.greenrobot.greendao.query.QueryBuilder;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -48,7 +50,7 @@ public class BrowseTrackDaoImpl extends BaseDao<BrowseTrack> {
      */
     public List<BrowseTrack> findBrowseTrackByType(int type) {
         QueryBuilder<?> qb = daoSession.getDao(BrowseTrack.class).queryBuilder();
-        List<BrowseTrack> list = (List<BrowseTrack>) qb.where(BrowseTrackDao.Properties.Type.eq(type)).list();
+        List<BrowseTrack> list = (List<BrowseTrack>) qb.where(BrowseTrackDao.Properties.Type.eq(type)).orderDesc(BrowseTrackDao.Properties.CreateTime).list();
         return list;
 
     }
@@ -124,5 +126,35 @@ public class BrowseTrackDaoImpl extends BaseDao<BrowseTrack> {
         } else {
             return true;
         }
+    }
+
+    /**
+     * 查询一周的浏览数据
+     * @return
+     */
+    public List<int[]>  findWeekData() {
+        List<int[]> data = new ArrayList<>();
+        String sql = "select COUNT(*) as dayCount,date(CREATE_TIME/1000, 'unixepoch', 'localtime') as countDate from BROWSE_TRACK" +
+                " where type = 0  and  datetime(CREATE_TIME/1000, 'unixepoch', 'localtime')  between datetime('now','localtime','-7 days') and  datetime('now','localtime')" +
+                " GROUP BY date(CREATE_TIME/1000, 'unixepoch', 'localtime')";
+        Cursor cursor = daoSession.getDatabase().rawQuery(sql, null);
+        try {
+            List<Integer> points = new ArrayList<>();
+
+            int index = 0;
+            while (cursor.moveToNext()) {
+                int dayCount = cursor.getInt(cursor.getColumnIndex("dayCount"));
+                points.add(dayCount);
+                index++;
+            }
+            int[] item = new int[points.size()];
+            for (int i = 0; i < item.length; i++) {
+                item[i] = points.get(i);
+            }
+            data.add(item);
+        } finally {
+            cursor.close();
+        }
+       return data;
     }
 }

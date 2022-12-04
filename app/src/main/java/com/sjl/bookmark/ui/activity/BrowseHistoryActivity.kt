@@ -45,6 +45,7 @@ class BrowseHistoryActivity : BaseActivity<NoPresenter>(){
         if (list.isNullOrEmpty()){
             tv_empty.visibility = View.VISIBLE
             recyclerView.visibility = View.GONE
+            clearMenuItem.isVisible = false
         }else{
             tv_empty.visibility = View.GONE
             recyclerView.visibility = View.VISIBLE
@@ -58,7 +59,7 @@ class BrowseHistoryActivity : BaseActivity<NoPresenter>(){
             }
         }
         recyclerView.layoutManager = LinearLayoutManager(this)
-        recyclerView.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
+//        recyclerView.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
         recyclerView.adapter = browseHistoryAdapter
     }
     override fun onPrepareOptionsMenu(menu: Menu): Boolean {

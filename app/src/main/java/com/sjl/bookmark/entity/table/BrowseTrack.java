@@ -31,11 +31,13 @@ public class BrowseTrack {
     private String href;
 
     /**
-     * 链接文本
+     * 链接文本(标题)
      */
     @Index
     private String text;
-
+    /**
+     * 分类
+     */
     private String category;
     /**
      * 创建时间

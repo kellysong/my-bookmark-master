@@ -2,11 +2,10 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:skin="http://schemas.android.com/android/skin"
     android:layout_width="match_parent"
-    android:layout_height="145dp"
-    android:layout_marginBottom="5dp"
+    android:layout_height="@dimen/dp_120"
+    android:layout_marginBottom="@dimen/list_item_bottom_margin"
     android:background="@drawable/item_selector"
     android:orientation="vertical"
-
     android:padding="8dp">
 
     <RelativeLayout
@@ -17,8 +16,8 @@
 
         <com.sjl.core.widget.imageview.CircleImageView
             android:id="@+id/civHeadPortrait"
-            android:layout_width="42dp"
-            android:layout_height="42dp"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
             android:src="@mipmap/ic_new_avatar_default" />
 
         <TextView
@@ -51,7 +50,7 @@
         android:maxLines="2"
         android:text="标题"
         android:textColor="@color/black2"
-        android:textSize="@dimen/big_small" />
+        android:textSize="@dimen/sp_14" />
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -110,7 +109,7 @@
             android:padding="5dp"
             android:text="章节名称"
             android:textColor="@color/cl_chapter_name"
-            android:textSize="@dimen/small"
+            android:textSize="@dimen/dp_13"
             skin:enable="true" />
     </RelativeLayout>
 

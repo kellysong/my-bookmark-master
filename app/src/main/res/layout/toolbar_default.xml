@@ -19,6 +19,6 @@
             app:titleTextAppearance="?android:attr/textAppearanceMedium"
             app:titleTextColor="@android:color/white"
             app:title="" />
-    </com.google.android.material.appbar.AppBarLayout>-->
+    </com.google.android.material.appbar.AppBarLayout>
 
 </merge>

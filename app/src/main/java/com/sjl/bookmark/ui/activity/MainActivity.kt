@@ -319,6 +319,12 @@ class MainActivity : BaseActivity<NoPresenter>(),
         }
     }
 
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        drawer_layout.closeDrawers()
+        loadBookmark()
+    }
+
     /**
      * 自动登录WanAndroid，获取积分
      */
@@ -548,6 +554,8 @@ class MainActivity : BaseActivity<NoPresenter>(),
             startActivity(Intent(this, MyCollectionActivity::class.java))
         } else if (id == R.id.nav_bookmark) {
             startActivity(Intent(this, BookmarkActivity::class.java))
+        } else if (id == R.id.nav_data_statistics) {
+            startActivity(Intent(this, ArticleDataStatisticsActivity::class.java))
         } else if (id == R.id.nav_skin) {
             startActivity(Intent(this, ChangeSkinActivity::class.java))
         } else if (id == R.id.nav_scan) {

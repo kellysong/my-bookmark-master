@@ -5,8 +5,8 @@ ext {
             buildToolsVersion: "30.0.3",
             minSdkVersion    : 14,
             targetSdkVersion : 30,
-            versionCode      : 1048,//后面两位代表累计版本，如33表示第33个版本
-            versionName      : "4.0.0-RC2",
+            versionCode      : 1049,//后面两位代表累计版本，如33表示第33个版本
+            versionName      : "4.0.0",
     ]
 
     //version,较新稳定库
