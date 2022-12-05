@@ -4,7 +4,7 @@ apply plugin: 'org.greenrobot.greendao' // apply plugin
 apply plugin: 'kotlin-android'//引入kotlin
 apply plugin: 'kotlin-android-extensions'//简化fid
 apply plugin: "kotlin-kapt"
-apply plugin: 'bugly'
+//apply plugin: 'bugly'
 
 def buglyAppID = "5342dfc505"
 
@@ -219,11 +219,13 @@ greendao {
     targetGenDir 'src/main/java'
 }
 
+/*
 bugly {
     appId = "${buglyAppID}"
     appKey = "d130bcf1-2e50-465b-a213-e80fcc1f13f1"
     upload = false
 }
+*/
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')

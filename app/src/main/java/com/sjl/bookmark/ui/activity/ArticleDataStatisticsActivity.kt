@@ -33,7 +33,7 @@ class ArticleDataStatisticsActivity : BaseActivity<NoPresenter>() {
     override fun initData() {
         var browseTrackDaoImpl = BrowseTrackDaoImpl(this)
         val findWeekData = browseTrackDaoImpl.findWeekData()
-        val weekDate = StatisticsUtils.getWeekDateX()
+        val weekDate = StatisticsUtils.getWeekDateX("MM-dd")
         val dateY = StatisticsUtils.getCountY()
         dataStatisticsChartView.setYAxis(dateY)
         dataStatisticsChartView.setXAxis(weekDate)

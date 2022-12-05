@@ -6,6 +6,7 @@ import android.database.Cursor;
 import com.sjl.bookmark.dao.BrowseTrackDao;
 import com.sjl.bookmark.dao.db.BaseDao;
 import com.sjl.bookmark.entity.table.BrowseTrack;
+import com.sjl.bookmark.kotlin.util.StatisticsUtils;
 import com.sjl.core.util.AppUtils;
 
 import org.greenrobot.greendao.query.QueryBuilder;
@@ -137,19 +138,26 @@ public class BrowseTrackDaoImpl extends BaseDao<BrowseTrack> {
         String sql = "select COUNT(*) as dayCount,date(CREATE_TIME/1000, 'unixepoch', 'localtime') as countDate from BROWSE_TRACK" +
                 " where type = 0  and  datetime(CREATE_TIME/1000, 'unixepoch', 'localtime')  between datetime('now','localtime','-7 days') and  datetime('now','localtime')" +
                 " GROUP BY date(CREATE_TIME/1000, 'unixepoch', 'localtime')";
+
         Cursor cursor = daoSession.getDatabase().rawQuery(sql, null);
         try {
-            List<Integer> points = new ArrayList<>();
-
-            int index = 0;
+            //5,4,2,1
+            Map<String,Integer> weekDate = new LinkedHashMap<>();
             while (cursor.moveToNext()) {
                 int dayCount = cursor.getInt(cursor.getColumnIndex("dayCount"));
-                points.add(dayCount);
-                index++;
+                String countDate = cursor.getString(cursor.getColumnIndex("countDate"));
+                weekDate.put(countDate,dayCount);
             }
-            int[] item = new int[points.size()];
-            for (int i = 0; i < item.length; i++) {
-                item[i] = points.get(i);
+            String[] weekDateX = StatisticsUtils.INSTANCE.getWeekDateX("yyyy-MM-dd");
+            int[] item = new int[weekDateX.length];
+            for (int i = 0; i < weekDateX.length; i++) {
+                String dateX = weekDateX[i];
+                Integer integer = weekDate.get(dateX);
+                if (integer == null){
+                    item[i] = 0;
+                }else {
+                    item[i] = integer;
+                }
             }
             data.add(item);
         } finally {
