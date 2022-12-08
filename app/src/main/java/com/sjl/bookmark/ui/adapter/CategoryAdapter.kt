@@ -14,6 +14,7 @@ import com.sjl.bookmark.entity.Category
  * @time 2018/3/22 16:02
  * @copyright(C) 2018 song
  */
+@Deprecated(message = "不使用",replaceWith =ReplaceWith("left","com.sjl.bookmark.ui.adapter.CategoryLeftAdapter"))
 class CategoryAdapter(layoutResId: Int, data: List<Category>?) : BaseQuickAdapter<Category, BaseViewHolder>(layoutResId, data) {
     override fun convert(helper: BaseViewHolder, item: Category) {
         helper.setText(R.id.typeItemFirst, item.name)

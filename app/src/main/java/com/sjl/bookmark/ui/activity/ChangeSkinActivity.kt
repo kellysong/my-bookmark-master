@@ -11,6 +11,7 @@ import com.chad.library.adapter.base.BaseQuickAdapter
 import com.sjl.bookmark.R
 import com.sjl.bookmark.app.AppConstant
 import com.sjl.bookmark.entity.ThemeSkin
+import com.sjl.bookmark.kotlin.darkmode.DarkModeUtils
 import com.sjl.bookmark.kotlin.darkmode.DarkModeUtils.isNightMode
 import com.sjl.bookmark.kotlin.language.I18nUtils
 import com.sjl.bookmark.ui.adapter.ThemeSkinAdapter
@@ -113,9 +114,9 @@ class ChangeSkinActivity : BaseActivity<NoPresenter>() {
             ) {
                 val nightMode: Boolean = isNightMode(mContext)
                 if (nightMode) {
-                    showToast(getString(R.string.skin_change_hint))
-                    return
+                   DarkModeUtils.setDarkMode(DarkModeUtils.MODE_DEFAULT)
                 }
+
                 val skin: Int = PreferencesHelper.getInstance(mContext)
                     .getInteger(AppConstant.SETTING.CURRENT_SELECT_SKIN, 0)
                 if (skin == position) {

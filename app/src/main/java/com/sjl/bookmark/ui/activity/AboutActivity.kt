@@ -41,7 +41,7 @@ class AboutActivity : BaseActivity<AboutPresenter>(), AboutContract.View {
         tv_appVersion.setOnLongClickListener {
             XPopup.Builder(mContext)
                 .isDestroyOnDismiss(true)
-                .asInputConfirm("请输入密码",null, OnInputConfirmListener(){
+                .asInputConfirm(getString(R.string.please_enter_password),null, OnInputConfirmListener(){
                     if (SETTING_PWD == it){
                         openActivity(SettingHideActivity::class.java)
                     }

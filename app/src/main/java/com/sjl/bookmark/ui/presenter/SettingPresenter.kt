@@ -8,6 +8,7 @@ import android.preference.PreferenceFragment
 import android.text.TextUtils
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import cn.feng.skin.manager.loader.SkinManager
 import com.sjl.bookmark.R
 import com.sjl.bookmark.api.MyBookmarkService
 import com.sjl.bookmark.app.AppConstant
@@ -176,6 +177,8 @@ class SettingPresenter : SettingContract.Presenter() {
                 }
                 dialog.dismiss()
                 if (mContext is SettingActivity) {
+                    PreferencesHelper.getInstance(mContext).put(AppConstant.SETTING.CURRENT_SELECT_SKIN, 0)
+                    SkinManager.getInstance().restoreDefaultTheme()
                     setDarkMode(which)
                     AppUtils.restartApp(mContext)
                 }

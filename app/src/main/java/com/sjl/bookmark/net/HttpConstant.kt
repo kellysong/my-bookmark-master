@@ -1,5 +1,7 @@
 package com.sjl.bookmark.net
 
+import com.sjl.bookmark.kotlin.util.SpUtils
+
 /**
  * TODO
  *
@@ -14,6 +16,10 @@ object HttpConstant {
      * 我的书签服务base url
      */
     const val MY_BOOKMARK_BASE_URL = "http://192.168.0.176:8080/"
+
+    fun getBookmarkBaseUrl():String{
+        return SpUtils.getBookmarkBaseUrl()
+    }
 
     /**
      * WanAndroid

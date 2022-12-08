@@ -6,14 +6,67 @@
 
     <include layout="@layout/toolbar_default"></include>
 
+    <EditText
+        android:id="@+id/et_bookmark_url"
+        android:layout_width="match_parent"
+        android:inputType="textUri"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:id="@+id/btn_update_bookmark_url"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp_35"
+        android:layout_margin="@dimen/dp_10"
+        android:background="@drawable/btn_blue_selector"
+        android:padding="@dimen/dp_5"
+        android:text="修改书签服务Http Url"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/sp_12" />
+
     <Button
         android:id="@+id/btn_reset_bookmark_flag"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/btn_blue_selector"
-        android:text="重置书签加载标记"
-        android:padding="@dimen/dp_5"
+        android:layout_height="@dimen/dp_35"
         android:layout_margin="@dimen/dp_10"
+        android:background="@drawable/btn_blue_selector"
+        android:padding="@dimen/dp_5"
+        android:text="重置书签加载标记"
         android:textColor="@android:color/white"
-        />
+        android:textSize="@dimen/sp_12" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btn_add_mourning_days"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_35"
+            android:layout_margin="@dimen/dp_10"
+            android:background="@drawable/btn_blue_selector"
+            android:padding="@dimen/dp_5"
+            android:text="添加哀悼日"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/sp_12" />
+
+        <Button
+            android:id="@+id/btn_clear_mourning_days"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_35"
+            android:layout_margin="@dimen/dp_10"
+            android:background="@drawable/btn_blue_selector"
+            android:padding="@dimen/dp_5"
+            android:text="清空哀悼日"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/sp_12" />
+
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/ll_mourning_days"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+    </LinearLayout>
 </LinearLayout>

@@ -10,9 +10,11 @@ import com.sjl.bookmark.R
 import com.sjl.bookmark.dao.impl.BrowseTrackDaoImpl
 import com.sjl.bookmark.kotlin.language.I18nUtils
 import com.sjl.bookmark.ui.adapter.BrowseHistoryAdapter
+import com.sjl.bookmark.ui.adapter.RecyclerViewDivider
 import com.sjl.core.mvp.BaseActivity
 import com.sjl.core.mvp.NoPresenter
 import kotlinx.android.synthetic.main.browse_history_activity.*
+import kotlinx.android.synthetic.main.fragment_file_category.*
 import kotlinx.android.synthetic.main.toolbar_default.*
 
 /**
@@ -51,6 +53,7 @@ class BrowseHistoryActivity : BaseActivity<NoPresenter>(){
             recyclerView.visibility = View.VISIBLE
         }
         browseHistoryAdapter = BrowseHistoryAdapter(this, list)
+
         browseHistoryAdapter.setOnItemClickListener { adapter, view, position ->
 
             val item = browseHistoryAdapter.getItem(position)
@@ -58,7 +61,9 @@ class BrowseHistoryActivity : BaseActivity<NoPresenter>(){
                 BrowserActivity.startWithParams(mContext, it.text, it.href)
             }
         }
+
         recyclerView.layoutManager = LinearLayoutManager(this)
+        recyclerView.addItemDecoration(RecyclerViewDivider(this, LinearLayoutManager.VERTICAL,R.drawable.recyle_divider))
 //        recyclerView.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
         recyclerView.adapter = browseHistoryAdapter
     }

@@ -34,7 +34,10 @@ import com.uber.autodispose.AutoDispose
 import com.uber.autodispose.android.lifecycle.AndroidLifecycleScopeProvider
 import com.youth.banner.Banner
 import io.reactivex.android.schedulers.AndroidSchedulers
+import kotlinx.android.synthetic.main.category_fragment.*
+import kotlinx.android.synthetic.main.empty_view.*
 import kotlinx.android.synthetic.main.home_fragment.*
+import kotlinx.android.synthetic.main.home_fragment.swipeRefreshLayout
 import java.util.*
 
 /**
@@ -157,6 +160,9 @@ class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.View,
     override fun collectArticleSuccess(position: Int, bean: DatasBean) {}
     override fun showFaild(message: String?) {
         swipeRefreshLayout.isRefreshing = false
+
+        ll_empty_view.visibility = View.VISIBLE
+        swipeRefreshLayout.visibility = View.GONE
     }
 
     override fun showLoading() {
@@ -170,6 +176,8 @@ class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.View,
         list: MutableList<DatasBean>,
         loadType: Int
     ) {
+        ll_empty_view.visibility = View.GONE
+        swipeRefreshLayout.visibility = View.VISIBLE
         LogUtils.i("list:" + list.size)
         when (loadType) {
             HttpConstant.LoadType.TYPE_REFRESH_SUCCESS -> {

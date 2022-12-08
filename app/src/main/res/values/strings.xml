@@ -419,4 +419,5 @@
     <string name="menu_history_clear">清空</string>
     <string name="delete_browse_history_confirm">确定要删除所有的浏览历史？</string>
     <string name="menu_data_statistics">数据统计</string>
+    <string name="please_enter_password">请输入密码</string>
 </resources>

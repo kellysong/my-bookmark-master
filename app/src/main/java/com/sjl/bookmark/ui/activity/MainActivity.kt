@@ -32,6 +32,7 @@ import com.sjl.bookmark.dao.util.BrowseMapper
 import com.sjl.bookmark.entity.DataResponse
 import com.sjl.bookmark.entity.UserInfo
 import com.sjl.bookmark.entity.UserLogin
+import com.sjl.bookmark.kotlin.util.SpUtils
 import com.sjl.bookmark.ui.adapter.MainViewPagerAdapter
 import com.sjl.bookmark.ui.fragment.CategoryFragment
 import com.sjl.bookmark.ui.fragment.HomeFragment
@@ -100,9 +101,9 @@ class MainActivity : BaseActivity<NoPresenter>(),
      * 主页设置公祭日和悼念日主题
      */
     private fun setMourningDaysTheme() {
-        val currentDate = TimeUtils.formatDateToStr(Date(), "MM-dd")
-        //        MOURNING_DAYS.add(currentDate);//测试
-        for (day in MOURNING_DAYS) {
+        val currentDate = TimeUtils.formatDateToStr(Date(), "yyyy-MM-dd")
+        val mourningDays = SpUtils.getMourningDays()
+        for (day in mourningDays) {
             if (day == currentDate) {
                 val view = window.decorView
                 val paint = Paint()
@@ -752,8 +753,7 @@ class MainActivity : BaseActivity<NoPresenter>(),
 
     companion object {
         private const val REQUEST_SCAN = 0
-        private val MOURNING_DAYS: List<String> =
-            ArrayList(Arrays.asList("04-04", "05-12", "09-03", "12-13"))
+
 
         @Throws(
             ClassNotFoundException::class,

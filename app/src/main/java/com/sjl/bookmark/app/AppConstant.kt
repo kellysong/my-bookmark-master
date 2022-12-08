@@ -128,6 +128,16 @@ object AppConstant {
          * 登录日期
          */
         const val LOGIN_DATE = "login_date"
+
+        /**
+         * 书签服务base url
+         */
+        const val BOOKMARK_BASE_URL = "bookmark_base_url"
+
+        /**
+         * 哀悼日
+         */
+        const val MOURNING_DAYS = "mourning_days"
     }
 
     /**

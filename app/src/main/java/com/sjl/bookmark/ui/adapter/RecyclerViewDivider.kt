@@ -55,7 +55,38 @@ class RecyclerViewDivider(context: Context, orientation: Int) : ItemDecoration()
     //获取分割线尺寸
     override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
         super.getItemOffsets(outRect, view, parent, state)
-        outRect[0, 0, 0] = mDividerHeight
+
+        if (this.mDivider == null) {
+            outRect[0, 0, 0] = mDividerHeight
+        } else {
+            if (this.mOrientation == LinearLayoutManager.VERTICAL) {
+                //纵向RecyclerView
+                val childAdapterPosition = parent.getChildAdapterPosition(view)
+                val lastCount = parent.adapter?.itemCount?.minus(1)
+                //如果不是最后一条 正常赋值 如果是最后一条 赋值为0
+                if (childAdapterPosition != lastCount){
+                    this.mDivider?.let {
+                        outRect.set(0, 0, 0, it.intrinsicHeight)
+                    }
+                } else {
+                    outRect.set(0, 0, 0, 0)
+                }
+            } else {
+                //横向RecyclerView
+                val childAdapterPosition = parent.getChildAdapterPosition(view)
+                val lastCount = parent.adapter?.itemCount?.minus(1)
+                //如果不是最后一条 正常赋值 如果是最后一条 赋值为0
+                if (childAdapterPosition != lastCount){
+                    this.mDivider?.let {
+                        outRect.set(0, 0, it.intrinsicWidth, 0)
+                    }
+                } else {
+                    outRect.set(0, 0, 0, 0)
+                }
+            }
+
+        }
+
     }
 
     //绘制分割线

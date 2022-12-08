@@ -415,4 +415,5 @@
     <string name="menu_history_clear">Clear</string>
     <string name="delete_browse_history_confirm">Are you sure you want to delete all the browsing history?</string>
     <string name="menu_data_statistics">Data Statistics</string>
+    <string name="please_enter_password">请输入密码</string>
 </resources>

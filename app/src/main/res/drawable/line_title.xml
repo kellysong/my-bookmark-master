@@ -3,10 +3,10 @@
     android:shape="rectangle">
     <!-- 大小 -->
     <size
-        android:width="3dp"
-        android:height="15dp"></size>
+        android:width="@dimen/dp_3"
+        android:height="@dimen/dp_15"></size>
 
     <solid android:color="@color/cl_line_title" />
-    <corners android:radius="10dp" />
+    <corners android:radius="@dimen/dp_10" />
 
 </shape>

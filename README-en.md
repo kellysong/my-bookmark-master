@@ -24,12 +24,12 @@ Set learning, convenience, entertainment in one of the comprehensive software, s
 
 # ScreenShot
 
-<img src="screenshot/img_1.png" width = "40%" /><img src="screenshot/img_2.png" width = "40%" />
-<img src="screenshot/img_3.png" width = "40%" /><img src="screenshot/img_4.png" width = "40%" />
-<img src="screenshot/img_5.png" width = "40%" /><img src="screenshot/img_6.png" width = "40%" />
+<img src="screenshot/img_1.jpg" width = "40%" /><img src="screenshot/img_2.jpg" width = "40%" />
+<img src="screenshot/img_3.jpg" width = "40%" /><img src="screenshot/img_4.jpg" width = "40%" />
+<img src="screenshot/img_5.jpg" width = "40%" /><img src="screenshot/img_6.png" width = "40%" />
 <img src="screenshot/img_7.png" width = "40%" /><img src="screenshot/img_8.png" width = "40%" />
 <img src="screenshot/img_9.png" width = "40%" /><img src="screenshot/img_10.png" width = "40%" />
-<img src="screenshot/img_11.png" width = "40%" /><img src="screenshot/img_12.png" width = "40%" />
+<img src="screenshot/img_11.jpg" width = "40%" /><img src="screenshot/img_12.png" width = "40%" />
 <img src="screenshot/img_13.png" width = "40%" /><img src="screenshot/img_14.png" width = "40%" />
 <img src="screenshot/img_15.png" width = "40%" /><img src="screenshot/img_16.png" width = "40%" />
 <img src="screenshot/img_17.png" width = "40%" /><img src="screenshot/img_18.png" width = "40%" />
@@ -37,7 +37,6 @@ Set learning, convenience, entertainment in one of the comprehensive software, s
 <img src="screenshot/img_21.png" width = "40%" /><img src="screenshot/img_22.png" width = "40%" />
 <img src="screenshot/img_23.png" width = "40%" /><img src="screenshot/img_24.png" width = "40%" />
 <img src="screenshot/img_25.png" width = "40%" />
-
 
 
 # License

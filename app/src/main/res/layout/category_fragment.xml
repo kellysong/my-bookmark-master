@@ -1,13 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/swipeRefreshLayout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/container_background">
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvKnowledgeSystems"
+    android:layout_height="match_parent">
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/swipeRefreshLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
-</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+        android:layout_height="match_parent"
+        android:background="@color/container_background">
+        <LinearLayout
+            android:id="@+id/ll_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvLeftKnowledgeSystems"
+                android:layout_width="@dimen/dp_100"
+                android:layout_height="match_parent"
+                android:overScrollMode="never" />
+
+            <View
+                android:id="@+id/view_divider"
+                android:layout_width="0.5dp"
+                android:visibility="gone"
+                android:layout_height="match_parent"
+                android:background="#ddd" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvRightKnowledgeSystems"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:overScrollMode="never" />
+        </LinearLayout>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+    <include layout="@layout/empty_view"/>
+</FrameLayout>

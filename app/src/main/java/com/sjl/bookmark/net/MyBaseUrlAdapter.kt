@@ -21,7 +21,7 @@ class MyBaseUrlAdapter : BaseUrlAdapter {
         val baserUrl: MutableMap<String, String> = HashMap()
         baserUrl["wanandroid"] = HttpConstant.DEFAULT_BASE_URL
         baserUrl["kuaidi100"] = HttpConstant.KUAIDI100_BASE_URL
-        baserUrl["my-bookmark"] = HttpConstant.MY_BOOKMARK_BASE_URL //个人应用
+        baserUrl["my-bookmark"] = HttpConstant.getBookmarkBaseUrl() //个人应用
         baserUrl["zhuishushenqi"] = HttpConstant.ZHUISHU_BASE_URL
         baserUrl["zhihu"] = HttpConstant.ZHIHU_BASE_URL
         return baserUrl
