@@ -13,6 +13,25 @@
 4. 各种类似功能的实际应用
 5. ### **能给你的项目开发带来灵感**
 
+
+
+# 技术架构
+
+- View绑定（混合）：findViewById、ButterKnife、Kotlin synthetic（kotlin-android-extensions）
+- 异步调用和线程切换（混合）：Handler+Thread、RxJava
+- 网络请求：RxJava+Retrofit
+- 数据解析：Gson
+- 图片加载：Glide
+- 数据库：GreenDao
+- 日志：Log、自定义Log
+- 路由：startActivity
+- 事件总线（混合）：EventBus、RxBus(基于RxJava实现)
+- 权限申请：permission包下的PermissionsManager
+- 内存泄露监控：LeakCanary
+- 线上监控：Bugly
+- 屏幕适配：今日头条适配
+
+
 # 功能说明
 - 实现Google浏览器收藏书签解析；
 - 实现wanandroid部分接口；

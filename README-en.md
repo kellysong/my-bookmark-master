@@ -9,8 +9,39 @@ Set learning, convenience, entertainment in one of the comprehensive software, s
 2. Different implementation methods of the same similar function, original writing method and frame-based writing method
 3. Encapsulate common methods and transform third-party libraries
 4. Practical application of various similar functions
-5. ### ** can inspire your projects **
-# Function description
+5. ### ** can inspire your projects **'
+
+# Technical Architecture
+
+- View binding (hybrid) : findViewById, ButterKnife, kotlin synthetic (Kotlin-Android-Extensions)
+
+- Asynchronous invocation and Thread switching: Handler+Thread, RxJava
+
+- Network Request (hybrid) : RxJava+Retrofit
+
+- Data parse: Gson
+
+- Image load: Glide
+
+- Database: GreenDao
+
+- Log: Log, custom log
+
+- Route: startActivity
+
+- EventBus (hybrid) : EventBus, RxBus(based on RxJava implementation)
+
+- permission request: PermissionsManager under the permission package
+
+- Memory leak monitoring: LeakCanary
+
+- Online monitoring: Bugly
+
+- Screen adaptation: Toutiao adaptation
+
+
+
+# Function Description
 - Google Browser bookmark parsing;
 - Implement part of wanAndroid interface;
 - Support uploading my collections to my own service
@@ -18,7 +49,9 @@ Set learning, convenience, entertainment in one of the comprehensive software, s
 - Realize part of zhihu news interface
 - Realize express query (integrate and modify the third party), novel reading (integrate and modify the third party)
 - Other functions: article backup and synchronization, theme change, language change, gesture password setting, etc
+
 # Apk Download
+
 [Installation Package](Pocket_bookmark.apk)
 [Update log](口袋书签app更新说明.md)
 
