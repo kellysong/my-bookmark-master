@@ -27,7 +27,7 @@ import kotlinx.android.synthetic.main.toolbar_default.*
  */
 class BrowseHistoryActivity : BaseActivity<NoPresenter>(){
     private lateinit var browseHistoryAdapter: BrowseHistoryAdapter
-    private  lateinit var clearMenuItem:MenuItem;
+    private  var clearMenuItem:MenuItem?= null;
 
     override fun getLayoutId(): Int {
        return R.layout.browse_history_activity
@@ -47,7 +47,9 @@ class BrowseHistoryActivity : BaseActivity<NoPresenter>(){
         if (list.isNullOrEmpty()){
             tv_empty.visibility = View.VISIBLE
             recyclerView.visibility = View.GONE
-            clearMenuItem.isVisible = false
+            clearMenuItem?.run {
+                isVisible = false
+            }
         }else{
             tv_empty.visibility = View.GONE
             recyclerView.visibility = View.VISIBLE
@@ -90,7 +92,9 @@ class BrowseHistoryActivity : BaseActivity<NoPresenter>(){
                         browseTrackDaoImpl.deleteAllBrowseTrack();
                         tv_empty.visibility = View.VISIBLE
                         recyclerView.visibility = View.GONE
-                        clearMenuItem.isVisible = false
+                        clearMenuItem?.run {
+                            isVisible = false
+                        }
                     }, null, false
                 ).show()
 

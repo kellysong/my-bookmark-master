@@ -81,7 +81,7 @@ class ArticleAdapter(layoutResId: Int, data: List<DatasBean>?) : BaseQuickAdapte
         val format = StringBuilder()
         for (name in names) {
             if (!TextUtils.isEmpty(name)) {
-                if (format.length > 0) {
+                if (format.isNotEmpty()) {
                     format.append("·")
                 }
                 format.append(name)

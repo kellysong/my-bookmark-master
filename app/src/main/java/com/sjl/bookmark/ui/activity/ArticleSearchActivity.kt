@@ -73,7 +73,7 @@ class ArticleSearchActivity : BaseActivity<ArticleSearchPresenter>(),
                 before: Int,
                 count: Int
             ) {
-                if (s.length == 0) { //没有输入
+                if (s.isEmpty()) { //没有输入
                     sv_content.visibility = View.VISIBLE
                     ll_hot_key.visibility = View.VISIBLE //显示热门搜索
                     rv_content.visibility = View.GONE
@@ -245,7 +245,7 @@ class ArticleSearchActivity : BaseActivity<ArticleSearchPresenter>(),
     }
 
     override fun searchDataSuccess(data: List<DatasBean>) {
-        if (data == null || data.size == 0) { //没有搜索到数据
+        if (data == null || data.isEmpty()) { //没有搜索到数据
 //            llHotKey.setVisibility(BaseView.GONE);
 //            historySearchKey.setVisibility(BaseView.GONE);
             sv_content.visibility = View.GONE
@@ -262,7 +262,7 @@ class ArticleSearchActivity : BaseActivity<ArticleSearchPresenter>(),
     }
 
     override fun loadMoreDataSuccess(data: List<DatasBean>) {
-        if (data == null || data.size == 0) {
+        if (data == null || data.isEmpty()) {
             mArticleAdapter.loadMoreEnd()
         } else {
             mArticleAdapter.addData(data)
@@ -286,10 +286,13 @@ class ArticleSearchActivity : BaseActivity<ArticleSearchPresenter>(),
     }
 
     override fun onItemClick(adapter: BaseQuickAdapter<*, *>?, view: View, position: Int) {
-        BrowserActivity.Companion.startWithParams(
-            this, mArticleAdapter.getItem(position)!!.title,
-            mArticleAdapter.getItem(position)!!.link
-        )
+        val item = mArticleAdapter.getItem(position)
+        item?.let {
+            mArticleAdapter.addBrowseTrack(it, position)
+            BrowserActivity.startWithParams(this, it.title, it.link)
+        }
+
+
     }
 
     override fun onItemChildClick(
@@ -320,6 +323,6 @@ class ArticleSearchActivity : BaseActivity<ArticleSearchPresenter>(),
     }
 
     companion object {
-        val KEY_SEARCH_HISTORY_KEYWORD: String = "key_search_history_keyword2"
+        const val KEY_SEARCH_HISTORY_KEYWORD: String = "key_search_history_keyword2"
     }
 }

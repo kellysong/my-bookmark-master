@@ -511,7 +511,7 @@ class MainActivity : BaseActivity<NoPresenter>(),
     }
 
     /**
-     * onCreate之后执行
+     * onCreate之后执行:onCreate --> onResume --> onCreateOptionsMenu
      * 每次在display Menu之前，都会去调用，只要按一次Menu按鍵，就会调用一次。所以可以在这里动态的改变menu。
      *
      * @param menu
