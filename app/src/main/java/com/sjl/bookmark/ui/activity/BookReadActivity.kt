@@ -216,7 +216,7 @@ class BookReadActivity : BaseActivity<BookReadPresenter>(), BookReadContract.Vie
      * 请求参数
      */
     private fun requestData() {
-        mCollBook = intent.getParcelableExtra(EXTRA_COLL_BOOK)
+        mCollBook = intent.getParcelableExtra(EXTRA_COLL_BOOK)!!
         LogUtils.i(mCollBook.toString())
         //设置标题
         bindingToolbar(common_toolbar, mCollBook.title)

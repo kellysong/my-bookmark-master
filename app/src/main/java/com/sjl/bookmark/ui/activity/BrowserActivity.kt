@@ -477,7 +477,7 @@ class BrowserActivity : BaseActivity<NoPresenter>() {
                 Intent.EXTRA_TEXT,
                 getString(
                     R.string.share_article_url,
-                    getString(R.string.app_name),
+                    getString(R.string.about_app_name),
                     Html.fromHtml(title),
                     url
                 )

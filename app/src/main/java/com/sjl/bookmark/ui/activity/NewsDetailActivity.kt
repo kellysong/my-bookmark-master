@@ -115,7 +115,7 @@ class NewsDetailActivity : BaseActivity<NewsDetailPresenter>(),
             override fun onClick(v: View) {
                 val content: String = getString(
                     R.string.share_article_url,
-                    getString(R.string.app_name),
+                    getString(R.string.about_app_name),
                     newsDetail?.title,
                     newsDetail?.share_url
                 )

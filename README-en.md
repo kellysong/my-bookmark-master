@@ -2,9 +2,12 @@
 
 ### [中文](README.md) | English
 
-Technical architecture: Based on Material Design + MVP + RxJava + Retrofit + Glide and other open source framework to develop
+Technical architecture: Mainly Kotlin language, based on Material Design + MVP + RxJava + Retrofit + Glide and other open source frameworks
+, the old 4.0.0 following Java language [pocket bookmarks] (https://github.com/kellysong/my-bookmark-master/tree/master) maintenance
+
 Features:
 Set learning, convenience, entertainment in one of the comprehensive software, suitable for junior and intermediate Android developers, you can learn:
+
 1. Various uses of various third-party libraries
 2. Different implementation methods of the same similar function, original writing method and frame-based writing method
 3. Encapsulate common methods and transform third-party libraries

@@ -339,7 +339,7 @@ dependencies {
 
     //leakcanary
     debugImplementation rootProject.ext.debugDependencies["leakcanary"]
-    releaseImplementation rootProject.ext.releaseDependencies["leakcanary"]
+//    releaseImplementation rootProject.ext.releaseDependencies["leakcanary"]
     //bugly
     implementation rootProject.ext.dependencies["bugly"]
     implementation rootProject.ext.dependencies["bugly_nativecrashreport"]

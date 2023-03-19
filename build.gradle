@@ -2,7 +2,7 @@
 //在这里引入config.gradle
 apply from: "config.gradle"
 buildscript {
-    ext.kotlin_version = '1.3.10'
+    ext.kotlin_version = '1.4.21'
     ext.symtabfileuploader = '3.0'
 
     repositories {

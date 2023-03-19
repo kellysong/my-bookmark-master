@@ -16,7 +16,6 @@ import com.sjl.core.manager.CachedThreadManager
 import com.sjl.core.net.RetrofitHelper
 import com.sjl.core.net.RetrofitLogAdapter
 import com.sjl.core.net.RetrofitParams
-import com.squareup.leakcanary.LeakCanary
 import com.tencent.bugly.crashreport.CrashReport
 import io.reactivex.plugins.RxJavaPlugins
 import java.util.concurrent.TimeUnit
@@ -55,12 +54,7 @@ class MyApplication : BaseApplication() {
         initRetrofit()
         initDarkMode()
         initErrorHandler()
-        if (LeakCanary.isInAnalyzerProcess(this)) {
-            // This process is dedicated to LeakCanary for heap analysis.
-            // You should not init your app in this process.
-            return
-        }
-        LeakCanary.install(this)
+
         //        WebViewPool.init();
     }
 
@@ -110,7 +104,7 @@ class MyApplication : BaseApplication() {
                 }
 
                 override fun printHttpLog(): Boolean {
-                    return false
+                    return true
                 }
             }) //                .setInterceptor(new WanAndroidCookieInterceptor())
             .build()

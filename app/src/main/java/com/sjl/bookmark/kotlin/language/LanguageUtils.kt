@@ -30,7 +30,7 @@ object LanguageUtils {
                 configuration.setLocale(locale)
                 val localeList = LocaleList(locale)
                 LocaleList.setDefault(localeList)
-                configuration.locales = localeList
+                configuration.setLocales(localeList)
                 Locale.setDefault(locale)
                 LocaleList.setDefault(localeList);
                 resources.updateConfiguration(configuration, resources.displayMetrics)        //必须加,否则无效

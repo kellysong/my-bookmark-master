@@ -275,7 +275,7 @@ class MyCollectionActivity : BaseActivity<MyCollectionPresenter>(),
      */
     private fun showEmptyView() {
         val data: List<Collection>? = myCollectionAdapter.data
-        if (data == null || data.size == 0) {
+        if (data == null || data.isEmpty()) {
             fl_content.visibility = View.GONE
             ll_empty_view.visibility = View.VISIBLE
         }
@@ -286,9 +286,11 @@ class MyCollectionActivity : BaseActivity<MyCollectionPresenter>(),
      */
     private fun showContentView() {
         val data: List<Collection>? = myCollectionAdapter.data
-        if (data != null || data!!.size > 0) {
-            fl_content.visibility = View.VISIBLE
-            ll_empty_view.visibility = View.GONE
+        data?.let {
+            if(it.isNotEmpty()){
+                fl_content.visibility = View.VISIBLE
+                ll_empty_view.visibility = View.GONE
+            }
         }
     }
 
