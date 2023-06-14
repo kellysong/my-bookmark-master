@@ -94,7 +94,6 @@ android {
                                 releaseApkName = fileName
                                 println("releaseApkName=========================" + releaseApkName)
                             }
-
                             //output.outputFile = new File(outputFile.parent, fileName)
                             outputFileName = fileName
                         }
@@ -175,31 +174,41 @@ android {
      * gradle执行完毕的回调监听
      */
     this.gradle.buildFinished {
-        println("=====================buildFinished=========================" + project.hasProperty("assembleBookmark"))
-//        def propertiesMap= project.getProperties()
-//        propertiesMap.each{entry ->
-//            println("键："+entry.key + "值："+entry.value)
-//        }
-        if (project.hasProperty("assembleBookmark") || project.hasProperty("assembleRelease")) {
-            def dir = new File(TARGET_APP_RELEASE_DIR)
-            if (!dir.exists()) {
-                dir.mkdirs()
+        println("=====================buildFinished=========================")
+        def buildCmdType = -1
+        def startParameter = gradle.startParameter
+        for (String s : startParameter.taskNames) {
+            println("startParameter:${s}")
+            if (s.equalsIgnoreCase("assembleBookmark")) {
+                buildCmdType = 1
+                break
+            } else if (s.equalsIgnoreCase("assembleRelease")) {
+                buildCmdType = 2
+                break
             }
-
-            def f = new File(TARGET_APP_RELEASE_DIR + releaseApkName)
-            if (f.exists()) {
-                f.delete()
-            }
-
-            copy {
-                from(APP_COPY_DIR + releaseApkName)
-                into(TARGET_APP_RELEASE_DIR)
-                include '*.apk'
-                exclude '**/*-unaligned.apk'
-            }
-
-            println("=====================assembleRelease copy success.=========================")
         }
+        if (buildCmdType == -1){
+            println("Do not copy.")
+            return
+        }
+        def dir = new File(TARGET_APP_RELEASE_DIR)
+        if (!dir.exists()) {
+            dir.mkdirs()
+        }
+
+        def f = new File(TARGET_APP_RELEASE_DIR + releaseApkName)
+        if (f.exists()) {
+            f.delete()
+        }
+
+        copy {
+            from(APP_COPY_DIR + releaseApkName)
+            into(TARGET_APP_RELEASE_DIR)
+            include '*.apk'
+            exclude '**/*-unaligned.apk'
+        }
+
+        println("=====================assembleRelease copy success.=========================")
     }
     //必须加,不加启动报错,由于AutoDispose依赖库需要java8
     compileOptions {

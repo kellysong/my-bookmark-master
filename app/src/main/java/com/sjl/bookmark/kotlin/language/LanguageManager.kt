@@ -37,15 +37,10 @@ object LanguageManager {
     /**
      * 初始化app语言
      *
-     * @param context 对于8.0以下的系统， 上文代码中的 mContext 采用 ApplicationContext 可以正确的切换应用的语言类型
-     * 但在8.0 系统中，若 mContext 采用 ApplicationContext 则无法切换应用的语言类型。
+     * @param context 对于8.0以下的系统， context上下文采用 ApplicationContext 可以正确的切换应用的语言类型，但在8.0 系统中，若 context 采用 ApplicationContext 则无法切换应用的语言类型。
      */
     fun initAppLanguage(context: Context) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            changeLanguage(context, getCurrentLanguageType(context))//必须是activity的Context
-        } else {
-            changeLanguage(context, getCurrentLanguageType(MyApplication.getContext()))
-        }
+        changeLanguage(context, getCurrentLanguageType(context))//必须是activity的Context
     }
 
     /**
@@ -70,12 +65,7 @@ object LanguageManager {
 
 
     fun getLocalContext(context: Context): Context {
-        var languageType: Int = -1
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            languageType = getCurrentLanguageType(context)
-        } else {
-            languageType = getCurrentLanguageType(MyApplication.getContext())
-        }
+        var languageType = getCurrentLanguageType(context)
         var locale: Locale
         if (languageType == null) {//如果没有指定语言使用系统首选语言
             locale = getSystemPreferredLanguage()

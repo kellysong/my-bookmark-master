@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Build;
 
+import com.sjl.bookmark.app.MyApplication;
 import com.sjl.core.manager.MyActivityManager;
 import com.sjl.core.util.ViewUtils;
 
@@ -32,24 +33,20 @@ public class I18nUtils {
      * @return
      */
     public static String getString(int id) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {//7.0以上不能使用Application Context，否则国际化无效
-            MyActivityManager instance = MyActivityManager.getInstance();
-            Activity currentActivity = instance.getCurrentActivity();
-            if (currentActivity == null) {
-                List<Activity> activityList = instance.getActivityList();
-                if (activityList == null || activityList.isEmpty()) {
-                    throw new RuntimeException("Failed to find activity.");
-                } else {
-                    currentActivity = activityList.get(0);
-                }
-
+        MyActivityManager instance = MyActivityManager.getInstance();
+        Context activity = instance.getCurrentActivity();
+        if (activity == null) {
+            List<Activity> activityList = instance.getActivityList();
+            if (activityList == null || activityList.isEmpty()) {
+                return ViewUtils.getString(id);
+            } else {
+                activity = activityList.get(0);
             }
-            LanguageManager.INSTANCE.initAppLanguage(currentActivity);
-            Context context = LanguageManager.INSTANCE.getContext();
-            return context.getString(id);
-        } else {
-            return ViewUtils.getString(id);
         }
+        LanguageManager.INSTANCE.initAppLanguage(activity);
+        Context context = LanguageManager.INSTANCE.getContext();
+        return context.getString(id);
+
     }
 
 }
