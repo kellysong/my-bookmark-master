@@ -16,10 +16,11 @@ import com.sjl.bookmark.R
 import com.sjl.bookmark.api.MyBookmarkService
 import com.sjl.bookmark.app.AppConstant
 import com.sjl.bookmark.kotlin.language.LanguageManager.getLocalContext
+import com.sjl.bookmark.net.HttpConstant
 import com.sjl.bookmark.ui.activity.MainActivity
 import com.sjl.core.net.RetrofitHelper
-import com.sjl.core.net.filedownload.DownloadProgressHandler
-import com.sjl.core.net.filedownload.FileDownloader
+import com.sjl.core.net.RxHttpUtils
+import com.sjl.core.net.file.FileCallback
 import com.sjl.core.util.log.LogUtils
 import java.io.File
 
@@ -70,40 +71,37 @@ class DownloadIntentService : IntentService("DownloadIntentService") {
         val apiService = instance.getApiService(
             MyBookmarkService::class.java
         )
-        FileDownloader.downloadFile(
-            apiService.downloadApkFile(),
-            AppConstant.UPDATE_APK_PATH,
-            fileName,
-            object : DownloadProgressHandler() {
-                override fun onProgress(progress: Int, total: Long, speed: Long) {
-                    LogUtils.i("progress:$progress")
-                    mNotification!!.contentView.setProgressBar(
-                        R.id.pb_progress,
-                        100,
-                        progress,
-                        false
-                    )
-                    mNotification!!.contentView.setTextViewText(R.id.tv_progress, "已下载$progress%")
-                    mNotifyManager.notify(downloadId, mNotification)
-                }
+        RxHttpUtils.getInstance().download(HttpConstant.getBookmarkBaseUrl()+"my-bookmark/appUpdate/downloadApkFile.htmls",file,0,object :
+            FileCallback<File>{
+            override fun onProgress(progress: Int, total: Long, speed: Long, id: Int) {
+                LogUtils.i("progress:$progress")
+                mNotification!!.contentView.setProgressBar(
+                    R.id.pb_progress,
+                    100,
+                    progress,
+                    false
+                )
+                mNotification!!.contentView.setTextViewText(R.id.tv_progress, "已下载$progress%")
+                mNotifyManager.notify(downloadId, mNotification)
+            }
 
-                override fun onCompleted(file: File) {
-                    LogUtils.i("下载apk文件成功")
-                    if (mNotifyManager != null) { //不能再onDestroy写，否则只会显示一次通知栏
-                        if (Build.VERSION.SDK_INT >= 26) {
-                            mNotifyManager.deleteNotificationChannel(PUSH_CHANNEL_ID)
-                        }
-                        mNotifyManager.cancel(downloadId)
+            override fun onError(e: Throwable) {
+                LogUtils.e("下载apk文件异常", e)
+            }
+
+            override fun onCompleted(file: File) {
+                LogUtils.i("下载apk文件成功")
+                if (mNotifyManager != null) { //不能再onDestroy写，否则只会显示一次通知栏
+                    if (Build.VERSION.SDK_INT >= 26) {
+                        mNotifyManager.deleteNotificationChannel(PUSH_CHANNEL_ID)
                     }
-                    FileDownloader.clear()
-                    installApp(file)
+                    mNotifyManager.cancel(downloadId)
                 }
+                installApp(file)
+            }
 
-                override fun onError(e: Throwable) {
-                    LogUtils.e("下载apk文件异常", e)
-                    FileDownloader.clear()
-                }
-            })
+        })
+
     }
 
     override fun attachBaseContext(base: Context) {
@@ -116,12 +114,22 @@ class DownloadIntentService : IntentService("DownloadIntentService") {
         val downloaded = baseContext.getString(R.string.app_downloaded)
         val updateIntent = Intent(this@DownloadIntentService, MainActivity::class.java) //点击跳转到主页
         updateIntent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
-        val pendingIntent = PendingIntent.getActivity(
-            this@DownloadIntentService,
-            0,
-            updateIntent,
-            PendingIntent.FLAG_UPDATE_CURRENT
-        )
+        // 安卓12及其以上需要适配
+        var pendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            PendingIntent.getActivity(
+                this@DownloadIntentService,
+                0,
+                updateIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            )
+        } else {
+            PendingIntent.getActivity(
+                this@DownloadIntentService,
+                0,
+                updateIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT
+            )
+        }
         val remoteViews = RemoteViews(packageName, R.layout.notify_download)
         remoteViews.setProgressBar(R.id.pb_progress, 100, 0, false)
         remoteViews.setTextViewText(R.id.tv_progress, downloaded + 0 + "%")

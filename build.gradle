@@ -6,6 +6,9 @@ buildscript {
     ext.symtabfileuploader = '3.0'
 
     repositories {
+        maven {
+            url 'https://maven.aliyun.com/repository/public/'
+        }
         google()
         jcenter()
         mavenCentral() // add repository
@@ -16,7 +19,7 @@ buildscript {
         }*/
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.6.3'
+        classpath 'com.android.tools.build:gradle:4.2.2'
         classpath 'org.greenrobot:greendao-gradle-plugin:3.3.0' // add plugin
         // 注册MobSDK，第三方分享和登录
 //        classpath "com.mob.sdk:MobSDK:2018.0319.1724"
@@ -31,12 +34,14 @@ buildscript {
 //项目依赖的仓库
 allprojects {
     repositories {
-
+        maven {
+            url 'https://maven.aliyun.com/repository/public/'
+        }
         google()
         jcenter()
         maven { url "https://jitpack.io" }
         //本地仓库
-        maven { url 'http://127.0.0.1:8081/nexus/content/repositories/song-releases/' }
+       // maven { url 'http://127.0.0.1:8081/nexus/content/repositories/song-releases/' }
 //        jcenter(){ url 'http://jcenter.bintray.com/'}
     }
 }

@@ -2,6 +2,7 @@ package com.sjl.bookmark.ui.presenter
 
 import android.content.DialogInterface
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.preference.Preference
 import android.preference.PreferenceFragment
@@ -21,18 +22,15 @@ import com.sjl.bookmark.kotlin.darkmode.DarkModeUtils.setDarkMode
 import com.sjl.bookmark.kotlin.language.I18nUtils
 import com.sjl.bookmark.kotlin.language.LanguageManager.changeLanguage
 import com.sjl.bookmark.kotlin.language.LanguageManager.getCurrentLanguageType
+import com.sjl.bookmark.net.HttpConstant
 import com.sjl.bookmark.service.DownloadIntentService
 import com.sjl.bookmark.ui.activity.*
 import com.sjl.bookmark.ui.contract.SettingContract
 import com.sjl.core.entity.EventBusDto
 import com.sjl.core.entity.dto.UpdateInfoDto
 import com.sjl.core.mvp.BaseActivity
-import com.sjl.core.net.RetrofitHelper
-import com.sjl.core.net.RxBus
-import com.sjl.core.net.RxLifecycleUtils
-import com.sjl.core.net.RxSchedulers
-import com.sjl.core.net.filedownload.DownloadProgressHandler
-import com.sjl.core.net.filedownload.FileDownloader
+import com.sjl.core.net.*
+import com.sjl.core.net.file.FileCallback
 import com.sjl.core.util.AppUtils
 import com.sjl.core.util.PreferencesHelper
 import com.sjl.core.util.log.LogUtils
@@ -348,30 +346,28 @@ class SettingPresenter : SettingContract.Presenter() {
         val apiService = instance.getApiService(
             MyBookmarkService::class.java
         )
-        FileDownloader.downloadFile(
-            apiService.downloadBookmarkFile(),
-            AppConstant.BOOKMARK_PATH,
-            "bookmark.html",
-            object : DownloadProgressHandler() {
-                override fun onProgress(progress: Int, total: Long, speed: Long) {
-                    mView.update(progress)
-                }
+        val file = File(AppConstant.BOOKMARK_PATH,"bookmark.html")
+        RxHttpUtils.getInstance().download(HttpConstant.getBookmarkBaseUrl()+"my-bookmark/bookmark/downloadBookmarkFile.htmls",file,0,object :
+            FileCallback<File> {
+            override fun onProgress(progress: Int, total: Long, speed: Long, id: Int) {
+                mView.update(progress)
+            }
 
-                override fun onCompleted(file: File) {
-                    LogUtils.i("下载书签成功")
-                    saveBookmarksToLocal(file)
-                    FileDownloader.clear()
-                }
+            override fun onError(e: Throwable) {
+                LogUtils.e("下载书签文件异常", e)
+                mView.hideLoading(
+                    false,
+                    mContext.getString(R.string.bookmark_file_download_failed)
+                )
+            }
 
-                override fun onError(e: Throwable) {
-                    LogUtils.e("下载书签文件异常", e)
-                    mView.hideLoading(
-                        false,
-                        mContext.getString(R.string.bookmark_file_download_failed)
-                    )
-                    FileDownloader.clear()
-                }
-            })
+            override fun onCompleted(file: File) {
+                LogUtils.i("下载书签成功")
+                saveBookmarksToLocal(file)
+            }
+
+        })
+
     }
 
     /**

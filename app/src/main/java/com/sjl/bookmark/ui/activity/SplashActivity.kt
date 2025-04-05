@@ -1,30 +1,25 @@
 package com.sjl.bookmark.ui.activity
 
 import android.Manifest
-import android.app.Activity
+import android.Manifest.permission.*
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.content.pm.ShortcutInfo
-import android.content.pm.ShortcutManager
-import android.graphics.drawable.Icon
+import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.net.Uri
 import android.os.*
 import android.os.Build.VERSION_CODES
 import android.provider.Settings
-import android.text.TextUtils
 import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.sinpo.xnfc.NFCardActivity
 import com.sjl.bookmark.BuildConfig
 import com.sjl.bookmark.R
 import com.sjl.bookmark.app.AppConstant
 import com.sjl.bookmark.kotlin.language.LanguageManager.initAppLanguage
 import com.sjl.bookmark.ui.activity.MainActivity
 import com.sjl.bookmark.util.PermissionRequestUtils
-import com.sjl.core.manager.CachedThreadManager
 import com.sjl.core.mvp.BaseActivity
 import com.sjl.core.mvp.NoPresenter
 import com.sjl.core.permission.PermissionsManager
@@ -34,7 +29,7 @@ import com.sjl.core.util.PreferencesHelper
 import com.sjl.core.util.ShortcutUtils
 import com.sjl.core.util.ToastUtils
 import com.sjl.core.util.log.LogUtils
-import com.tencent.smtt.sdk.CacheManager
+import kotlinx.android.synthetic.main.content_setting.*
 import java.util.*
 
 /**
@@ -166,7 +161,7 @@ class SplashActivity : BaseActivity<NoPresenter>() {
         String year = String.valueOf(date.get(Calendar.YEAR));
         copyright.setText(getResources().getString(R.string.str_copyright, year));*/
         // 版本判断。当手机系统大于 23 时，才有必要去判断权限是否获取
-        if (Build.VERSION.SDK_INT >= VERSION_CODES.M) {
+       if (Build.VERSION.SDK_INT >= VERSION_CODES.M) {
             val toApplyList = ArrayList<String?>()
             for (perm in permissions) {
                 //检查该权限是否已经获取
@@ -186,9 +181,52 @@ class SplashActivity : BaseActivity<NoPresenter>() {
                 requestFilePermission()
             }
         } else {
-            requestFilePermission()
+            openMainActivity()
         }
     }
+    private fun checkPermission(denied: Set<String>) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
+            && (ContextCompat.checkSelfPermission(this, READ_MEDIA_IMAGES) != PERMISSION_GRANTED
+                    || ContextCompat.checkSelfPermission(this, READ_MEDIA_VIDEO) != PERMISSION_GRANTED)) {
+            // Android 13及以上完整照片访问权限
+            PermissionsManager.getInstance()
+                .requestPermissionsIfNecessaryForResult(this@SplashActivity, arrayOf<String>(
+                    READ_MEDIA_IMAGES, READ_MEDIA_VIDEO
+                ), object : PermissionsResultAction() {
+                    override fun onGranted() {
+                        requestFilePermission()
+                    }
+
+                    override fun onDenied(permission: String) {
+                        //只要权限没有全部授权
+                        showDialogTipUserGoToAppSetting(denied)
+                    }
+                })
+        } else if (
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE &&
+            ContextCompat.checkSelfPermission(this, READ_MEDIA_VISUAL_USER_SELECTED) != PERMISSION_GRANTED) {
+            // Android 14及以上部分照片访问权限
+            PermissionsManager.getInstance()
+                .requestPermissionsIfNecessaryForResult(this@SplashActivity, arrayOf<String>(
+                    READ_MEDIA_IMAGES, READ_MEDIA_VIDEO, READ_MEDIA_VISUAL_USER_SELECTED
+                ), object : PermissionsResultAction() {
+                    override fun onGranted() {
+                        requestFilePermission()
+                    }
+
+                    override fun onDenied(permission: String) {
+                        //只要权限没有全部授权
+                        showDialogTipUserGoToAppSetting(denied)
+                    }
+
+                })
+        }  else {
+
+            requestFilePermission()
+        }
+
+    }
+
     private fun requestFilePermission() {
         PermissionsManager.getInstance().requestSpecialPermission(SpecialPermission.MANAGE_ALL_FILES_ACCESS,this,object : PermissionsResultAction() {
             override fun onGranted() {
@@ -272,12 +310,13 @@ class SplashActivity : BaseActivity<NoPresenter>() {
                 if (denied.isEmpty()) {
                     requestFilePermission()
                 } else {
-                    //只要权限没有全部授权
-                    showDialogTipUserGoToAppSetting(denied)
+
+                    checkPermission(denied)
                 }
             }
         }
     }
+
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)

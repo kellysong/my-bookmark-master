@@ -42,7 +42,6 @@ import com.sjl.core.net.RxSchedulers
 import com.sjl.core.util.*
 import com.sjl.core.util.datetime.TimeUtils
 import com.sjl.core.util.log.LogUtils
-import com.sjl.core.util.log.LoggerUtils
 import io.reactivex.Observable
 import io.reactivex.functions.Function
 import kotlinx.android.synthetic.main.book_read_activity.*
@@ -557,18 +556,18 @@ class BookReadActivity : BaseActivity<BookReadPresenter>(), BookReadContract.Vie
 
             // 如果系统亮度改变，则修改当前 Activity 亮度
             if (BRIGHTNESS_MODE_URI == uri) {
-                LoggerUtils.d("亮度模式改变")
+                LogUtils.d("亮度模式改变")
             } else if (BRIGHTNESS_URI == uri && !BrightnessUtils.isAutoBrightness(this@BookReadActivity)) {
-                LoggerUtils.d("亮度模式为手动模式 值改变")
+                LogUtils.d("亮度模式为手动模式 值改变")
                 BrightnessUtils.setBrightness(
                     this@BookReadActivity,
                     BrightnessUtils.getScreenBrightness(this@BookReadActivity)
                 )
             } else if (BRIGHTNESS_ADJ_URI == uri && BrightnessUtils.isAutoBrightness(this@BookReadActivity)) {
-                LoggerUtils.d("亮度模式为自动模式 值改变")
+                LogUtils.d("亮度模式为自动模式 值改变")
                 BrightnessUtils.setDefaultBrightness(this@BookReadActivity)
             } else {
-                LoggerUtils.d("亮度调整 其他")
+                LogUtils.d("亮度调整 其他")
             }
         }
     }

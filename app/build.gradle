@@ -19,7 +19,7 @@ final def APP_COPY_DIR = 'build/outputs/apk/bookmark/release/'
 
 android {
     compileSdkVersion rootProject.ext.android["compileSdkVersion"]
-    buildToolsVersion rootProject.ext.android["buildToolsVersion"]
+//    buildToolsVersion rootProject.ext.android["buildToolsVersion"]
 
     defaultConfig {
 //        applicationId rootProject.ext.android["applicationId"]
@@ -244,6 +244,7 @@ dependencies {
     implementation rootProject.ext.dependencies["multidex"]
 
     //基础库
+    println("lll:"+project.useLocalDependenceMyCommon.toBoolean())
     if(project.useLocalDependenceMyCommon.toBoolean()){
         implementation (project(':my-common-lib:base-core')){
             //最新版改变较大,使用本地版本

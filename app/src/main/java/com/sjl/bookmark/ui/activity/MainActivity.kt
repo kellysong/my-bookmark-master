@@ -21,7 +21,6 @@ import cn.feng.skin.manager.loader.SkinManager
 import cn.feng.skin.manager.statusbar.StatusBarUtil
 import cn.feng.skin.manager.util.ObjectUtils
 import com.google.android.material.navigation.NavigationView
-import com.orhanobut.logger.Logger
 import com.renny.zxing.Activity.CaptureActivity
 import com.sjl.bookmark.R
 import com.sjl.bookmark.api.WanAndroidApiService
@@ -340,15 +339,17 @@ class MainActivity : BaseActivity<NoPresenter>(),
             .login("songjiali", "songjiali")
             .compose(RxSchedulers.applySchedulers()).`as`(bindLifecycle())
             .subscribe(object : RxObserver<DataResponse<UserLogin>>() {
-                override fun _onNext(userLoginDataResponse: DataResponse<UserLogin>) {
-                    if (userLoginDataResponse.errorCode == 0) {
+                override fun _onNext(t: DataResponse<UserLogin>) {
+                    if (t.errorCode == 0) {
                         LogUtils.i("登录成功")
                         preferencesHelper.put(AppConstant.SETTING.LOGIN_DATE, currentDate)
                     }
                 }
 
-                override fun _onError(msg: String) {}
-                override fun _onComplete() {}
+                override fun _onError(code: Int, msg: String?) {
+
+                }
+
             })
     }
 
@@ -506,7 +507,7 @@ class MainActivity : BaseActivity<NoPresenter>(),
             .subscribe(Consumer {
 
             }, Consumer {
-                Logger.e(it, "读取书签文件异常")
+                LogUtils.e("读取书签文件异常",it)
             })
     }
 
@@ -697,7 +698,6 @@ class MainActivity : BaseActivity<NoPresenter>(),
             BrowseMapper.clearAll()
             WebViewPool.destroyPool()
             killAll()
-            System.exit(0) //退出虚拟机
         }
     }
 
