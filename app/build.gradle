@@ -15,7 +15,8 @@ final def TARGET_APP_RELEASE_DIR = 'D:/workspace_android/app_release/bookmark/'
 //自定义
 def releaseApkName = ""
 //注意bookmark
-final def APP_COPY_DIR = 'build/outputs/apk/bookmark/release/'
+//final def APP_COPY_DIR = '/outputs/apk/bookmark/release/'
+final def APP_COPY_DIR = '/intermediates/apk/bookmark/release/'
 
 android {
     compileSdkVersion rootProject.ext.android["compileSdkVersion"]
@@ -175,6 +176,8 @@ android {
      */
     this.gradle.buildFinished {
         println("=====================buildFinished=========================")
+
+
         def buildCmdType = -1
         def startParameter = gradle.startParameter
         for (String s : startParameter.taskNames) {
@@ -195,6 +198,11 @@ android {
         if (!dir.exists()) {
             dir.mkdirs()
         }
+        def copyAppFile = new File(project.getBuildDir().getAbsolutePath()+APP_COPY_DIR, releaseApkName)
+        if (!copyAppFile.exists()) {
+            println("=====================APK file does not exist, copy failed.========================="+copyAppFile.getAbsolutePath())
+            return
+        }
 
         def f = new File(TARGET_APP_RELEASE_DIR + releaseApkName)
         if (f.exists()) {
@@ -202,7 +210,7 @@ android {
         }
 
         copy {
-            from(APP_COPY_DIR + releaseApkName)
+            from(copyAppFile)
             into(TARGET_APP_RELEASE_DIR)
             include '*.apk'
             exclude '**/*-unaligned.apk'
@@ -252,11 +260,11 @@ dependencies {
         }
         implementation project(':my-common-lib:base-adapter')
     }else {
-        implementation('com.github.kellysong.my-common:base-core:2.3.5') {
+        implementation('com.github.kellysong.my-common:base-core:3.0.0') {
             //最新版改变较大,使用本地版本
             exclude group: 'com.github.CymChad', module: 'BaseRecyclerViewAdapterHelper'
         }
-        implementation 'com.github.kellysong.my-common:base-adapter:2.3.5'
+        implementation 'com.github.kellysong.my-common:base-adapter:3.0.0'
     }
     implementation rootProject.ext.dependencies["baseRecyclerViewAdapterHelper"]
     kapt 'com.jakewharton:butterknife-compiler:10.2.1'
@@ -266,8 +274,8 @@ dependencies {
         implementation project (':my-hardware-lib:nfcard')
         implementation project (':my-hardware-lib:zxing')
     }else {
-        implementation 'com.github.kellysong.my-hardware:nfcard:1.1.4'
-        implementation 'com.github.kellysong.my-hardware:zxing:1.1.4'
+        implementation 'com.github.kellysong.my-hardware:nfcard:2.0.0'
+        implementation 'com.github.kellysong.my-hardware:zxing:2.0.0'
     }
     implementation 'com.github.kellysong:common-utils:1.1.0'
 
